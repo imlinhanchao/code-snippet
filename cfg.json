@@ -1,0 +1,22 @@
+{ 
+    "base": {
+        "name": "Web Site Name",
+        "port": 3000,
+        "domain": "",
+        "identityKey": "",
+        "secret": "",
+        "salt": ""
+    },
+    "file": {
+        "upload": "/public/upload/",
+        "fileurl": "/upload/",
+        "maxSize": 2
+    },
+    "db": {
+        "database": "db",
+        "dialect": "mysql",
+        "prefix": "pre_",
+        "port": 3306,
+        "logging": false
+    }
+}
