@@ -1,6 +1,6 @@
 { 
     "base": {
-        "name": "Web Site Name",
+        "name": "Code Snippet",
         "port": 3000,
         "domain": "",
         "identityKey": "",
@@ -13,9 +13,9 @@
         "maxSize": 2
     },
     "db": {
-        "database": "db",
+        "database": "code",
         "dialect": "mysql",
-        "prefix": "pre_",
+        "prefix": "code_",
         "port": 3306,
         "logging": false
     }

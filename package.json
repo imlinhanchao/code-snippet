@@ -1,7 +1,7 @@
 {
-  "name": "vue-parcel-template",
+  "name": "code-snippet",
   "version": "0.0.1",
-  "description": "基于 Parcel 打包前端，包含 iView 框架。无缝衔接 Node Express 后端框架的前后端一体代码模板。",
+  "description": "Code Snippet",
   "author": "Hancel.Lin",
   "main": "index.js",
   "license": "MIT",
