@@ -5,15 +5,16 @@ const Account = model.account;
 
 const __salt = require('../config').salt;
 
-let __error__ = Object.assign({}, App.error);
-__error__.verify = App.error.reg('帐号或密码错误！');
-__error__.captcha = App.error.reg('验证码错误！');
-__error__.existed = App.error.existed('帐号');
-__error__.existedmail = App.error.existed('邮箱');
-__error__.existedphone = App.error.existed('电话');
-__error__.notexisted = App.error.existed('帐号', false);
-__error__.usertooshort = App.error.reg('用户名太短！');
-__error__.passtooshort = App.error.reg('密码太短！');
+let __error__ = Object.assign({
+	verify: App.error.reg('帐号或密码错误！'),
+	captcha: App.error.reg('验证码错误！'),
+	existed: App.error.existed('帐号'),
+	existedmail: App.error.existed('邮箱'),
+	existedphone: App.error.existed('电话'),
+	notexisted: App.error.existed('帐号', false),
+	usertooshort: App.error.reg('用户名太短！'),
+	passtooshort: App.error.reg('密码太短！'),
+}, App.error);
 
 class Module extends App {
     constructor(session) {
@@ -265,11 +266,11 @@ class Module extends App {
         }
     }
 
-    get userId() {
+    get user() {
         if (!this.islogin) {
             throw (this.error.nologin);
         }
-        return this.session.account_login.id;
+        return this.session.account_login;
     }
 }
 
