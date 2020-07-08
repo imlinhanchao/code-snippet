@@ -8,6 +8,7 @@ let loader = require('./loader');
 router.use(require('./access'));
 router.use('/lib', require('./lib'));
 router.use('/account', loader(modules.account));
+router.use('/snippet', loader(modules.snippet));
 
 router.get('/', function (req, res) {
     res.render('index', { title: 'API' });
