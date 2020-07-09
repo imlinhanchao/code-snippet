@@ -26,7 +26,7 @@ class Module extends App {
     async new(data) {
         try {
             data.username = this.account.user.username;
-            if (!App.haskeys(['codes'])) throw this.error.param;
+            if (!App.haskeys(data, ['codes'])) throw this.error.param;
 
             let snippet = App.filter(await super.new(data, Snippet), this.saftKey);
             data.codes.forEach(c => c.snippet = snippet.id);
@@ -46,7 +46,7 @@ class Module extends App {
             data.fork_from = undefined;
             data.private = undefined;
 
-            if (!App.haskeys(['codes'])) throw this.error.param;
+            if (!App.haskeys(data, ['codes'])) throw this.error.param;
 
             let snippet = App.filter(await super.set(data, Snippet, (d) => {
                 if (d.username != this.account.user.username) {
@@ -57,14 +57,19 @@ class Module extends App {
 
             // Filter out all code ids that do not belong to this snippet.
             let codes_id = (await this.code.get(data.id)).map(c => c.id);
+            let createCodes = data.codes.filter(c => !c.id);
+
             data.codes = data.codes.filter(c => codes_id.indexOf(c.id) >= 0);
 
             let removeCodes = data.codes.filter(c => c.remove).map(c => c.id);
-            data.codes = data.codes.filter(c => !c.remove).forEach(c => c.snippet = data.id);
+            data.codes = data.codes.filter(c => !c.remove);
+            data.codes.forEach(c => c.snippet = data.id);
+            createCodes.forEach(c => c.snippet = data.id);
 
             await this.code.remove(removeCodes);
-            snippet.codes = (await this.code.update(data.codes))
-                .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
+            snippet.codes = await this.code.create(createCodes);
+            snippet.codes = snippet.codes.concat(await this.code.update(data.codes));
+            snippet.codes = snippet.codes.map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
             
             return this.okupdate(snippet);
         } catch (err) {

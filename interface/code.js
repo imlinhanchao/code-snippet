@@ -23,6 +23,7 @@ class Module extends App {
     
     async create(codes) {
         try {
+            if (codes.length <= 0) return [];
             return await Code.bulkCreate(codes);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -32,8 +33,8 @@ class Module extends App {
 
     async update(codes) {
         try {
+            if (codes.length <= 0) return [];
             return await Code.bulkCreate(codes, {
-                fields: Code.keys().filter(k => k != 'snippet'),
                 updateOnDuplicate: ['id'] 
             });
         } catch (err) {
@@ -44,13 +45,12 @@ class Module extends App {
 
     async del(snippet) {
         try {
-            if (ids.length <= 0) return [];
-            let info = await Code.destory({
+            let code = await Code.destory({
                 where: {
                     snippet
                 }
             });
-            return info;
+            return code;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -60,14 +60,14 @@ class Module extends App {
     async remove(ids) {
         try {
             if (ids.length <= 0) return [];
-            let info = await Code.destory({
+            let code = await Code.destroy({
                 where: {
                     id: {
                         [Code.db.Op.in]: ids
                     }
                 }
             });
-            return info;
+            return code;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -79,13 +79,11 @@ class Module extends App {
             where: { snippet }
         });
 
-        if (!info) {
+        if (!codes) {
             throw this.error.notexisted;
         }
 
-        codes = codes.map(d => App.filter(d, this.saftKey));
-
-        return App.filter(info, this.saftKey);
+        return codes.map(d => App.filter(d, this.saftKey));
     }
 
     async getAll(snippets) {
@@ -97,16 +95,16 @@ class Module extends App {
             }
         });
 
-        if (!info) {
+        if (!codes) {
             throw this.error.notexisted;
         }
 
         codes = codes.map(d => App.filter(d, this.saftKey));
 
-        return App.filter(info, this.saftKey);
+        return App.filter(codes, this.saftKey);
     }
     
-    async query(data, onlyData = false) {
+    async query(data) {
         // $ = like
         let ops = {
             filename: App.ops.like,
@@ -121,7 +119,7 @@ class Module extends App {
             );
 
             if (onlyData) return queryData;
-            return this.okquery(queryData);
+            return queryData;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

@@ -57,6 +57,7 @@ app.use(
 
 app.use(bundler.middleware());
 
+let cmd;
 if (process.platform == 'wind32') {
     cmd = 'start';
 } else if (process.platform == 'linux') {
