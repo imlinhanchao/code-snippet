@@ -67,9 +67,10 @@ class Module extends App {
             createCodes.forEach(c => c.snippet = data.id);
 
             await this.code.remove(removeCodes);
-            snippet.codes = await this.code.create(createCodes);
-            snippet.codes = snippet.codes.concat(await this.code.update(data.codes));
-            snippet.codes = snippet.codes.map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
+            await this.code.create(createCodes);
+            await this.code.update(data.codes);
+            snippet.codes = (await this.code.get(data.id))
+                .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
             
             return this.okupdate(snippet);
         } catch (err) {
@@ -103,7 +104,7 @@ class Module extends App {
             throw this.error.notexisted;
         }
 
-        info.codes = this.code.get(id);
+        info.codes = await this.code.get(id);
 
         if (onlyData) return App.filter(info, this.saftKey.concat(['codes']));
 

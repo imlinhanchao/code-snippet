@@ -241,6 +241,14 @@ class App {
         return true;
     }
 
+    static isSame(data1, data2, keys = null) {
+        if (keys == null) {
+            keys = Array.from(new Set(Object.keys(data1).concat(Object.keys(data2))));
+        }
+
+        return keys.find(k => data1[k] != data2[k]) == null;
+    }
+
     // 更新数据到对象
     static update(oldData, newData, keys, bcreate=false) {
         if (!oldData || !newData) throw this.error.param;

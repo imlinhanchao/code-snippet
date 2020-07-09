@@ -34,9 +34,25 @@ class Module extends App {
     async update(codes) {
         try {
             if (codes.length <= 0) return [];
-            return await Code.bulkCreate(codes, {
-                updateOnDuplicate: ['id'] 
+            let ids = codes.map(c => c.id);
+
+            let data = await Code.findAll({
+                where: {
+                    id: {
+                        [Code.db.Op.in]: ids
+                    }
+                }
             });
+           
+            let keys = ['filename', 'content', 'command'];
+            for (let i = 0; i < data.length; i++) {
+                let newData = codes.find(c => c.id == data[i].id);
+                if (!newData) continue;
+                if (App.isSame(data, newData, keys)) continue;
+                keys.forEach(k => data[i][k] = newData[k]);
+                await data[i].save();
+            }
+            return data;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -45,7 +61,7 @@ class Module extends App {
 
     async del(snippet) {
         try {
-            let code = await Code.destory({
+            let code = await Code.destroy({
                 where: {
                     snippet
                 }
