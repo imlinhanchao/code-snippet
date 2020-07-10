@@ -1,24 +1,6 @@
 <template>
     <Layout class="layout">
-        <Header class="layout-header">
-        <section class="layout-logo">
-            <router-link to="/">
-                <img src="../assets/logo.png" alt="" />
-                <span>Code Snippit</span>
-            </router-link>
-        </section>
-        <nav class="layout-nav">
-            <ul>
-                <li v-if="$root.isLogin"><router-link :to="`/u/${$root.loginUser.username}`">My Code</router-link></li>
-                <li><router-link to="/explore">Explore</router-link></li>
-            </ul>
-        </nav>
-        <section class="layout-info" v-if="$root.isLogin">
-            <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
-            <Button type="text" class="icon-btn"><Icon custom="fa fa-plus" /></Button>
-            <span class="avatar"><img :src="$root.fileUrl($root.loginUser.avatar, '/img/user.png')" /></span>
-        </section>
-        </Header>
+        <Header />
         <Content>
             <router-view />
         </Content>
@@ -28,8 +10,13 @@
     </Layout>
 </template>
 <script>
+import Header from '../components/header'
+
 export default {
     name: "index",
+    components: {
+        Header
+    },
     mounted() {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
         });
@@ -45,72 +32,7 @@ export default {
     border-radius: 4px;
     background: transparent;
 }
-.layout-header {
-    display: flex;
-    background: transparent;
-    position: relative;
-    padding: 0 1em;
-    background: #24292e;
-    color: #FFF;
-}
-.layout-logo {
-    justify-content: left;
-    text-align: left;
-    font-size: 1.8em;
-    font-weight: 500;
-    padding-right: 1.5em;
-    a { 
-        color: inherit;
-        vertical-align: middle;
-    }
-    img {
-        width: 1.5em;
-        vertical-align: middle;
-    }
-    span {
-        vertical-align: middle;
-    }
-}
-.layout-nav {
-    justify-content: left;
-    flex: 1;
-    line-height: 4;
-    li {
-        vertical-align: middle;
-        display: inline-block;
-        font-weight: bold;
-        margin: 0 .5em;
-        a {
-            vertical-align: middle;
-            color: inherit;
-        }
-    }
-}
-.layout-info {
-    justify-content: right;
-    .avatar {
-        margin: 0 .8em;
-        display: inline-block;
-        cursor: pointer;
-        img {
-            width: 2em;
-            height: 2em;
-            vertical-align: middle;
-            background: #FFF;
-            border-radius: 50%;
-            padding: 1.5px
-        }
-    }
-    .icon-btn {
-        color: inherit;
-        padding: 0;
-        margin: 0 .8em;
-        background: transparent;
-    }
-    .fa {
-        font-size: 150%;
-    }
-}
+
 .layout-footer {
     text-align: center;
     background: transparent;
