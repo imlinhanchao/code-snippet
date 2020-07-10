@@ -13,7 +13,7 @@ export default {
     },
     mounted() {
         if (this.$root.isLogin) {
-            this.$router.replace(`/u/${this.$root.loginUser.username}`)
+            //this.$router.replace(`/u/${this.$root.loginUser.username}`)
         }
     },
     data() {

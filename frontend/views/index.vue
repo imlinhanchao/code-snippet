@@ -1,11 +1,21 @@
 <template>
     <Layout class="layout">
         <Header class="layout-header">
-        <div class="layout-logo">
+        <section class="layout-logo">
             <router-link to="/">
-            <img src="../assets/logo.png" /> <span> Vue Parcel Template </span>
+            <span> Code Snippet </span>
             </router-link>
-        </div>
+        </section>
+        <nav class="layout-nav">
+            <ul>
+                <li><router-link to="/explore">代码广场</router-link></li>
+            </ul>
+        </nav>
+        <section class="layout-info" v-if="$root.isLogin">
+            <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
+            <Button type="text" class="icon-btn"><Icon custom="fa fa-plus" /></Button>
+            <span class="avatar"><img :src="$root.fileUrl($root.loginUser.avatar, '/img/user.png')" /></span>
+        </section>
         </Header>
         <Content>
             <router-view />
@@ -40,15 +50,16 @@ export default {
     display: flex;
     background: transparent;
     position: relative;
-    padding: 0 2em;
+    padding: 0 1em;
+    background: #24292e;
+    color: #FFF;
 }
 .layout-logo {
-    justify-content: center;
-    height: 100%;
-    flex: auto;
-    text-align: center;
-    font-size: 2.5em;
-    font-weight: 300;
+    justify-content: left;
+    text-align: left;
+    font-size: 1.8em;
+    font-weight: bold;
+    padding-right: 1.5em;
     a { 
         color: inherit;
         vertical-align: middle;
@@ -59,6 +70,44 @@ export default {
     }
     span {
         vertical-align: middle;
+    }
+}
+.layout-nav {
+    justify-content: left;
+    flex: 1;
+    line-height: 4;
+    li {
+        vertical-align: middle;
+        display: inline-block;
+        font-weight: 500;
+        a {
+            vertical-align: middle;
+            color: inherit;
+        }
+    }
+}
+.layout-info {
+    justify-content: right;
+    .avatar {
+        margin: 0 .8em;
+        display: inline-block;
+        img {
+            width: 2em;
+            height: 2em;
+            vertical-align: middle;
+            background: #FFF;
+            border-radius: 50%;
+            padding: 1.5px
+        }
+    }
+    .icon-btn {
+        color: inherit;
+        padding: 0;
+        margin: 0 .8em;
+        background: transparent;
+    }
+    .fa {
+        font-size: 150%;
     }
 }
 .layout-footer {
