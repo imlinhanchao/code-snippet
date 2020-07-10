@@ -207,6 +207,7 @@ export default {
             max-width: 128px;
             height: 128px;
             position: relative;
+            border: 1px solid #000;
             img {
                 width: 100%;
                 display: block;

@@ -29,9 +29,15 @@ const routers = [{
 }, {
     path: '/login',
     meta: {
-        title: 'Home'
+        title: 'Login'
     },
-    component: () => import('./components/login')
+    component: () => import('./views/login')
+}, {
+    path: '/register',
+    meta: {
+        title: 'Register'
+    },
+    component: () => import('./views/login')
 },{
     path: '*',
     redirect: '/'

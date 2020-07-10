@@ -23,7 +23,7 @@
                     <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Fork</router-link></li>
                     <li class="divider"></li>
                     <li><router-link :to="`/settings`">Setting</router-link></li>
-                    <li><router-link :to="`/logout`">Sign out</router-link></li>
+                    <li><router-link :to="`/login`">Sign out</router-link></li>
                 </ul>
             </span>
             <span class="menu">
@@ -31,12 +31,20 @@
                 <Button type="text" class="icon-btn"><Icon custom="fa fa-plus" /></Button>
             </span>
         </section>
+        <section class="layout-info" v-if="!$root.isLogin">
+            <span class="menu">
+                <router-link to="/login"><Button type="text" class="text-btn">Sign in</Button></router-link>
+                <router-link to="/register"><Button type="ghost" class="text-btn">Sign up</Button></router-link>
+            </span>
+        </section>
     </Header>
 </template>
 
 <script>
 export default {
+    methods: {
 
+    }
 }
 </script>
 
@@ -119,12 +127,16 @@ export default {
             content: "\f0f3";
         }
     }
-    .icon-btn {
+    .icon-btn, .text-btn {
         color: inherit;
         padding: 0;
-        margin: 0 .8em;
         background: transparent;
         margin: 0 .5em;
+    }
+    .text-btn {
+        font-size: 1em;
+        margin: 0 .1em;
+        padding: 5px 15px 6px;
     }
     .fa {
         font-size: 150%;

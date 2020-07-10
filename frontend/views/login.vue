@@ -1,16 +1,20 @@
 <style scoped lang="less">
 .layout {
-    max-width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 600px;
+    height: 400px;
     margin: auto;
-    position: absolute;
     top: 0;
+    bottom: 0;
+    position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
-    height: 200px;
 }
 .layout-form {
-    padding: 0 1em;
+    padding: 0 .5em;
     i {
         width: 15px;
     }
@@ -42,9 +46,12 @@
 </style>
 <template>
     <Layout class="layout">
+        <article>
         <section class="layout-logo">
-            <img src="../assets/logo-dark.png" alt="" />
-            <span>Code Snippit</span>
+            <router-link to="/">
+                <img src="../assets/logo-dark.png" alt="" />
+                <span>Code Snippit</span>
+            </router-link>
         </section> 
         <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
             <FormItem prop="username">
@@ -105,6 +112,7 @@
                 <Button style="width: 100%;" type="primary" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
             </div>
         </Form>
+        </article>
     </Layout>
 </template>
 <script>
@@ -192,6 +200,10 @@ export default {
     watch: {
     },
     mounted() {
+        this.logoutEvent();
+        if (this.$route.meta.title == 'Register') {
+            this.isRegister = true;
+        }
     },
     methods: {
         loginSubmit(form) {
@@ -244,7 +256,17 @@ export default {
                     this.isRegister = !rsp.data
                 }
             })
-        }
+        },
+        logoutEvent() {
+            this.$store.dispatch("account/logout", (rsp, err) => {
+                if (!rsp || rsp.state != 0) {
+                    err = (err && err.message) || rsp.msg;
+                    // this.$Message.error(err);
+                    return;
+                }
+                this.$root.accessCheck(this.$route);
+            });
+        },
     }
 };
 </script>

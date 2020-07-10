@@ -1,11 +1,11 @@
 <template>
     <Layout class="layout">
-        <Header />
+        <Header></Header>
         <Content>
             <router-view />
         </Content>
         <Footer class="layout-footer">
-            <p>&copy; 2020 ~ {{new Date().getFullYear()}} Hancel. All rights reserved.</p>
+            <p>&copy; {{new Date().getFullYear()}} Hancel. All rights reserved.</p>
         </Footer>
     </Layout>
 </template>
