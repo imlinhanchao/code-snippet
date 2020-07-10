@@ -3,12 +3,14 @@
         <Header class="layout-header">
         <section class="layout-logo">
             <router-link to="/">
-            <span> Code Snippet </span>
+                <img src="../assets/logo.png" alt="" />
+                <span>Code Snippit</span>
             </router-link>
         </section>
         <nav class="layout-nav">
             <ul>
-                <li><router-link to="/explore">代码广场</router-link></li>
+                <li v-if="$root.isLogin"><router-link :to="`/u/${$root.loginUser.username}`">My Code</router-link></li>
+                <li><router-link to="/explore">Explore</router-link></li>
             </ul>
         </nav>
         <section class="layout-info" v-if="$root.isLogin">
@@ -30,9 +32,6 @@ export default {
     name: "index",
     mounted() {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
-            if (!this.$root.accessCheck(this.$route) && to.route.path != '/') {
-                this.$router.replace('/login');
-            }
         });
     },
     data() {
@@ -58,14 +57,14 @@ export default {
     justify-content: left;
     text-align: left;
     font-size: 1.8em;
-    font-weight: bold;
+    font-weight: 500;
     padding-right: 1.5em;
     a { 
         color: inherit;
         vertical-align: middle;
     }
     img {
-        height: 60%;
+        width: 1.5em;
         vertical-align: middle;
     }
     span {
@@ -79,7 +78,8 @@ export default {
     li {
         vertical-align: middle;
         display: inline-block;
-        font-weight: 500;
+        font-weight: bold;
+        margin: 0 .5em;
         a {
             vertical-align: middle;
             color: inherit;
@@ -91,6 +91,7 @@ export default {
     .avatar {
         margin: 0 .8em;
         display: inline-block;
+        cursor: pointer;
         img {
             width: 2em;
             height: 2em;

@@ -1,5 +1,16 @@
 <style scoped lang="less">
+.layout {
+    max-width: 350px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 200px;
+}
 .layout-form {
+    padding: 0 1em;
     i {
         width: 15px;
     }
@@ -11,9 +22,30 @@
         transform: rotate(180deg);
     }
 }
+.layout-logo {
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #000;
+    a { 
+        color: inherit;
+        vertical-align: middle;
+    }
+    img {
+        width: 2em;
+        vertical-align: middle;
+    }
+    span {
+        vertical-align: middle;
+    }
+}
 </style>
 <template>
     <Layout class="layout">
+        <section class="layout-logo">
+            <img src="../assets/logo-dark.png" alt="" />
+            <span>Code Snippit</span>
+        </section> 
         <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
             <FormItem prop="username">
                 <Input
@@ -69,10 +101,10 @@
                     <img slot="append" :src="`/api/lib/captcha?r=${rand}`" style="height: 28px; margin: -4px -7px;" />
                 </Input>
             </FormItem>
+            <div class="login-footer">
+                <Button style="width: 100%;" type="primary" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
+            </div>
         </Form>
-        <div class="login-footer">
-            <Button style="width: 100%;" type="primary" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
-        </div>
     </Layout>
 </template>
 <script>
