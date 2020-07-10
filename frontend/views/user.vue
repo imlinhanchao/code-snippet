@@ -42,7 +42,6 @@
           <p class="lastlogin" v-if="info.lastlogin">
             Last Login:
             <Time :time="info.lastlogin"></Time>
-            <a href="javascript:void(0)" v-if="isCurrentUser" @click="logoutAccount" style="color: inherit;text-decoration: underline;">Logout</a>
           </p>
           <p class="motto">
             <Input
@@ -147,16 +146,7 @@ export default {
                 }
                 }
             });
-        },
-        logoutAccount() {
-            this.$store.dispatch("account/logout", (rsp, err) => {
-                if (!rsp || rsp.state != 0) {
-                    err = (err && err.message) || rsp.msg;
-                    return;
-                }
-                this.$router.push('/');
-            });
-        },
+        }
     },
     computed: {
         isCurrentUser() {
@@ -207,7 +197,7 @@ export default {
             max-width: 128px;
             height: 128px;
             position: relative;
-            border: 1px solid #000;
+            border: 1px solid #CCC;
             img {
                 width: 100%;
                 display: block;
