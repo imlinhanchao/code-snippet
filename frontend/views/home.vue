@@ -59,7 +59,7 @@ export default {
         onEditorFocus(cm) {
             console.log('the editor is focus!', cm)
         },
-        onCmCodeChange(newCode) {
+        onCodeChange(newCode) {
             console.log('this is new code', newCode)
             this.code = newCode
         }
