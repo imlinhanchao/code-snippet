@@ -4,12 +4,12 @@
             <section class="layout-logo">
                 <router-link to="/">
                     <img src="../assets/logo.png" alt="" />
-                    <span>Code Snippit</span>
+                    <span class="title">Code Snippit</span>
                 </router-link>
             </section>
             <nav class="layout-nav">
                 <ul>
-                    <li v-if="$root.isLogin"><router-link to="/">Home</router-link></li>
+                    <li v-if="$root.isLogin" class="nav-home"><router-link to="/">Home</router-link></li>
                     <li><router-link to="/explore">Explore</router-link></li>
                 </ul>
             </nav>
@@ -83,6 +83,7 @@ export default {
 .layout-nav {
     flex: 1;
     line-height: 4;
+    display: flex;
     li {
         vertical-align: middle;
         display: inline-block;
@@ -106,7 +107,7 @@ export default {
         cursor: pointer;
         img {
             position: relative;
-            z-index: 3;
+            z-index: 30;
             width: 2em;
             height: 2em;
             vertical-align: middle;
@@ -117,7 +118,7 @@ export default {
     }
     .menu {
         position: relative;
-        z-index: 3;
+        z-index: 30;
         translate: color .5s;
     }
     .notice i{
@@ -146,7 +147,7 @@ export default {
     position: relative;
     &:hover {
         .sub-menu {
-            right: -1em;
+            right: -.5em;
         }
         +.menu {
             color: #24292e;
@@ -158,12 +159,12 @@ export default {
         position: absolute;
         top: .7em;
         right: -20em;
-        width: 9em;
+        width: 8em;
         background: #FFF;
         border: 1px solid #CCC;
         border-radius: 0.5em;
         padding: 3em 0 1em;
-        z-index: 2;
+        z-index: 20;
         transition: right .5s ease;
         li {
             line-height: 2;
@@ -183,6 +184,24 @@ export default {
             padding: 0;
             margin: .5em 0;
             border-bottom: 1px solid #CCC;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .title, li.nav-home {
+        display: none;
+    }
+    .layout-logo {
+        padding-right: .5em;
+    }
+    .layout-nav {
+        color: #FFF;
+        li {
+            font-weight: bold;
+        }
+        &:before{
+            content: '|'
         }
     }
 }

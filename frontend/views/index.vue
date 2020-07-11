@@ -29,8 +29,8 @@ export default {
 </script>
 <style scoped lang="less">
 .layout {
-    border-radius: 4px;
     background: transparent;
+    overflow: hidden;
 }
 
 .layout-footer {

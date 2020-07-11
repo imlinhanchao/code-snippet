@@ -2,16 +2,13 @@
     <Layout class="layout">
         <Form class="layout-form">
             <Input type="text" placeholder="Snippet description..."></Input>
-            <article class="editor">
+            <article class="editor" v-for="(f, i) in files" v-bind:key="i">
                 <section class="editor-header">
-                    <Input class="filename" type="text" placeholder="Filename include extension..."></Input>
+                    <Input class="filename" @on-change="OnChangeName(i)" type="text" placeholder="Filename include extension..." v-model="f.filename"></Input>
                 </section>
-                <codemirror ref="editor"
-                    :value="code" 
-                    :options="editorOptions"
-                    @ready="onEditorReady"
-                    @focus="onEditorFocus"
-                    @input="onCodeChange">
+                <codemirror :ref="`editor${i}`"
+                    v-model="f.content" 
+                    :options="getOptions(i)">
                 </codemirror>
             </article>
         </Form>
@@ -31,25 +28,37 @@ export default {
         }
         console.log('this is current codemirror object', this.codemirror);
         CodeMirror.modeURL = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js'
-        CodeMirror.autoLoadMode(this.codemirror, 'javascript')
     },
     data() {
         return {
-            code: 'const a = 10',
             editorOptions: {
                 // codemirror options
                 tabSize: 4,
-                mode: 'text/javascript',
-                theme: 'elegant',
+                indentUnit: 4,
+                mode: 'clike',
+                theme: 'github',
                 lineNumbers: true,
-                line: true,
-                // more codemirror options, 更多 codemirror 的高级配置...
-            }
+                lineWrapping: true,
+                indentWithTabs: true,
+                cursorHeight: .7
+            },
+            files: [{
+                filename: '',
+                content: ''
+            }]
         };
     },
     computed: {
         codemirror() {
-            return this.$refs.editor.codemirror
+            return this.$refs.editor0[0].codemirror
+        },
+        ext() {
+            return this.files[0].filename.split('.').slice(-1).join('');
+        },
+        options () {
+            return Object.assign(this.editorOptions, {
+                mode: this.getMode(this.ext).mime
+            })
         }
     },
     methods: {
@@ -59,9 +68,30 @@ export default {
         onEditorFocus(cm) {
             console.log('the editor is focus!', cm)
         },
-        onCodeChange(newCode) {
-            console.log('this is new code', newCode)
-            this.code = newCode
+        onCodeChange(i) {
+            return (code) => {
+                this.files[i] = code
+            }
+        },
+        OnChangeName(i) {
+            let editor = this.getEditor(i);
+            if (!editor) return;
+            editor.setOption('mode', this.getMode(this.getExt(i)).mime);
+            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(i)).mode)
+        },
+        getMode(ext) {
+            return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
+        },
+        getExt(i) {
+            return this.files[i].filename.split('.').slice(-1).join('');
+        },
+        getOptions(i) {
+            return Object.assign(this.editorOptions, {
+                mode: this.getMode(this.getExt(i)).mime
+            })
+        },
+        getEditor(i) {
+            return this.$refs[`editor${i}`][0] ? this.$refs[`editor${i}`][0].codemirror : null
         }
     }
 };
