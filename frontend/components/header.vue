@@ -34,7 +34,7 @@
         <section class="layout-info" v-if="!$root.isLogin">
             <span class="menu">
                 <router-link to="/login"><Button type="text" class="text-btn">Sign in</Button></router-link>
-                <router-link to="/register"><Button type="ghost" class="text-btn">Sign up</Button></router-link>
+                <router-link to="/register"><Button type="default" ghost class="text-btn">Sign up</Button></router-link>
             </span>
         </section>
     </Header>
