@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
 import App from './app.vue'
-import iView from 'iview'
+import iView from 'iview';
 import VueRouter from 'vue-router';
 import Routers from './router';
 import store from './store';
 import Util from './util';
-import 'iview/dist/styles/iview.css'
+import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
 import config from '../config.json'
