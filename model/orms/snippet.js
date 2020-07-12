@@ -9,9 +9,21 @@ let orm = {
         type: db.STRING(500),
         comment: '描述'
     },
+    language: {
+        type: db.STRING(10),
+        comment: '运行语言'
+    },
+    input: {
+        type: db.TEXT,
+        comment: '运行默认输入'
+    },
     command: {
         type: db.STRING(64),
         comment: '运行命令'
+    },
+    execute: {
+        type: db.BOOLEAN,
+        comment: '是否可执行'
     },
     private: {
         type: db.BOOLEAN,

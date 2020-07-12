@@ -3,7 +3,8 @@
  * in a one-shot manner. There should not be any reason to edit this file.
  */
 import account from './account';
+import snippet from './snippet';
 
 export default {
-    account
+    account, snippet
 };
