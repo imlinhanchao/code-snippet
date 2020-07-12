@@ -1,0 +1,118 @@
+[{
+    "language": "Assembly",
+    "icon": "/img/icon/assembly.svg",
+    "cmd": "nasm -f elf64 -o a.o {{file}} && ld -o a.out a.o && ./a.out",
+    "ext": "asm"
+}, {
+    "language": "C",
+    "icon": "/img/icon/c.svg",
+    "cmd": "clang {{file}} && ./a.out",
+    "ext": "c",
+    "auto": true
+}, {
+    "language": "C#",
+    "icon": "/img/icon/c-sharp.svg",
+    "cmd": "mcs -\"out\":a.exe {{file}} && mono a.exe",
+    "ext": "cs"
+}, {
+    "language": "C++",
+    "icon": "/img/icon/cpp.svg",
+    "cmd": "clang++ {{file}} && ./a.out",
+    "ext": "cpp",
+    "auto": true
+}, {
+    "language": "Clojure",
+    "icon": "/img/icon/clojure.svg",
+    "cmd": "java -cp /usr/share/java/clojure.jar clojure.main {{file}}",
+    "ext": "clj"
+}, {
+    "language": "D",
+    "icon": "/img/icon/d.svg",
+    "cmd": "dmd -ofa.out {{file}} && ./a.out",
+    "ext": "d"
+}, {
+    "language": "Go",
+    "icon": "/img/icon/go.svg",
+    "cmd": "go run {{file}}",
+    "ext": "go"
+}, {
+    "language": "Haskell",
+    "icon": "/img/icon/haskell.svg",
+    "cmd": "runghc {{file}}",
+    "ext": "hs"
+},{
+    "language": "Java",
+    "icon": "/img/icon/java.svg",
+    "cmd": "javac {{file}} && java {{name}}",
+    "ext": "java"
+}, {
+    "language": "Julia",
+    "icon": "/img/icon/julia.svg",
+    "cmd": "julia {{file}}",
+    "ext": "jl"
+}, {
+    "language": "Kotlin",
+    "icon": "/img/icon/kotlin.svg",
+    "cmd": "kotlinc {{file}} && kotlin {{Name}}Kt",
+    "ext": "kt"
+}, {
+    "language": "Lua",
+    "icon": "/img/icon/lua.svg",
+    "cmd": "lua {{file}}",
+    "ext": "lua"
+}, {
+    "language": "Nim",
+    "icon": "/img/icon/nim.svg",
+    "cmd": "nim --\"verbosity\":0 compile --run {{file}}",
+    "ext": "nim"
+}, {
+    "language": "Node.js",
+    "icon": "/img/icon/nodejs.svg",
+    "cmd": "node {{file}}",
+    "ext": "js"
+}, {
+    "language": "Perl",
+    "icon": "/img/icon/perl.svg",
+    "cmd": "perl {{file}}",
+    "ext": "pl"
+}, {
+    "language": "Perl6",
+    "icon": "/img/icon/perl6.svg",
+    "cmd": "perl6 {{file}}",
+    "ext": "pl6"
+}, {
+    "language": "PHP",
+    "icon": "/img/icon/php.svg",
+    "cmd": "php {{file}}",
+    "ext": "php"
+}, {
+    "language": "Python",
+    "icon": "/img/icon/python.svg",
+    "cmd": "python {{file}}",
+    "ext": "py"
+}, {
+    "language": "Ruby",
+    "icon": "/img/icon/ruby.svg",
+    "cmd": "ruby {{file}}",
+    "ext": "rb"
+}, {
+    "language": "Rust",
+    "icon": "/img/icon/rust.svg",
+    "cmd": "rustc -o a.out {{file}} && ./a.out",
+    "ext": "rs"
+}, {
+    "language": "Shell",
+    "icon": "/img/icon/bash.svg",
+    "cmd": "bash {{file}}",
+    "ext": "sh"
+}, {
+    "language": "Swift",
+    "icon": "/img/icon/swift.svg",
+    "cmd": "swift {{file}}",
+    "ext": "swift"
+}, {
+    "language": "Typescript",
+    "icon": "/img/icon/typescript.svg",
+    "cmd": "tsc {{file}} && node {{name}}.js",
+    "ext": "ts"
+}]

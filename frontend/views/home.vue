@@ -1,6 +1,6 @@
 <template>
     <Layout class="layout">
-        <Alert type="error" banner show-icon v-if="error_msg" style="margin: -1.4em -1.3em 1em -1.3em;">
+        <Alert type="error" banner show-icon v-if="error_msg" closable style="margin: -1.4em -1.3em 1em -1.3em;">
             Error:
             <span slot="desc">
                 {{error_msg}}
@@ -15,20 +15,21 @@
                             <Icon custom="fa fa-lock" v-if="snippet.private"></Icon>
                             <Icon custom="fa fa-unlock-alt" v-if="!snippet.private"></Icon>
                         </span>
-                        <span class="command" v-if="canRun" :class="{ iscmd: snippet.execute }" @click="snippet.execute = !snippet.execute" title="Execute configuration">
+                        <span class="command" v-if="canExecute" :class="{ iscmd: snippet.execute }" @click="OnExecute" title="Execute configuration">
                             <Icon custom="fa fa-terminal"></Icon>
                         </span>
                     </section>
                 </section>
-                <section v-if="snippet.execute" style="margin: 1em 0">
-                    <Input class="command" type="text" placeholder="input the execute command" v-model="snippet.command">
-                        <Dropdown slot="prepend" @on-click="selectLang">
+                <section v-if="snippet.execute && canExecute" style="margin: 1em 0">
+                    <Input :readonly="autoexec" class="command" type="text" placeholder="input the execute command" v-model="snippet.command">
+                        <Checkbox v-model="autoexec" slot="prepend" v-if="canAutoExec">Auto execute</Checkbox>
+                        <Dropdown trigger="click" slot="prepend" @on-click="selectLang">
                             <a href="javascript:void(0)">
                                 <img :src="langIcon" class="lang_img" v-if="snippet.language && langIcon" /> {{language}}
                                 <Icon type="ios-arrow-down"></Icon>
                             </a>
                             <DropdownMenu slot="list" style="max-height: 30em; overflow:auto;">
-                                <DropdownItem v-for="l in langs" :name="l.language" v-bind:key="l.language" 
+                                <DropdownItem v-for="l in validLangs" :name="l.language" v-bind:key="l.language" 
                                 style="text-align: left;">
                                     <img :src="l.icon" class="lang_img"/> <span class="lang_name">{{l.language}}</span>
                                 </DropdownItem>
@@ -40,19 +41,18 @@
             </article>
             <article class="editor" v-for="(f, i) in files" v-bind:key="i">
                 <section class="editor-header">
-                    <Input class="filename" @on-change="OnChangeName(i)" type="text" placeholder="Filename include extension..."
-                    :style="{width: files.length > 1 ? '20em': '12em'}" v-model="f.filename">
-                        <Button slot="append" v-if="files.length > 1"><Icon custom="fa fa-trash-o"></Icon></Button>
+                    <Input class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
+                        <Button slot="append" :style="{ color: files.length <= 1 ? '#CCC': '#000'}" :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
                     </Input>
                 </section>
                 <codemirror :ref="`editor${i}`"
                     v-model="f.content" 
-                    :options="getOptions(i)">
+                    :options="getOptions(f)">
                 </codemirror>
             </article>
             <article class="submit">
                 <section>
-                    <Button>Add File</Button>
+                    <Button @click="OnAddFile">Add File</Button>
                 </section>
                 <section>
                     <Button type="success">Create Snippet</Button>
@@ -102,25 +102,28 @@ export default {
                 content: ''
             }],
             error_msg: 'Description can not be empty!',
+            autoexec: true,
+            canAutoExec: false
         };
     },
+    watch: {
+    },
     computed: {
-        codemirror() {
-            return this.$refs.editor0[0].codemirror
-        },
-        ext() {
-            return this.files[0].filename.split('.').slice(-1).join('');
-        },
         options () {
             return Object.assign(this.editorOptions, {
                 mode: this.getMode(this.ext).mime
             })
         },
-        canRun() {
-            return true;
+        canExecute() {
+            let exts = this.langs.map(l => l.ext)
+            return this.files.find(f => exts.indexOf(f.filename.split('.').slice(-1).join('')) >= 0) != null;
         },
         langs() {
             return this.$store.getters['snippet/langs'];
+        },
+        validLangs() {
+            let exts = this.files.map(f => this.getExt(f))
+            return this.langs.filter(l => exts.indexOf(l.ext) >= 0)
         },
         language() {
             return this.snippet.language || 'Select'
@@ -130,42 +133,80 @@ export default {
         }
     },
     methods: {
+        OnAddFile() {
+            this.files.push({
+                filename: '', content: ''
+            })
+        },
         onEditorReady(cm) {
             console.log('the editor is readied!', cm)
         },
         onEditorFocus(cm) {
             console.log('the editor is focus!', cm)
         },
-        onCodeChange(i) {
-            return (code) => {
-                this.files[i] = code
-            }
-        },
-        OnChangeName(i) {
+        OnChangeName(f, i) {
             let editor = this.getEditor(i);
             if (!editor) return;
-            editor.setOption('mode', this.getMode(this.getExt(i)).mime);
-            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(i)).mode)
+            editor.setOption('mode', this.getMode(this.getExt(f)).mime);
+            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
+        },
+        OnExecute() {
+            this.snippet.execute = !this.snippet.execute;
+            if (!this.snippet.execute) return;
+            let info = this.getExcuteInfo();
+            if (info && this.snippet.language != info.lang.language) {
+                this.snippet.language = info.lang.language;
+                this.snippet.command = info.command;
+                this.canAutoExec = !!info.lang.auto;
+            }
         },
         getMode(ext) {
             return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
         },
-        getExt(i) {
-            return this.files[i].filename.split('.').slice(-1).join('');
+        getExt(f) {
+            return f.filename.split('.').slice(-1).join('');
         },
-        getOptions(i) {
+        getOptions(f) {
             return Object.assign(this.editorOptions, {
-                mode: this.getMode(this.getExt(i)).mime
+                mode: this.getMode(this.getExt(f)).mime
             })
         },
         getEditor(i) {
             return this.$refs[`editor${i}`][0] ? this.$refs[`editor${i}`][0].codemirror : null
         },
-        getCommand() {
-            this.snippet.command = 'gcc a.c && ./a.out'
+        getExcuteInfo() {
+            let exts = this.langs.map(l => l.ext)
+            let file = this.files.find(f => exts.indexOf(this.getExt(f)) >= 0);
+            if (!file) return null;
+
+            let ext = this.getExt(file);
+            let filename = file.filename;
+            let lang = this.langs.find(l => l.ext == ext);
+            if (!lang) return null;
+
+            let command = this.getCommand(lang, filename);
+
+            return {
+                lang,
+                command,
+                file
+            }
         },
-        selectLang(lang) {
-            this.snippet.language = lang;
+        getCommand(lang, filename) {
+            let name = filename.split('.').slice(0, -1).join('');
+            let command = lang.cmd.replace(/{{file}}/g, filename);
+            if (command.indexOf('{{name}}') >= 0) command = command.replace(/{{name}}/g, name);
+            if (command.indexOf('{{Name}}') >= 0) command = command.replace(/{{name}}/g, name.charAt(0).toUpperCase() + name.substr(1));
+            return command
+        },
+        selectLang(language) {
+            this.snippet.language = language;
+            let lang = this.langs.find(l => l.language == language);
+            if (!lang) return null;
+            let file = this.files.find(f => f.filename.split('.').slice(-1).join('') == lang.ext);
+            let filename = file?.filename || 'main.' + lang.ext;
+            this.snippet.command = this.getCommand(lang, filename);
+            this.canAutoExec = !!lang.auto
         }
     }
 };
@@ -246,5 +287,11 @@ export default {
 }
 .CodeMirror-gutters {
     border: 0;
+}
+.ivu-alert-close {
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 12px;
 }
 </style>
