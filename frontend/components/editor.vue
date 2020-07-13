@@ -41,9 +41,32 @@
             </article>
             <article class="editor" v-for="(f, i) in files" v-bind:key="i">
                 <section class="editor-header">
-                    <Input class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
-                        <Button slot="append" :style="{ color: files.length <= 1 ? '#CCC': '#000'}" :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
-                    </Input>
+                    <section class="code-info">
+                        <Input class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
+                            <span slot="append" class="editor-remove">
+                            <Poptip 
+                                confirm
+                                title="Are you sure want to delete this code ?"
+                                @on-ok="OnRemove(i)">
+                                <Button :style="{ color: files.length <= 1 ? '#CCC': '#000'}" 
+                            :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
+                            </Poptip></span>
+                        </Input>
+                        <Button class="command" v-if="isExecute(f)" :class="{ iscmd: f.execute }" 
+                            @click="OnExecuteFile(f)" title="Execute configuration">
+                            <Icon custom="fa fa-terminal"></Icon>
+                        </Button>
+                    </section>
+                    <section v-if="f.execute && isExecute(f)" style="padding: .5em 0">
+                        <Input class="command" type="text" placeholder="input the execute command" 
+                        v-model="f.command">
+                            <span slot="prepend" >
+                                <img :src="getLanguage(f).icon" class="lang_img" v-if="getLanguage(f)" /> 
+                                {{getLanguage(f).language}}
+                            </span>
+                            <Button slot="append" title="Try execute"><Icon custom="fa fa-terminal" /></Button>
+                        </Input>
+                    </section>
                 </section>
                 <codemirror :ref="`editor${i}`"
                     v-model="f.content" 
@@ -91,11 +114,16 @@ export default {
                 private: false,
                 language: '',
                 command: '',
-                execute: false
+                execute: false,
+                input: ''
             },
             files: [{
                 filename: '',
-                content: ''
+                content: '',
+                execute: false,
+                command: '',
+                input: '',
+                ext: ''
             }],
             error_msg: 'Description can not be empty!',
             autoexec: true,
@@ -112,7 +140,7 @@ export default {
         },
         canExecute() {
             let exts = this.langs.map(l => l.ext)
-            return this.files.find(f => exts.indexOf(f.filename.split('.').slice(-1).join('')) >= 0) != null;
+            return this.files.find(f => exts.indexOf(this.getExt(f)) >= 0) != null;
         },
         langs() {
             return this.$store.getters['snippet/langs'];
@@ -145,6 +173,12 @@ export default {
             if (!editor) return;
             editor.setOption('mode', this.getMode(this.getExt(f)).mime);
             CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
+            let ext = this.getExt(f);
+            if (f.execute && ext != f.ext) {
+                let lang = this.getLanguage(f);
+                f.command = this.getCommand(lang, f.filename);
+            }
+            f.ext = ext;
         },
         OnExecute() {
             this.snippet.execute = !this.snippet.execute;
@@ -155,6 +189,19 @@ export default {
                 this.snippet.command = info.command;
                 this.canAutoExec = !!info.lang.auto;
             }
+        },
+        OnRemove(i) {
+            this.files.splice(i, 1);
+        },
+        isExecute(f) {
+            let exts = this.langs.map(l => l.ext);
+            return exts.indexOf(this.getExt(f)) >= 0;
+        },
+        OnExecuteFile(f) {
+            f.execute = !f.execute;
+            if (!f.execute) return;
+            let lang = this.getLanguage(f);
+            f.command = this.getCommand(lang, f.filename);
         },
         getMode(ext) {
             return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
@@ -169,6 +216,11 @@ export default {
         },
         getEditor(i) {
             return this.$refs[`editor${i}`][0] ? this.$refs[`editor${i}`][0].codemirror : null
+        },
+        getLanguage(f) {
+            let ext = this.getExt(f);
+            let lang = this.langs.find(l => l.ext == ext)
+            return lang;
         },
         getExcuteInfo() {
             let exts = this.langs.map(l => l.ext)
@@ -189,6 +241,7 @@ export default {
             }
         },
         getCommand(lang, filename) {
+            if (!lang) return '';
             let name = filename.split('.').slice(0, -1).join('');
             let command = lang.cmd.replace(/{{file}}/g, filename);
             if (command.indexOf('{{name}}') >= 0) command = command.replace(/{{name}}/g, name);
@@ -249,6 +302,19 @@ export default {
         transition: all .5s;
     }
 }
+.code-info {
+    display: flex;
+    justify-content: space-between;
+    .command {
+        margin: 0 .5em;
+        color: #999;
+        &.iscmd {
+            color: #2d8cf0;
+            border-color: #2d8cf0;
+            box-shadow: none;
+        }
+    }
+}
 .others {
     padding: 0 10px;
     margin: 1em 0;
@@ -286,5 +352,13 @@ export default {
     bottom: 0;
     margin: auto;
     height: 12px;
+}
+.editor-remove {
+    text-align: left;
+    .ivu-poptip-confirm .ivu-btn-primary {
+        color: #fff;
+        background-color: #2d8cf0;
+        border-color: #2d8cf0;
+    }
 }
 </style>

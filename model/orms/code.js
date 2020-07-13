@@ -13,9 +13,17 @@ let orm = {
         type: db.ID,
         comment: '所属片段 ID'
     },
+    input: {
+        type: db.TEXT,
+        comment: '运行默认输入'
+    },
     command: {
         type: db.STRING(64),
         comment: '运行命令'
+    },
+    execute: {
+        type: db.BOOLEAN,
+        comment: '是否可执行'
     },
 };
 let table_name = prefix + 'code';
