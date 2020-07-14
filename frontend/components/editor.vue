@@ -1,6 +1,6 @@
 <template>
     <section class="snippet-form">
-        <Alert type="error" banner show-icon v-if="error_msg" closable>
+        <Alert type="error" banner show-icon v-if="error_msg">
             Error:
             <span slot="desc">
                 {{error_msg}}
@@ -78,7 +78,9 @@
                     <Button @click="OnAddFile">Add File</Button>
                 </section>
                 <section>
-                    <Button type="success">Create Snippet</Button>
+                    <Button type="success" 
+                        :disabled="!canSubmit"
+                    @click="OnCreate">Create Snippet</Button>
                 </section>
             </article>
         </Form>
@@ -115,7 +117,9 @@ export default {
                 language: '',
                 command: '',
                 execute: false,
-                input: ''
+                input: '',
+                fork_from: '',
+                username: this.$root.loginUser.username
             },
             files: [{
                 filename: '',
@@ -125,9 +129,10 @@ export default {
                 input: '',
                 ext: ''
             }],
-            error_msg: 'Description can not be empty!',
+            error_msg: '',
             autoexec: true,
-            canAutoExec: false
+            canAutoExec: false,
+            loading: false
         };
     },
     watch: {
@@ -154,6 +159,12 @@ export default {
         },
         langIcon() {
             return this.langs.find(l => l.language == this.snippet.language)?.icon || ''
+        },
+        hasInvaidFile() {
+            return this.files.filter(f => f.filename !== '' && f.content !== '').length > 0
+        },
+        canSubmit() {
+            return this.snippet.description !== '' && this.hasInvaidFile
         }
     },
     methods: {
@@ -197,6 +208,22 @@ export default {
         },
         OnRemove(i) {
             this.files.splice(i, 1);
+        },
+        async OnCreate() {
+            try {
+                this.loading = true;
+                let snippet = this.snippet;
+                snippet.codes = this.files;
+                let rsp = await this.$store.dispatch("snippet/create", snippet);
+                if (rsp.state != 0) {
+                    this.error_msg = rsp.msg;
+                    return;
+                }
+                this.$router.push(`/s/${rsp.data.id}`);
+                this.$Message.success('Create Success');
+            } catch (err) {
+                this.$Message.error(err.message);
+            }
         },
         isExecute(f) {
             let exts = this.langs.map(l => l.ext);
@@ -344,6 +371,7 @@ export default {
     width: 100%;
     max-width: 900px;
     margin: auto;
+    margin-top: 1em;
 }
 </style>
 <style lang="less">
