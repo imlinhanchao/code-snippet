@@ -218,7 +218,7 @@ export default {
                                 this.loginModel = false;
                                 this.$emit("input", false);
                                 this.$Message.success(`Welcome ${rsp.data.username} !`);
-                                this.$router.replace(`/u/${rsp.data.username}`);
+                                this.$router.push('/');
                             } else {
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
