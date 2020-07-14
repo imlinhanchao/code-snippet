@@ -94,7 +94,7 @@ export default {
         codemirror: VueCodeMirror.codemirror
     },
     mounted() {
-        CodeMirror.modeURL = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js'
+        CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js'
     },
     data() {
         return {
@@ -159,7 +159,12 @@ export default {
     methods: {
         OnAddFile() {
             this.files.push({
-                filename: '', content: ''
+                filename: '',
+                content: '',
+                execute: false,
+                command: '',
+                input: '',
+                ext: ''
             })
         },
         onEditorReady(cm) {
@@ -308,6 +313,7 @@ export default {
     .command {
         margin: 0 .5em;
         color: #999;
+        padding: 5px 10px 6px;
         &.iscmd {
             color: #2d8cf0;
             border-color: #2d8cf0;
