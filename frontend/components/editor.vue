@@ -35,7 +35,7 @@
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
-                        <Button slot="append" title="Try execute"><Icon custom="fa fa-terminal" /></Button>
+                        <Button slot="append" title="Try execute"><Icon custom="fa fa-rocket" /></Button>
                     </Input>
                 </section>
             </article>
@@ -64,7 +64,7 @@
                                 <img :src="getLanguage(f).icon" class="lang_img" v-if="getLanguage(f)" /> 
                                 {{getLanguage(f).language}}
                             </span>
-                            <Button slot="append" title="Try execute"><Icon custom="fa fa-terminal" /></Button>
+                            <Button slot="append" title="Try execute"><Icon custom="fa fa-rocket" /></Button>
                         </Input>
                     </section>
                 </section>
