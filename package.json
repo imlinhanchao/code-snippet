@@ -15,6 +15,9 @@
     "init": "node scripts/init.js",
     "initdb": "node scripts/initdb.js"
   },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
   "dependencies": {
     "auto-loader": "^0.2.0",
     "axios": "^0.18.0",
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^2.3.0",
+    "babel-core": "^6.26.3",
     "codemirror-github-light": "^0.4.2",
     "cross-env": "^7.0.2",
     "http-proxy-middleware": "^1.0.4",

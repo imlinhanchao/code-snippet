@@ -95,23 +95,19 @@ export default {
         };
     },
     methods: {
-        init() {
+        async init() {
             if (this.$route.params.user == "") {
                 this.$Message.error("Username couldn't be empty.");
                 this.$router.push("/");
             } else {
-                this.$store.dispatch("account/getInfo", {
-                    username: this.$route.params.user,
-                    callback: (rsp, err) => {
-                        if (rsp.data.total) {
-                            this.info = rsp.data.data[0];
-                            this.$util.title(this.info.nickname);
-                        } else {
-                            this.$Message.error("Username was not exist.");
-                            this.$router.push("/");
-                        }
-                    }
-                });
+                let rsp = await this.$store.dispatch("account/getInfo", this.$route.params.user);
+                if (rsp.data.total) {
+                    this.info = rsp.data.data[0];
+                    this.$util.title(this.info.nickname);
+                } else {
+                    this.$Message.error("Username was not exist.");
+                    this.$router.push("/");
+                }
             }
         },
         handleSuccess(res, file) {
@@ -131,21 +127,21 @@ export default {
                 });
             }
         },
-        submitForm(info, name) {
-            info.id = this.info.id;
-            info.username = this.info.username;
-            this.$store.dispatch("account/set", {
-                info,
-                callback: (rsp, err) => {
+        async submitForm(info, name) {
+            try {
+                info.id = this.info.id;
+                info.username = this.info.username;
+                let rsp = await this.$store.dispatch("account/set", info);
                 if (rsp && rsp.state == 0) {
                     this.$Message.success(`Update ${name} Success!`);
                     this.info = rsp.data;
                 } else {
                     err = (err && err.message) || rsp.msg;
-                    this.$Message.error(err);
+                    this.$Message.error(rsp.msg);
                 }
-                }
-            });
+            } catch (err) {
+                this.$Message.error(err.message);
+            }
         }
     },
     computed: {

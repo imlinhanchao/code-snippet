@@ -17,9 +17,8 @@ export default {
     components: {
         Header
     },
-    mounted() {
-        this.$store.dispatch('account/checklogin', (rsp, err) => { 
-        });
+    async mounted() {
+        let rsp = await this.$store.dispatch('account/checklogin');
     },
     data() {
         return {};

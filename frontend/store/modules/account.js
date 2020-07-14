@@ -9,106 +9,93 @@ const mutations = {
     }
 };
 const actions = {
-    login({ state, commit }, { user, callback }) {
-        axios.post('/account/login', user)
-            .then((rsp) => {
-                rsp = rsp.data;
-                if (rsp.state == 0) {
-                    commit('setLoginUser', rsp.data);
-                }
-                callback(rsp);
-            })
-            .catch((error) => {
-                callback(null, error);
-                console.error(error.message);
-            });
-    },
-    logout({ commit }, callback) {
-        axios.get('/account/logout')
-            .then((rsp) => {
-                rsp = rsp.data;
-                if (rsp.state == 0) {
-                    commit('setLoginUser', null);
-                }
-                callback(rsp);
-            })
-            .catch((error) => {
-                callback(null, error);
-                console.error(error.message);
-            });
-    },
-    checklogin({ commit }, callback) {
-        axios.get('/account/info')
-            .then((rsp) => {
-                rsp = rsp.data;
-                if (rsp.state == 0) {
-                    commit('setLoginUser', rsp.data);
-                }
-                callback(rsp);
-            })
-            .catch((error) => {
-                callback(null, error);
-                console.error(error.message);
-            });
-    },
-    getInfo({ commit }, { username, callback }) {
-        axios.post('/account/query', { username })
-            .then((rsp) => {
-                rsp = rsp.data;
-                callback(rsp);
-            })
-            .catch((error) => {
-                console.error(error.message);
-                callback(null, error);
-            });
-    },
-    exist({ commit }, { username, other, callback }) {
-        if (username) {
-            axios.get('/account/exist/' + username)
-                .then((rsp) => {
-                    rsp = rsp.data;
-                    callback(rsp);
-                })
-                .catch((error) => {
-                    console.error(error.message);
-                    callback(null, error);
-                });
-        } else if(other) {
-            axios.post('/account/exists/', other)
-                .then((rsp) => {
-                    rsp = rsp.data;
-                    callback(rsp);
-                })
-                .catch((error) => {
-                    console.error(error.message);
-                    callback(null, error);
-                });
-        }
-    },
-    set({ commit }, { info, callback }) {
-        axios.post('/account/update', info)
-        .then((rsp) => {
+    async login({ state, commit }, user) {
+        try {
+            let rsp = await axios.post('/account/login', user);
             rsp = rsp.data;
             if (rsp.state == 0) {
                 commit('setLoginUser', rsp.data);
             }
-            callback(rsp);
-        })
-        .catch((error) => {
+            return rsp;
+        } catch (error) {
             console.error(error.message);
-            callback(null, error);
-        });
+            throw error;
+        }
     },
-    create({ state, commit }, { user, callback }) {
-        axios.post('/account/create', user)
-            .then((rsp) => {
+    async logout({ commit }) {
+        try {
+            let rsp = await axios.get('/account/logout')
+            rsp = rsp.data;
+            if (rsp.state == 0) {
+                commit('setLoginUser', null);
+            }
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async checklogin({ commit }) {
+        try {
+            let rsp = await axios.get('/account/info')
+            rsp = rsp.data;
+            if (rsp.state == 0) {
+                commit('setLoginUser', rsp.data);
+            }
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async getInfo({ commit }, username) {
+        try {
+            let rsp = await axios.post('/account/query', { username })
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async exist({ commit }, { username, other }) {
+        try {
+            if (username) {
+                let rsp = await axios.get('/account/exist/' + username)
                 rsp = rsp.data;
-                callback(rsp);
-            })
-            .catch((error) => {
-                callback(null, error);
-                console.error(error.message);
-            });
+                return rsp;
+            } else if(other) {
+                let rsp = await axios.post('/account/exists/', other)
+                rsp = rsp.data;
+                return rsp;
+            }
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async set({ commit }, info) {
+        try {
+            let rsp = await axios.post('/account/update', info)
+            rsp = rsp.data;
+            if (rsp.state == 0) {
+                commit('setLoginUser', rsp.data);
+            }
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async create({ state, commit }, user) {
+        try {
+            let rsp = await axios.post('/account/create', user)
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
     }
 };
 const getters = {

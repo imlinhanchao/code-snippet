@@ -139,28 +139,29 @@ export default {
                 callback();
             }
         };
-        const validateEmail = (rule, value, callback) => {
+        const validateEmail = async (rule, value, callback) => {
             if (!this.isRegister) return;
             if (value === "") {
                 callback(new Error("Please enter your email"));
             } else {
-                this.$store.dispatch('account/exist', {
-                    other: {
-                        email: this.login.email
-                    },
-                    callback: (rsp, err) => {
-                        if (rsp && rsp.state == 0) {
-                            if (rsp.data) {
-                                callback(new Error('The email was register.'));
-                            } else {
-                                callback();
-                            }
+                try {
+                    let rsp = await this.$store.dispatch('account/exist', {
+                        other: {
+                            email: this.login.email
+                        }
+                    })
+                    if (rsp && rsp.state == 0) {
+                        if (rsp.data) {
+                            callback(new Error('The email was register.'));
                         } else {
-                            err = (err && err.message) || rsp.msg;
-                            this.$Message.error(err);
-                        }  
-                    }
-                })
+                            callback();
+                        }
+                    } else {
+                        this.$Message.error(rsp.msg);
+                    }  
+                } catch (err) {
+                    this.$Message.error(err.message);
+                }
                 callback();
             }
         };
@@ -207,65 +208,59 @@ export default {
     },
     methods: {
         loginSubmit(form) {
-            this.$refs[form].validate(valid => {
-                if (valid) {
+            this.$refs[form].validate(async valid => {
+                if (!valid) return;
+                try {
                     this.login_loading = true;
-                    this.$store.dispatch('account/login', {
-                        user: this.login,
-                        callback: (rsp, err) => {
-                            this.login_loading = false;
-                            if (rsp && rsp.state == 0) {
-                                this.loginModel = false;
-                                this.$emit("input", false);
-                                this.$Message.success(`Welcome ${rsp.data.username} !`);
-                                this.$router.push('/');
-                            } else {
-                                err = (err && err.message) || rsp.msg;
-                                this.$Message.error(err);
-                            }
-                        }
-                    });
+                    let rsp = await this.$store.dispatch('account/login', this.login);
+                    this.login_loading = false;
+                    if (rsp && rsp.state == 0) {
+                        this.loginModel = false;
+                        this.$emit("input", false);
+                        this.$Message.success(`Welcome ${rsp.data.username} !`);
+                        this.$router.push('/');
+                    } else {
+                        this.$Message.error(rsp.msg);
+                    }
+                } catch (err) {
+                    this.$Message.error(err.message);
                 }
             });
         },
         registerSubmit(form) {
-            this.$refs[form].validate(valid => {
-                if (valid) {
+            this.$refs[form].validate(async valid => {
+                if (!valid) return;
+                try {
                     this.login_loading = true;
-                    this.$store.dispatch('account/create', {
-                        user: this.login,
-                        callback: (rsp, err) => {
-                            if (rsp && rsp.state == 0) {
-                                this.loginSubmit(form)
-                            } else {
-                                this.login_loading = false;
-                                err = (err && err.message) || rsp.msg;
-                                this.$Message.error(err);
-                            }
-                        }
-                    });
+                    let rsp = this.$store.dispatch('account/create', this.login);
+                    if (rsp && rsp.state == 0) {
+                        this.loginSubmit(form)
+                    } else {
+                        this.login_loading = false;
+                        this.$Message.error(rsp.msg);
+                    }
+                } catch (err) {
+                    this.$Message.error(err.message);
                 }
             });
         },
-        existCheck (usename) {
-            if (this.login.username == '') return true;
-            this.$store.dispatch("account/exist", {
-                username: this.login.username,
-                callback: (rsp, err) => {
-                    console.log(rsp);
-                    this.isRegister = !rsp.data
-                }
-            })
+        async existCheck (usename) {
+            try {
+                if (this.login.username == '') return true;
+                let rsp = await this.$store.dispatch("account/exist", this.login.username);
+                this.isRegister = !rsp.data;
+            } catch (err) {
+            }
         },
-        logoutEvent() {
-            this.$store.dispatch("account/logout", (rsp, err) => {
+        async logoutEvent() {
+            try {
+                let rsp = await this.$store.dispatch("account/logout");
                 if (!rsp || rsp.state != 0) {
-                    err = (err && err.message) || rsp.msg;
-                    // this.$Message.error(err);
+                    // this.$Message.error(rsp.msg);
                     return;
                 }
-                this.$root.accessCheck(this.$route);
-            });
+            } catch (err) {
+            }
         },
     }
 };
