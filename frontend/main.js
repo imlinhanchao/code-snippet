@@ -44,23 +44,46 @@ router.afterEach(() => {
     window.scrollTo(0, 0);
 });
 
+window.$m = {
+    get INFO() { return 0 },
+    get SUCCESS() { return 1 },
+    get WARN() { return 2 },
+    get ERROR() { return 3 },
+};
+
 new Vue({
     el: '#app',
     router,
     store,
+    data: {
+        msg: {
+            type: 0,
+            content: '',
+            _title: '',
+            get name() {
+                return ['info', 'success', 'warning', 'error'][this.type]
+            },
+            get title() {
+                return this._title === '' ? ['Notice:', 'Success:', 'Warning:', 'Error:'][this.type] : this._title
+            },
+        }
+    },
     render: h => h(App),
     methods: {
-        fileFormatError (file) {
-            this.$Notice.warning({
-                title: 'The file format is incorrect',
-                desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-            });
+        message(type, content, title='') {
+            this.msg.type = type;
+            this.msg.content = content;
+            this.msg._title = title;
+        },
+        fileFormatError(file) {
+            this.message($m.WARN,
+                `File format of ${file.name} is incorrect, please select jpg or png.`,
+                'The file format is incorrect');
         },
         fileMaxSize (file) {
-            this.$Notice.warning({
-                title: 'Exceeding file size limit',
-                desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-            });
+            this.message($m.WARN,
+                `File ${file.name} is too large, no more than 2M.`,
+                'Exceeding file size limit');
         },
         fileUrl (name, defaults) {
             let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;

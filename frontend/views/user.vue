@@ -97,7 +97,7 @@ export default {
     methods: {
         async init() {
             if (this.$route.params.user == "") {
-                this.$Message.error("Username couldn't be empty.");
+                this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
             } else {
                 let rsp = await this.$store.dispatch("account/getInfo", this.$route.params.user);
@@ -105,7 +105,7 @@ export default {
                     this.info = rsp.data.data[0];
                     this.$util.title(this.info.nickname);
                 } else {
-                    this.$Message.error("Username was not exist.");
+                    this.$root.message($m.ERROR, 'Username was not exist.');
                     this.$router.push("/");
                 }
             }
@@ -121,10 +121,9 @@ export default {
                     "Avatar"
                 );
             } else {
-                this.$Notice.warning({
-                    title: "Upload File Failed",
-                    desc: rsp.msg
-                });
+                this.$root.message($m.WARN,
+                    rsp.msg,
+                    'Upload File Failed');
             }
         },
         async submitForm(info, name) {
@@ -133,14 +132,14 @@ export default {
                 info.username = this.info.username;
                 let rsp = await this.$store.dispatch("account/set", info);
                 if (rsp && rsp.state == 0) {
-                    this.$Message.success(`Update ${name} Success!`);
+                    this.$root.message($m.SUCCESS, `Update ${name} Success!`);
                     this.info = rsp.data;
                 } else {
                     err = (err && err.message) || rsp.msg;
-                    this.$Message.error(rsp.msg);
+                    this.$root.message($m.ERROR, rsp.msg);
                 }
             } catch (err) {
-                this.$Message.error(err.message);
+                this.$root.message($m.ERROR, err.message);
             }
         }
     },

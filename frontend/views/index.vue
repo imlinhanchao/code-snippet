@@ -1,6 +1,21 @@
 <template>
     <Layout class="layout">
         <Header></Header>
+        <section>
+            <Alert :type="$root.msg.name" banner show-icon v-if="$root.msg.content">
+                {{$root.msg.title}}
+                <section class="msg-content" slot="desc">
+                    <span>
+                        <span slot="desc">
+                            {{$root.msg.content}}
+                        </span>
+                    </span>
+                    <span @click="$root.msg.content=''" class="fa fa-times msg-close">
+
+                    </span>
+                </section>
+            </Alert>
+        </section>
         <Content>
             <router-view />
         </Content>
@@ -42,5 +57,18 @@ export default {
         right: 0;
         bottom: 1em;
     }
+}
+.msg-content {
+    display: flex;
+    justify-content: space-between;
+    .msg-close {
+        position: relative;
+        top: -.5em;
+        cursor: pointer;
+    }
+}
+.ivu-alert-info {
+    border: 1px solid #abdcff;
+    background-color: #f0faff;
 }
 </style>

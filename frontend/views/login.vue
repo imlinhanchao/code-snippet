@@ -157,10 +157,10 @@ export default {
                             callback();
                         }
                     } else {
-                        this.$Message.error(rsp.msg);
+                        this.$root.message($m.ERROR, rsp.msg);
                     }  
                 } catch (err) {
-                    this.$Message.error(err.message);
+                    this.$root.message($m.ERROR, err.message);
                 }
                 callback();
             }
@@ -217,13 +217,13 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
                         this.$emit("input", false);
-                        this.$Message.success(`Welcome ${rsp.data.username} !`);
+                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.username} !`, 'Hi !');
                         this.$router.push('/');
                     } else {
-                        this.$Message.error(rsp.msg);
+                        this.$root.message($m.ERROR, rsp.msg);
                     }
                 } catch (err) {
-                    this.$Message.error(err.message);
+                    this.$root.message($m.ERROR, err.message);
                 }
             });
         },
@@ -237,10 +237,10 @@ export default {
                         this.loginSubmit(form)
                     } else {
                         this.login_loading = false;
-                        this.$Message.error(rsp.msg);
+                        this.$root.message($m.ERROR, rsp.msg);
                     }
                 } catch (err) {
-                    this.$Message.error(err.message);
+                    this.$root.message($m.ERROR, err.message);
                 }
             });
         },
@@ -256,7 +256,6 @@ export default {
             try {
                 let rsp = await this.$store.dispatch("account/logout");
                 if (!rsp || rsp.state != 0) {
-                    // this.$Message.error(rsp.msg);
                     return;
                 }
             } catch (err) {

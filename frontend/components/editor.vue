@@ -1,11 +1,5 @@
 <template>
     <section class="snippet-form">
-        <Alert type="error" banner show-icon v-if="error_msg">
-            Error:
-            <span slot="desc">
-                {{error_msg}}
-            </span>
-        </Alert>
         <Form class="layout-form">
             <article class="snippet">
                 <section class="snippet-data">
@@ -214,15 +208,16 @@ export default {
                 this.loading = true;
                 let snippet = this.snippet;
                 snippet.codes = this.files;
+                
                 let rsp = await this.$store.dispatch("snippet/create", snippet);
                 if (rsp.state != 0) {
                     this.error_msg = rsp.msg;
                     return;
                 }
                 this.$router.push(`/s/${rsp.data.id}`);
-                this.$Message.success('Create Success');
+                this.$root.message($m.SUCCESS, 'Create Success');
             } catch (err) {
-                this.$Message.error(err.message);
+                this.$root.message($m.ERROR, err.message);
             }
         },
         isExecute(f) {
