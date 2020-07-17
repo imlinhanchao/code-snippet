@@ -38,6 +38,12 @@ const routers = [{
         title: 'Register'
     },
     component: () => import('./views/login')
+}, {
+    path: '/s/:id',
+    meta: {
+        title: 'Snippet'
+    },
+    component: () => import('./views/snippet')
 },{
     path: '*',
     redirect: '/'
