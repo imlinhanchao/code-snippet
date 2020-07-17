@@ -33,10 +33,10 @@
                     </Input>
                 </section>
             </article>
-            <article class="editor" v-for="(f, i) in files" v-bind:key="i">
+            <article class="editor" v-for="(f, i) in files" v-bind:key="i" :id="`code${i}`">
                 <section class="editor-header">
                     <section class="code-info">
-                        <Input class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
+                        <Input :maxlength="20" class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
                             <span slot="append" class="editor-remove">
                             <Poptip 
                                 confirm
@@ -78,6 +78,11 @@
                 </section>
             </article>
         </Form>
+        <section class="snippet-anchor">
+            <Anchor show-ink :bounds="10" :scroll-offset="65">
+                <AnchorLink v-for="(f, i) in files" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
+            </Anchor>
+        </section>
     </section>
 </template>
 
@@ -170,7 +175,8 @@ export default {
                 command: '',
                 input: '',
                 ext: ''
-            })
+            });
+            this.$router.replace(`#code${this.files.length - 1}`)
         },
         onEditorReady(cm) {
             console.log('the editor is readied!', cm)
@@ -367,6 +373,22 @@ export default {
     max-width: 900px;
     margin: auto;
     margin-top: 1em;
+    padding: 0 1em;
+}
+.snippet-form {
+    display: flex;
+    .snippet-anchor {
+        margin-top: 1em;
+        padding: 0 1em;
+    }
+}
+@media (max-width: 480px) {
+    .snippet-form {
+        flex-direction: column-reverse;
+        .snippet-anchor {
+            padding: 0;
+        }
+    }
 }
 </style>
 <style lang="less">
@@ -376,18 +398,28 @@ export default {
 .CodeMirror-gutters {
     border: 0;
 }
-.snippet-form .ivu-alert-close {
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    height: 12px;
-}
 .editor-remove {
     text-align: left;
     .ivu-poptip-confirm .ivu-btn-primary {
         color: #fff;
         background-color: #2d8cf0;
         border-color: #2d8cf0;
+    }
+}
+.ivu-anchor-link-title {
+    line-height: 1.5;
+}
+@media (max-width: 480px) {
+    .ivu-anchor-ink {
+        display: none;
+    }
+    .ivu-anchor {
+        display: flex;
+    }
+    .ivu-affix {
+        background: #24292e;
+        box-shadow: 0 0 1px #333333;
+        padding: .5em 1em;
     }
 }
 </style>
