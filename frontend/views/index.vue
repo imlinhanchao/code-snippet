@@ -22,6 +22,7 @@
         <Footer class="layout-footer">
             <p>&copy; {{new Date().getFullYear()}} Hancel. All rights reserved.</p>
         </Footer>
+        <BackTop></BackTop>
     </Layout>
 </template>
 <script>
