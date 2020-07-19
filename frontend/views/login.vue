@@ -217,7 +217,7 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
                         this.$emit("input", false);
-                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.username} !`, 'Hi !');
+                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} !`, 'Hi !');
                         this.$router.push('/');
                     } else {
                         this.$root.message($m.ERROR, rsp.msg);

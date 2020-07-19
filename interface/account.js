@@ -1,9 +1,12 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const model = require('../model');
 const App = require('./app');
 const Account = model.account;
+const config = require('../config.json');
 
-const __salt = require('../config').salt;
+const __salt = config.salt;
 
 let __error__ = Object.assign({
 	verify: App.error.reg('帐号或密码错误！'),
@@ -30,6 +33,12 @@ class Module extends App {
 
     get error() {
         return __error__;
+    }
+
+    static get cache() {
+        return {
+            avatar: 86900
+        }
     }
     
     async login(data) {
@@ -241,6 +250,23 @@ class Module extends App {
 
         if (onlyData == true) return App.filter(data, fields);
         return this.okget(App.filter(data, fields));
+    }
+
+    async avatar(username) {
+        let data = await Account.findOne({
+            where: {
+                username
+            },
+            attributes: ['avatar']
+        });
+
+        let avatar = path.join(process.cwd(), '/public/img/user.png');
+
+        if (data && data.avatar)
+            avatar = path.join(process.cwd(), config.file.upload, data.avatar);
+
+        let buffer = fs.readFileSync(avatar);
+        return buffer;
     }
 
     async query(query, fields=null, onlyData=false) {

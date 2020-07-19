@@ -14,7 +14,7 @@ class Module extends App {
         this.session = session;
         this.name = '代码';
         this.account = new Account(session);
-        this.saftKey = ['id'].concat(Code.keys());
+        this.saftKey = ['id', 'create_time', 'update_time'].concat(Code.keys());
     }
 
     get error() {
@@ -92,7 +92,8 @@ class Module extends App {
 
     async get(snippet) {
         let codes = await Code.findAll({
-            where: { snippet }
+            where: { snippet },
+            order: [['create_time', 'ASC']]
         });
 
         if (!codes) {

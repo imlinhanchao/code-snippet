@@ -64,7 +64,7 @@
                 </section>
                 <codemirror :ref="`editor${i}`"
                     v-model="f.content" 
-                    :options="getOptions(f)">
+                    :options="$root.getCodeOptions(f)">
                 </codemirror>
             </article>
             <article class="submit">
@@ -105,6 +105,7 @@ export default {
             if (rsp && rsp.state == 0) {
                 this.snippet = rsp.data;
                 this.files = rsp.data.codes;
+                setTimeout(() => this.files.forEach(this.loadCodeMode), 200);
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
             }  
@@ -296,6 +297,12 @@ export default {
             if (!f.execute) return;
             let lang = this.getLanguage(f);
             f.command = this.getCommand(lang, f.filename);
+        },
+        loadCodeMode(f, i) {
+            let editor = this.getEditor(i);
+            if (!editor) return;
+            editor.setOption('mode', this.getMode(this.getExt(f)).mime);
+            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
         },
         getMode(ext) {
             return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');

@@ -6,8 +6,10 @@ import VueRouter from 'vue-router';
 import Routers from './router';
 import store from './store';
 import Util from './util';
+import VueHighlightJS from 'vue-highlightjs';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
+import 'highlight.js/styles/github-gist.css'
 import axios from 'axios';
 import config from '../config.json'
 
@@ -25,6 +27,7 @@ Vue.prototype.$util = Util;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(iView)
+Vue.use(VueHighlightJS);
 
 // Router config
 const RouterConfig = {
@@ -51,6 +54,8 @@ window.$m = {
     get ERROR() { return 3 },
 };
 
+CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js';
+
 new Vue({
     el: '#app',
     router,
@@ -66,6 +71,16 @@ new Vue({
             get title() {
                 return this._title === '' ? ['Notice:', 'Success:', 'Warning:', 'Error:'][this.type] : this._title
             },
+        },
+        editorOptions: {
+            tabSize: 4,
+            indentUnit: 4,
+            mode: 'clike',
+            theme: 'github',
+            lineNumbers: true,
+            lineWrapping: true,
+            indentWithTabs: true,
+            cursorHeight: .7
         }
     },
     render: h => h(App),
@@ -90,6 +105,18 @@ new Vue({
             let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;
             return name ? img : defaults;
         },
+        getCodeMode(ext) {
+            return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
+        },
+        getCodeExt(f) {
+            return f.filename.split('.').slice(-1).join('');
+        },
+        getCodeOptions(f, readOnly=false) {
+            return Object.assign(this.editorOptions, {
+                mode: this.getCodeMode(this.getCodeExt(f)).mime,
+                readOnly
+            })
+        }
     },
     computed: {
         maxSize() {

@@ -16,7 +16,7 @@ class Module extends App {
         this.name = 'Snippet';
         this.account = new Account(session);
         this.code = new Code(session);
-        this.saftKey = ['id'].concat(Snippet.keys());
+        this.saftKey = ['id', 'create_time', 'update_time'].concat(Snippet.keys());
     }
 
     get error() {
