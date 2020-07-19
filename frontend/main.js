@@ -74,6 +74,7 @@ new Vue({
             this.msg.type = type;
             this.msg.content = content;
             this.msg._title = title;
+            this.$router.replace('#');
         },
         fileFormatError(file) {
             this.message($m.WARN,
