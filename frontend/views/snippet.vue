@@ -6,7 +6,7 @@
 export default {
     name: "snippet",
     mounted() {
-        this.init();
+        
     },
     data() {
         return {
