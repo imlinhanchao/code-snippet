@@ -33,7 +33,7 @@
                     </Input>
                 </section>
             </article>
-            <article class="editor" v-for="(f, i) in files" v-bind:key="i" :id="`code${i}`">
+            <article class="editor" v-for="(f, i) in files" v-show="!f.remove" v-bind:key="i" :id="`code${i}`">
                 <section class="editor-header">
                     <section class="code-info">
                         <Input :maxlength="20" class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
@@ -72,9 +72,14 @@
                     <Button @click="OnAddFile">Add File</Button>
                 </section>
                 <section>
-                    <Button type="success" 
-                        :disabled="!canSubmit"
+                    <Button type="success" v-if="!isUpdate"
+                        :disabled="!canSubmit" :loading="loading"
                     @click="OnCreate">Create Snippet</Button>
+                    <Button type="info"  v-if="isUpdate" :loading="loading"
+                        :disabled="!canSubmit"
+                    @click="OnUpdate">Update Snippet</Button>
+                    <Button type="default"  v-if="isUpdate"
+                    @click="$router.push(`/s/${id}`)">Cancel</Button>
                 </section>
             </article>
         </Form>
@@ -94,7 +99,17 @@ export default {
     components: {
         codemirror: VueCodeMirror.codemirror
     },
-    mounted() {
+    async mounted() {
+        if (this.id) {
+            let rsp = await this.$store.dispatch('snippet/get', this.id);
+            if (rsp && rsp.state == 0) {
+                this.snippet = rsp.data;
+                this.files = rsp.data.codes;
+            } else {
+                this.$root.message($m.ERROR, rsp.msg);
+            }  
+
+        }
         CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js'
     },
     data() {
@@ -131,12 +146,19 @@ export default {
             error_msg: '',
             autoexec: true,
             canAutoExec: false,
-            loading: false
+            loading: false,
+            
         };
     },
     watch: {
     },
     computed: {
+        id () {
+            return this.$route.params.id
+        },
+        isUpdate () {
+            return !!this.id
+        },
         options () {
             return Object.assign(this.editorOptions, {
                 mode: this.getMode(this.ext).mime
@@ -207,23 +229,62 @@ export default {
             }
         },
         OnRemove(i) {
-            this.files.splice(i, 1);
+            if (!this.files[i].id)
+                this.files.splice(i, 1);
+            else {
+                this.$set(this.files[i], 'remove', true)
+            }
+        },
+        async OnVerify() {
+            try {
+                let snippet = this.snippet;
+                snippet.codes = this.files;
+    
+                for(let i = 0; i < this.files.length; i++) {
+                    let f = this.files[i];
+                    if (f.remove) continue;
+                    if (f.filename ===  '') {
+                        throw new Error(`The filename of <a href="#code${i}">#${i}</a> is empty! `);
+                    }
+                }
+    
+                return snippet;
+            } catch (error) {
+                throw error;
+            }
         },
         async OnCreate() {
             try {
                 this.loading = true;
-                let snippet = this.snippet;
-                snippet.codes = this.files;
-                
+                let snippet = await this.OnVerify();
                 let rsp = await this.$store.dispatch("snippet/create", snippet);
+                this.loading = false;
                 if (rsp.state != 0) {
-                    this.error_msg = rsp.msg;
+                    this.$root.message($m.ERROR, rsp.msg);
                     return;
                 }
                 this.$router.push(`/s/${rsp.data.id}`);
                 this.$root.message($m.SUCCESS, 'Create Success');
             } catch (err) {
                 this.$root.message($m.ERROR, err.message);
+                this.loading = false;
+            }
+        },
+        async OnUpdate() {
+            try {
+                this.loading = true;
+                let snippet = await this.OnVerify();
+                let rsp = await this.$store.dispatch("snippet/update", snippet);
+                this.loading = false;
+                if (rsp.state != 0) {
+                    this.$root.message($m.ERROR, rsp.msg);
+                    return;
+                }
+                this.$router.push(`/s/${rsp.data.id}`);
+                this.$root.message($m.SUCCESS, 'Update Success');
+            } catch (err) {
+                this.$root.message($m.ERROR, err.message);
+                this.loading = false;
             }
         },
         isExecute(f) {

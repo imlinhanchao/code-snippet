@@ -6,9 +6,6 @@ const routers = [{
         title: 'Home'
     },
     component: Index,
-    props: {
-        loginPage: false
-    },
     children: [
         {
             path: '',
@@ -17,13 +14,25 @@ const routers = [{
             },
             component: () => import('./views/home')
         },
-
         {
             path: 'u/:user',
             meta: {
                 title: 'User'
             },
             component: () => import('./views/user')
+        }, {
+            path: 'edit/:id',
+            meta: {
+                title: 'Edit Snippet',
+                login: true
+            },
+            component: () => import('./components/editor')
+        }, {
+            path: '/s/:id',
+            meta: {
+                title: 'Snippet'
+            },
+            component: () => import('./views/snippet')
         }
     ]
 }, {
@@ -38,12 +47,6 @@ const routers = [{
         title: 'Register'
     },
     component: () => import('./views/login')
-}, {
-    path: '/s/:id',
-    meta: {
-        title: 'Snippet'
-    },
-    component: () => import('./views/snippet')
 },{
     path: '*',
     redirect: '/'

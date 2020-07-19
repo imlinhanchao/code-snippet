@@ -7,13 +7,33 @@ var state = {
 const mutations = {
 };
 const actions = {
-    async create({ state, commit }, snippt) {
+    async create({ state, commit }, snippet) {
         try {
-            let rsp = await axios.post('/snippet/new', snippt);
+            let rsp = await axios.post('/snippet/new', snippet);
 
             return rsp.data;
         } catch (e) {
-            console.error(error.message);
+            console.error(e.message);
+            throw e;
+        }
+    },
+    async update({ state, commit }, snippet) {
+        try {
+            let rsp = await axios.post('/snippet/set', snippet);
+
+            return rsp.data;
+        } catch (e) {
+            console.error(e.message);
+            throw e;
+        }
+    },
+    async get({ state, commit }, id) {
+        try {
+            let rsp = await axios.get(`/snippet/get/${id}`);
+
+            return rsp.data;
+        } catch (e) {
+            console.error(e.message);
             throw e;
         }
     }
