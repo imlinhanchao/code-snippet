@@ -1,13 +1,13 @@
 <template>
     <Layout class="layout">
         <Header></Header>
-        <section>
+        <section class="message">
             <Alert :type="$root.msg.name" banner show-icon v-if="$root.msg.content">
                 {{$root.msg.title}}
                 <section class="msg-content" slot="desc">
                     <span>
                         <span slot="desc">
-                            {{$root.msg.content}}
+                            <span v-html="$root.msg.content"></span>
                         </span>
                     </span>
                     <span @click="$root.msg.content=''" class="fa fa-times msg-close">
@@ -71,5 +71,13 @@ export default {
 .ivu-alert-info {
     border: 1px solid #abdcff;
     background-color: #f0faff;
+}
+</style>
+<style lang="less">
+.message {
+    a {
+        display: inline-block;
+        border-bottom: 1px dashed #000;
+    }
 }
 </style>
