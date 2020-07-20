@@ -90,6 +90,9 @@ new Vue({
             this.msg.content = content;
             this.msg._title = title;
             this.$router.replace('#');
+            if (type == $m.SUCCESS) {
+                setTimeout(() => this.msg.content = '', 2000);
+            }
         },
         fileFormatError(file) {
             this.message($m.WARN,
