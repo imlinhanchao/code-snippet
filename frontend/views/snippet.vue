@@ -111,7 +111,7 @@ export default {
 <style scoped lang="less">
 .layout {
     width: 100%;
-    max-width: 900px;
+    max-width: 1280px;
     margin: auto;
     margin-top: 1em;
 }

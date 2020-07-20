@@ -438,7 +438,7 @@ export default {
 }
 .layout-form {
     width: 100%;
-    max-width: 900px;
+    max-width: 1280px;
     margin: auto;
     margin-top: 1em;
     padding: 0 1em;
