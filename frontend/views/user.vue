@@ -41,7 +41,7 @@
           </p>
           <p class="username">{{info.username}}</p>
           <p class="motto">
-            <Input
+            <Input :rows="3" type="textarea"
               v-model="temp.motto"
               v-if="edit.motto"
               @on-keyup.enter="submitForm({
