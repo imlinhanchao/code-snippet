@@ -39,10 +39,7 @@
               class="edit-text"
             ></Icon>
           </p>
-          <p class="lastlogin" v-if="info.lastlogin">
-            Last Login:
-            <Time :time="info.lastlogin"></Time>
-          </p>
+          <p class="username">{{info.username}}</p>
           <p class="motto">
             <Input
               v-model="temp.motto"
@@ -61,8 +58,15 @@
               class="edit-text"
             />
           </p>
+          <p class="lastlogin" v-if="info.lastlogin">
+            Last Login:
+            <Time :time="info.lastlogin"></Time>
+          </p>
         </div>
       </section>
+    </Content>
+    <Content class="snippet">
+
     </Content>
   </Layout>
 </template>
@@ -176,12 +180,21 @@ export default {
     margin: auto;
     height: 2em;
 }
+.layout {
+    display: flex;
+    max-width: 1280px;
+    margin: auto;
+}
 .profile {
+    flex: 1;
     margin: 1em 0;
-    padding: 1em 2em;
+    padding: 1em 1em;
+    width: 25%;
+    max-width: 30em;
     .section {
-        max-width: 35em;
+        width: 100%;
         display: flex;
+        flex-direction: column;
         margin: auto;
         position: relative;
         .avatar {
@@ -189,8 +202,9 @@ export default {
             background: #FFF;
             overflow: hidden;
             border-radius: 100%;
-            max-width: 128px;
-            height: 128px;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%;
             position: relative;
             border: 1px solid #CCC;
             img {
@@ -227,6 +241,10 @@ export default {
             padding-left: 2em;
             .nickname {
                 font-size: 2em;
+                font-weight: bold;
+            }
+            .username {
+                color: #666;
             }
             .lastlogin {
                 color: #CCC;
@@ -234,6 +252,7 @@ export default {
             }
             .motto {
                 font-size: 1em;
+                margin: 1em 0;
             }
             .edit-text {
                 display: none;
