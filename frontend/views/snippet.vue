@@ -10,6 +10,16 @@
                     </span>
                 </h1>
                 <section class="actions">
+                    <span v-if="snippet.username == $root.loginUser.username">
+                        <Button class="action-btn" @click="$router.push(`/edit/${snippet.id}`)">
+                            <Icon custom="fa fa-pencil" ></Icon> <span> Edit</span>
+                        </Button>
+                    </span>
+                    <span v-if="snippet.username == $root.loginUser.username">
+                        <Button class="action-btn remove-btn">
+                            <Icon custom="fa fa-trash-o" ></Icon> <span> Delete</span>
+                        </Button>
+                    </span>
                     <span><Button class="action-btn">
                         <Icon custom="fa fa-star-o" ></Icon> <span> Star</span>
                     </Button><router-link :to="`/s/${id}/stargazers`" class="count">0</router-link></span>
@@ -141,6 +151,7 @@ export default {
         }
         .action-btn {
             font-size: 12px;
+            font-weight: bold;
             color: #24292e;
             margin: 0 0 0 1.5em;
             position: relative;
@@ -151,6 +162,9 @@ export default {
             }
             .ivu-icon {
                 font-size: 1.3em;
+            }
+            &.remove-btn {
+                color: #E40000
             }
         }
         .count {

@@ -28,7 +28,7 @@
             </span>
             <span class="menu">
                 <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
-                <Button type="text" class="icon-btn"><Icon custom="fa fa-plus" /></Button>
+                <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
             </span>
         </section>
         <section class="layout-info" v-if="!$root.isLogin">
