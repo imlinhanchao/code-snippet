@@ -116,9 +116,7 @@ class Module extends App {
             throw this.error.notexisted;
         }
 
-        codes = codes.map(d => App.filter(d, this.saftKey));
-
-        return App.filter(codes, this.saftKey);
+        return codes.map(d => App.filter(d, this.saftKey));
     }
     
     async query(data) {

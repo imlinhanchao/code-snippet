@@ -8,7 +8,8 @@ router.all('/:interface/:fn*', function (req, res, next) {
     // 允许不登录访问的接口，若所有函数都允许，则写为 interface: '*'
     const no_login_interface = {
         account: ['login', 'query', 'exist', 'create', 'exists'],
-        lib: ['captcha']
+        lib: ['captcha'],
+        snippet: ['query']
     };
 
     let account = new Account(req.session);

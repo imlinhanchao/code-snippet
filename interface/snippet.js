@@ -126,11 +126,12 @@ class Module extends App {
                 data, Snippet, ops
             );
 
+            data.fields = data.fields || ['codes'].concat(this.saftKey)
             if (data.fields.indexOf('codes') >= 0) {
                 var ids = queryData.data.map(b => b.id);
                 let codes = await this.code.getAll(ids, true);
                 queryData.data.forEach(d => d.codes =
-                    codes.find(c => c.snippet == d.id));
+                    codes.filter(c => c.snippet == d.id));
             }
 
             if (onlyData) return queryData;

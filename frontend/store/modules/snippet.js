@@ -36,6 +36,18 @@ const actions = {
             console.error(e.message);
             throw e;
         }
+    },
+    async query({ commit }, { index, count = 10, query = {}}) {
+        try {
+            let rsp = await axios.post('/snippet/query/', {
+                index, count, query
+            });
+            rsp = rsp.data;
+            return rsp;
+        } catch (e) {
+            console.error(e.message);
+            throw e;
+        }
     }
 };
 const getters = {
