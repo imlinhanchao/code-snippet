@@ -1,9 +1,9 @@
 <template>
   <Layout class="layout">
-    <Content class="profile">
+    <Content class="profile" v-if="info.id">
       <section class="section">
           <div class="avatar-box">
-            <div v-if="info.id" class="avatar">
+            <div class="avatar">
             <img :src="$root.fileUrl(info.avatar, '/img/user.png')" />
             <Upload
                 v-if="isCurrentUser"
