@@ -2,25 +2,27 @@
   <Layout class="layout">
     <Content class="profile">
       <section class="section">
-        <div v-if="info.id" class="avatar">
-          <img :src="$root.fileUrl(info.avatar, '/img/user.png')" />
-          <Upload
-            v-if="isCurrentUser"
-            class="avatar-upload"
-            :show-upload-list="false"
-            :action="$root.uploadInterface"
-            :on-success="handleSuccess"
-            :max-size="$root.maxSize"
-            :format="['jpg','jpeg','png', 'gif']"
-            :on-format-error="$root.fileFormatError"
-            :on-exceeded-size="$root.fileMaxSize"
-            type="drag"
-          >
-            <Button class="upload-btn" type="text">
-              <Icon type="ios-cloud-upload" size="30"></Icon>
-            </Button>
-          </Upload>
-        </div>
+          <div class="avatar-box">
+            <div v-if="info.id" class="avatar">
+            <img :src="$root.fileUrl(info.avatar, '/img/user.png')" />
+            <Upload
+                v-if="isCurrentUser"
+                class="avatar-upload"
+                :show-upload-list="false"
+                :action="$root.uploadInterface"
+                :on-success="handleSuccess"
+                :max-size="$root.maxSize"
+                :format="['jpg','jpeg','png', 'gif']"
+                :on-format-error="$root.fileFormatError"
+                :on-exceeded-size="$root.fileMaxSize"
+                type="drag"
+            >
+                <Button class="upload-btn" type="text">
+                <Icon type="ios-cloud-upload" size="30"></Icon>
+                </Button>
+            </Upload>
+            </div>
+          </div>
         <div class="info">
           <p class="nickname">
             <Input
@@ -66,15 +68,46 @@
       </section>
     </Content>
     <Content class="snippet">
+        <section v-for="(s, i) in snippets" v-bind:key="i">
+            <header>
+                <div class="info">
+                    <!-- <img :src="`/api/account/avatar/${s.username}`" /> -->
+                    <Icon class="icon" :custom="$root.iconName($root.getCodeExt(s.codes[0].filename))"></Icon>
+                    <h1>
+                        <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> /
+                        <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
+                        <aside>
+                            <p>Created at {{new Date(s.create_time * 1000).toLocaleString()}}</p>
+                            <p>{{s.description}}</p>
+                        </aside>
+                    </h1>
+                </div>
+                <div class="statistics">
+                    <span>
 
+                    </span>
+                </div>                
+            </header>
+            <section>
+                <section class="code">
+                    <section class="code-content">
+                        <pre v-highlightjs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
+                    </section>
+                </section>
+            </section>
+        </section>
     </Content>
   </Layout>
 </template>
 <script>
 import config from "../../config.json";
+import 'devicon/devicon.css';
+import 'devicon/devicon-colors.css';
 
 export default {
     name: "user",
+    components: {
+    },
     mounted() {
         this.init();
     },
@@ -95,23 +128,45 @@ export default {
             temp: {
                 nickname: "",
                 motto: ""
-            }
+            },
+            last_data: new Date().getTime(),
+            snippets: []
         };
     },
     methods: {
         async init() {
-            if (this.$route.params.user == "") {
+            if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
             } else {
-                let rsp = await this.$store.dispatch("account/getInfo", this.$route.params.user);
-                if (rsp.data.total) {
-                    this.info = rsp.data.data[0];
-                    this.$util.title(this.info.nickname);
-                } else {
-                    this.$root.message($m.ERROR, 'Username was not exist.');
-                    this.$router.push("/");
+                this.loadUser(this.$route.params.user);
+                this.loadSnippet(this.$route.params.user);
+            }
+        },
+        async loadUser(username) {
+            let rsp = await this.$store.dispatch("account/getInfo", username);
+            if (rsp.data.total) {
+                this.info = rsp.data.data[0];
+                this.$util.title(this.info.nickname);
+            } else {
+                this.$root.message($m.ERROR, 'Username was not exist.');
+                this.$router.push("/");
+            }
+        },
+        async loadSnippet(username) {
+            try {
+                let count = 10;
+                let rsp = await this.$store.dispatch("snippet/query", {
+                    query: { username, create: this.last_data }, index: 0
+                });
+                if (!rsp || rsp.state != 0) {
+                    this.$Message.error(rsp?.msg || 'something wrong');
+                    return;
                 }
+                if (rsp.data.total == 0) return;
+                this.snippets = rsp.data.data;
+            } catch (error) {
+                this.$root.message($m.ERROR, err.message);
             }
         },
         handleSuccess(res, file) {
@@ -139,7 +194,6 @@ export default {
                     this.$root.message($m.SUCCESS, `Update ${name} Success!`);
                     this.info = rsp.data;
                 } else {
-                    err = (err && err.message) || rsp.msg;
                     this.$root.message($m.ERROR, rsp.msg);
                 }
             } catch (err) {
@@ -184,19 +238,22 @@ export default {
     display: flex;
     max-width: 1280px;
     margin: auto;
+    flex-direction: row;
 }
 .profile {
-    flex: 1;
     margin: 1em 0;
     padding: 1em 1em;
-    width: 25%;
-    max-width: 30em;
+    width: 30%;
+    max-width: 20em;
     .section {
         width: 100%;
         display: flex;
         flex-direction: column;
         margin: auto;
         position: relative;
+        .avatar-box {
+            width: 100%;
+        }
         .avatar {
             flex: auto;
             background: #FFF;
@@ -264,6 +321,69 @@ export default {
                 }
             }
         }
+    }
+}
+.snippet {
+    padding: 2.5em 2em;
+    .info {
+        display: flex;
+        font-size: 1.2em;
+        .icon {
+            font-size: 2.5em;
+            display: inline-block;
+            padding: 5px;
+            vertical-align: top;
+        }
+        h1 {
+            font-size: .8em;
+            font-weight: normal;
+            vertical-align: top;
+            aside {
+                color: #666;
+                font-size: .8em;
+            }
+        }
+    }
+    .code {
+        margin: 1em 0;
+
+        .code-content {
+            pre {
+                margin: 0;
+            }
+            code {
+                font-size: .8em;
+            }
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            border: 1px solid #e1e4e8;
+        }
+    }
+}
+@media (max-width: 800px) {
+    .layout {
+        flex-direction: column;
+    }
+    .profile {
+        width: 100%;
+        max-width: 100%;
+        margin: auto;
+        .section {
+            flex-direction: row;
+            justify-content: center;
+            .avatar-box {
+                width: 30%;
+            }
+            .motto {
+                display: none;
+            }
+            .info {
+                padding-left: 1em;
+            }
+        }
+    }
+    .snippet {
+        padding-top: .5em;
     }
 }
 </style>

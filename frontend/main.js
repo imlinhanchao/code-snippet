@@ -9,7 +9,7 @@ import Util from './util';
 import VueHighlightJS from 'vue-highlightjs';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
-import 'highlight.js/styles/github-gist.css'
+import 'highlight.js/styles/github-gist.css';
 import axios from 'axios';
 import config from '../config.json'
 
@@ -89,7 +89,6 @@ new Vue({
             this.msg.type = type;
             this.msg.content = content;
             this.msg._title = title;
-            this.$router.replace('#');
             if (type == $m.SUCCESS) {
                 setTimeout(() => this.msg.content = '', 2000);
             }
@@ -112,13 +111,21 @@ new Vue({
             return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
         },
         getCodeExt(f) {
-            return f.filename.split('.').slice(-1).join('');
+            return f.split('.').slice(-1).join('');
         },
         getCodeOptions(f, readOnly=false) {
             return Object.assign(this.editorOptions, {
-                mode: this.getCodeMode(this.getCodeExt(f)).mime,
+                mode: this.getCodeMode(this.getCodeExt(f.filename)).mime,
                 readOnly
             })
+        },
+        iconName(ext) {
+            let codes = {
+                c: 'c', ceylon: 'ceylon', coffee: 'coffeescript', litcoffee: 'coffeescript', cpp: 'cplusplus', h: 'cplusplus',
+                cs: 'csharp', css: 'css3', html: 'html5', js: 'javascript', go: 'go', java: 'java', sql: 'mysql', php: 'php',
+                py: 'python', rb: 'ruby', swift: 'swift', ts: 'typescript'
+            };
+            return codes[ext] ? `devicon-${codes[ext]}-plain colored` : `fa fa-file-code-o`
         }
     },
     computed: {
@@ -136,6 +143,6 @@ new Vue({
         },
         isLogin() {
             return this.$store.getters['account/isLogin'];
-        },
+        }
     }
 });
