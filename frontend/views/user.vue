@@ -68,6 +68,9 @@
       </section>
     </Content>
     <Content class="snippet">
+        <section class="none" v-if="snippets.length == 0">
+            <span>Here is a wasteland of code.</span>
+        </section>
         <section v-for="(s, i) in snippets" v-bind:key="i">
             <header>
                 <div class="info">
@@ -328,6 +331,13 @@ export default {
 }
 .snippet {
     padding: 2.5em 2em;
+    .none {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
     .info {
         display: flex;
         font-size: 1.2em;
