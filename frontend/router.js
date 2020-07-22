@@ -33,6 +33,12 @@ const routers = [{
                 title: 'Snippet'
             },
             component: () => import('./views/snippet')
+        }, {
+            path: '/explore',
+            meta: {
+                title: 'Explore'
+            },
+            component: () => import('./views/explore')
         }
     ]
 }, {

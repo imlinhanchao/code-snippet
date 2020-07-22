@@ -9,8 +9,8 @@
             </section>
             <nav class="layout-nav">
                 <ul>
-                    <li v-if="$root.isLogin" class="nav-home"><router-link to="/">Home</router-link></li>
-                    <li><router-link to="/explore">Explore</router-link></li>
+                    <li class="nav-home"><router-link to="/">Home</router-link></li>
+                    <li v-if="$root.isLogin" ><router-link to="/explore">Explore</router-link></li>
                 </ul>
             </nav>
         </article>

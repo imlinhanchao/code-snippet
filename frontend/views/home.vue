@@ -12,8 +12,8 @@ export default {
         Editor
     },
     mounted() {
-        if (this.$root.isLogin) {
-            //this.$router.replace(`/u/${this.$root.loginUser.username}`)
+        if (!this.$root.isLogin) {
+            this.$router.replace('/explore');
         }
     },
     data() {
