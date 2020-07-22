@@ -117,32 +117,32 @@
 </template>
 <script>
 export default {
-    name: "login",
+    name: 'login',
     props: {
     },
     data() {
         const validatePasswd = (rule, value, callback) => {
-            if (value === "") {
-                callback(new Error("Please enter your password"));
+            if (value === '') {
+                callback(new Error('Please enter your password'));
             } else if (value.length < 6) {
-                callback(new Error("Your password was too short"));
+                callback(new Error('Your password was too short'));
             } else {
                 callback();
             }
         };
         const validateUser = (rule, value, callback) => {
-            if (value === "") {
-                callback(new Error("Please enter your username"));
+            if (value === '') {
+                callback(new Error('Please enter your username'));
             } else if (value.length < 5) {
-                callback(new Error("Your username was too short"));
+                callback(new Error('Your username was too short'));
             } else {
                 callback();
             }
         };
         const validateEmail = async (rule, value, callback) => {
             if (!this.isRegister) return;
-            if (value === "") {
-                callback(new Error("Please enter your email"));
+            if (value === '') {
+                callback(new Error('Please enter your email'));
             } else {
                 try {
                     let rsp = await this.$store.dispatch('account/exist', {
@@ -174,9 +174,9 @@ export default {
             },
             isPasswdShow: false,
             ruleValidate: {
-                username: [{ validator: validateUser, trigger: "blur" }],
-                passwd: [{ validator: validatePasswd, trigger: "blur" }],
-                email: [{ validator: validateEmail, trigger: "blur" }],
+                username: [{ validator: validateUser, trigger: 'blur' }],
+                passwd: [{ validator: validatePasswd, trigger: 'blur' }],
+                email: [{ validator: validateEmail, trigger: 'blur' }],
                 captcha: [{ }]
             },
             login_loading: false,
@@ -186,10 +186,10 @@ export default {
     },
     computed: {
         showIcon() {
-            return this.isPasswdShow ? "md-eye-off" : "md-eye";
+            return this.isPasswdShow ? 'md-eye-off' : 'md-eye';
         },
         passwdType() {
-            return this.isPasswdShow ? "text" : "password";
+            return this.isPasswdShow ? 'text' : 'password';
         },
         submit () {
             return this.isRegister ? this.registerSubmit : this.loginSubmit
@@ -216,7 +216,7 @@ export default {
                     this.login_loading = false;
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
-                        this.$emit("input", false);
+                        this.$emit('input', false);
                         this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} !`, 'Hi !');
                         this.$router.push('/');
                     } else {
@@ -232,9 +232,10 @@ export default {
                 if (!valid) return;
                 try {
                     this.login_loading = true;
-                    let rsp = this.$store.dispatch('account/create', this.login);
+                    let rsp = await this.$store.dispatch('account/create', this.login);
                     if (rsp && rsp.state == 0) {
-                        this.loginSubmit(form)
+                        this.isRegister = false;
+                        this.loginSubmit(form);
                     } else {
                         this.login_loading = false;
                         this.$root.message($m.ERROR, rsp.msg);
@@ -247,14 +248,15 @@ export default {
         async existCheck (usename) {
             try {
                 if (this.login.username == '') return true;
-                let rsp = await this.$store.dispatch("account/exist", this.login.username);
+                let rsp = await this.$store.dispatch('account/exist', { username: this.login.username});
                 this.isRegister = !rsp.data;
             } catch (err) {
+                console.error(err)
             }
         },
         async logoutEvent() {
             try {
-                let rsp = await this.$store.dispatch("account/logout");
+                let rsp = await this.$store.dispatch('account/logout');
                 if (!rsp || rsp.state != 0) {
                     return;
                 }
