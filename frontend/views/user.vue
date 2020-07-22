@@ -130,7 +130,8 @@ export default {
                 motto: ""
             },
             last_data: new Date().getTime(),
-            snippets: []
+            snippets: [],
+            total: 0
         };
     },
     methods: {
@@ -157,7 +158,7 @@ export default {
             try {
                 let count = 10;
                 let rsp = await this.$store.dispatch("snippet/query", {
-                    query: { username, create: this.last_data }, index: 0
+                    query: { username, create_time: this.last_data }, index: 0
                 });
                 if (!rsp || rsp.state != 0) {
                     this.$Message.error(rsp?.msg || 'something wrong');
@@ -165,6 +166,8 @@ export default {
                 }
                 if (rsp.data.total == 0) return;
                 this.snippets = rsp.data.data;
+                this.total = rsp.data.total;
+                this.last_data = this.snippets[this.snippets.length - 1].create_time
             } catch (error) {
                 this.$root.message($m.ERROR, err.message);
             }
