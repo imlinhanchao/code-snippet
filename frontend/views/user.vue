@@ -67,7 +67,7 @@
         </div>
       </section>
     </Content>
-    <Content class="snippet">
+    <Content class="snippet" v-if="info.id">
         <section class="none" v-if="snippets.length == 0">
             <span>Here is a wasteland of code.</span>
         </section>
@@ -103,7 +103,7 @@
             <section>
                 <section class="code">
                     <section class="code-content">
-                        <pre v-highlightjs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
+                        <pre v-hljs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
                     </section>
                 </section>
             </section>
@@ -339,6 +339,7 @@ export default {
     }
 }
 .snippet {
+    width: 70%;
     padding: 2.5em 2em;
     .none {
         text-align: center;
@@ -352,7 +353,7 @@ export default {
         justify-content: space-between;
         .count {
             display: inline-block;
-            padding: .5em;
+            padding: 0 .5em;
             .ivu-icon {
                 padding: 0 .2em;
             }
@@ -373,22 +374,29 @@ export default {
         h1 {
             font-size: .8em;
             font-weight: normal;
-            vertical-align: top;
+            a { 
+                vertical-align: top;
+            }
             aside {
                 color: #666;
                 font-size: .8em;
             }
         }
     }
+    .statistics {
+        font-size: .8em;
+        padding: 2px 0;
+        width: 322px;
+    }
     .code {
         margin: 1em 0;
-
         .code-content {
             pre {
                 margin: 0;
             }
             code {
                 font-size: .8em;
+                padding: 0;
             }
             border-bottom-left-radius: 6px;
             border-bottom-right-radius: 6px;
@@ -419,7 +427,14 @@ export default {
         }
     }
     .snippet {
-        padding-top: .5em;
+        width: 100%;
+        padding: .5em 1em;
+        header {
+            flex-direction: column;
+            .statistics {
+                display: none;
+            }
+        }
     }
 }
 </style>

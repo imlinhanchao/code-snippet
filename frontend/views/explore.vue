@@ -35,7 +35,7 @@
                 <section>
                     <section class="code">
                         <section class="code-content">
-                            <pre v-highlightjs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
+                            <pre v-hljs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
                         </section>
                     </section>
                 </section>
@@ -106,7 +106,7 @@ export default {
         justify-content: space-between;
         .count {
             display: inline-block;
-            padding: .5em;
+            padding: 0 .5em;
             .ivu-icon {
                 padding: 0 .2em;
             }
@@ -137,7 +137,6 @@ export default {
     }
     .code {
         margin: 1em 0;
-
         .code-content {
             pre {
                 margin: 0;

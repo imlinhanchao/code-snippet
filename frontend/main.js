@@ -6,10 +6,11 @@ import VueRouter from 'vue-router';
 import Routers from './router';
 import store from './store';
 import Util from './util';
-import VueHighlightJS from 'vue-highlightjs';
+import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import 'highlight.js/styles/github-gist.css';
+import 'vue-hljs-with-line-number/line-number.css';
 import axios from 'axios';
 import config from '../config.json'
 
@@ -27,7 +28,7 @@ Vue.prototype.$util = Util;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(iView)
-Vue.use(VueHighlightJS);
+Vue.use(VueHljs);
 
 // Router config
 const RouterConfig = {

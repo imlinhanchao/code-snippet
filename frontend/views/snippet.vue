@@ -43,7 +43,7 @@
                             <span>{{c.filename}}</span>
                         </section>
                         <section class="code-content">
-                            <pre v-highlightjs="c.content"><code></code></pre>
+                            <pre v-hljs="c.content"><code></code></pre>
                         </section>
                     </section>
                 </section>
