@@ -86,9 +86,18 @@
                     </h1>
                 </div>
                 <div class="statistics">
-                    <span>
-
-                    </span>
+                    <router-link :to="`/s/${s.id}`" class="count">
+                        <Icon custom="fa fa-file-o" ></Icon> <span> {{s.codes.length}} File</span>
+                    </router-link>
+                    <router-link :to="`/s/${s.id}/forks`" class="count">
+                        <Icon custom="fa fa-code-fork" ></Icon> <span> 0 Forks</span>
+                    </router-link>
+                    <router-link :to="`/s/${s.id}/comment`" class="count">
+                        <Icon custom="fa fa-commenting-o" ></Icon> <span> 0 Comments</span>
+                    </router-link>
+                    <router-link :to="`/s/${s.id}/stargazers`" class="count">
+                        <Icon custom="fa fa-star-o" ></Icon> <span> 0 Stars</span>
+                    </router-link>
                 </div>                
             </header>
             <section>
@@ -337,6 +346,20 @@ export default {
         justify-content: center;
         align-items: center;
         height: 100%;
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        .count {
+            display: inline-block;
+            padding: .5em;
+            .ivu-icon {
+                padding: 0 .2em;
+            }
+            >* {
+                vertical-align: middle;
+            }
+        }
     }
     .info {
         display: flex;
