@@ -15,9 +15,6 @@
     "init": "node scripts/init.js",
     "initdb": "node scripts/initdb.js"
   },
-  "browserslist": [
-    "last 1 Chrome versions"
-  ],
   "dependencies": {
     "auto-loader": "^0.2.0",
     "axios": "^0.18.0",
