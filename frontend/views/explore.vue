@@ -144,9 +144,9 @@ export default {
             code {
                 font-size: .8em;
             }
-            border-bottom-left-radius: 6px;
-            border-bottom-right-radius: 6px;
+            border-radius: 6px;
             border: 1px solid #e1e4e8;
+            overflow: hidden;
         }
     }
 }
