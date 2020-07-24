@@ -10,7 +10,7 @@
     "server": "cross-env NODE_ENV=development node ./bin/www",
     "dev": "cross-env NODE_ENV=development node index.js",
     "prebuild": "rm -r ./public/dist",
-    "build": "parcel build frontend/index.html --out-dir ./public/dist --public-url ./dist --no-source-maps",
+    "build": "parcel build frontend/index.html --out-dir ./public/dist --public-url /dist --no-source-maps",
     "postbuild": "cp ./public/dist/index.html ./public/index.html",
     "init": "node scripts/init.js",
     "initdb": "node scripts/initdb.js"
