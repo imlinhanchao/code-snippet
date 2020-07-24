@@ -74,8 +74,9 @@
         <section v-for="(s, i) in snippets" v-bind:key="i">
             <header>
                 <div class="info">
+                    <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <!-- <img :src="`/api/account/avatar/${s.username}`" /> -->
-                    <Icon class="icon" :custom="$root.iconName($root.getCodeExt(s.codes[0].filename))"></Icon>
+                    <!-- <Icon class="icon" :custom="$root.iconName($root.getCodeExt(s.codes[0].filename))"></Icon> -->
                     <h1>
                         <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> /
                         <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
@@ -113,12 +114,12 @@
 </template>
 <script>
 import config from "../../config.json";
-import 'devicon/devicon.css';
-import 'devicon/devicon-colors.css';
+import FileIcon from "../components/fileicon";
 
 export default {
     name: "user",
     components: {
+        FileIcon
     },
     mounted() {
         this.init();
@@ -370,6 +371,7 @@ export default {
             display: inline-block;
             padding: 5px;
             vertical-align: top;
+            line-height: 1;
         }
         h1 {
             font-size: .8em;

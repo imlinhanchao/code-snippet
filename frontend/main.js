@@ -120,14 +120,6 @@ new Vue({
                 mode: this.getCodeMode(this.getCodeExt(f.filename)).mime,
                 readOnly
             })
-        },
-        iconName(ext) {
-            let codes = {
-                c: 'c', ceylon: 'ceylon', coffee: 'coffeescript', litcoffee: 'coffeescript', cpp: 'cplusplus', h: 'cplusplus',
-                cs: 'csharp', css: 'css3', html: 'html5', js: 'javascript', go: 'go', java: 'java', sql: 'mysql', php: 'php',
-                py: 'python', rb: 'ruby', swift: 'swift', ts: 'typescript'
-            };
-            return codes[ext] ? `devicon-${codes[ext]}-plain colored` : `fa fa-file-code-o`
         }
     },
     computed: {
