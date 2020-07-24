@@ -180,7 +180,8 @@ export default {
             return this.snippet.language || 'Select'
         },
         langIcon() {
-            return this.langs.find(l => l.language == this.snippet.language)?.icon || ''
+            let lang = this.langs.find(l => l.language == this.snippet.language)
+            return lang ? lang.icon : ''
         },
         hasInvaidFile() {
             return this.files.filter(f => f.filename !== '' && f.content !== '').length > 0
@@ -354,7 +355,7 @@ export default {
             let lang = this.langs.find(l => l.language == language);
             if (!lang) return null;
             let file = this.files.find(f => f.filename.split('.').slice(-1).join('') == lang.ext);
-            let filename = file?.filename || 'main.' + lang.ext;
+            let filename = file ? file.filename : 'main.' + lang.ext;
             this.snippet.command = this.getCommand(lang, filename);
             this.canAutoExec = !!lang.auto
         }

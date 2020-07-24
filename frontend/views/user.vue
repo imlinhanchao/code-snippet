@@ -173,7 +173,7 @@ export default {
                     query: { username, create_time: this.last_data }, index: 0
                 });
                 if (!rsp || rsp.state != 0) {
-                    this.$Message.error(rsp?.msg || 'something wrong');
+                    this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
                 }
                 if (rsp.data.total == 0) return;
