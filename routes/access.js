@@ -7,7 +7,7 @@ const Account = modules.account;
 router.all('/:interface/:fn*', function (req, res, next) {
     // 允许不登录访问的接口，若所有函数都允许，则写为 interface: '*'
     const no_login_interface = {
-        account: ['login', 'query', 'exist', 'create', 'exists'],
+        account: ['login', 'query', 'exist', 'create', 'exists', 'avatar'],
         lib: ['captcha'],
         snippet: ['query', 'get']
     };
