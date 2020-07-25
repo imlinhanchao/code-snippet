@@ -4,7 +4,6 @@
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    width: 600px;
     height: 400px;
     margin: auto;
     top: 0;
