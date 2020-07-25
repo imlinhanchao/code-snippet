@@ -37,6 +37,16 @@ const actions = {
             throw e;
         }
     },
+    async del({ state, commit }, id) {
+        try {
+            let rsp = await axios.post(`/snippet/del/`, { id });
+
+            return rsp.data;
+        } catch (e) {
+            console.error(e.message);
+            throw e;
+        }
+    },
     async query({ commit }, { index, count = 10, query = {}}) {
         try {
             let rsp = await axios.post('/snippet/query/', {

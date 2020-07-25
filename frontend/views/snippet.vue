@@ -10,22 +10,33 @@
                     </span>
                 </h1>
                 <section class="actions">
-                    <span v-if="snippet.username == $root.loginUser.username">
-                        <Button class="action-btn" @click="$router.push(`/edit/${snippet.id}`)">
-                            <Icon custom="fa fa-pencil" ></Icon> <span> Edit</span>
-                        </Button>
-                    </span>
-                    <span v-if="snippet.username == $root.loginUser.username">
-                        <Button class="action-btn remove-btn">
-                            <Icon custom="fa fa-trash-o" ></Icon> <span> Delete</span>
-                        </Button>
-                    </span>
-                    <span><Button class="action-btn">
-                        <Icon custom="fa fa-star-o" ></Icon> <span> Star</span>
-                    </Button><router-link :to="`/s/${id}/stargazers`" class="count">0</router-link></span>
-                    <span><Button class="action-btn">
-                        <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
-                    </Button><router-link :to="`/s/${id}/forks`" class="count">0</router-link></span>
+                    <Icon class="action-menu" custom="fa fa-ellipsis-v" @click="menu = !menu"></Icon>
+                    <ul class="action-list" :class="{ 'action-menu-hide': !menu }">
+                        <li v-if="snippet.username == $root.loginUser.username">
+                            <Button class="action-btn" @click="$router.push(`/edit/${snippet.id}`)">
+                                <Icon custom="fa fa-pencil" ></Icon> <span> Edit</span>
+                            </Button>
+                        </li>
+                        <li v-if="snippet.username == $root.loginUser.username">
+                            <Poptip
+                            confirm
+                            title="Are you sure you want to delete this snippet?"
+                            @on-ok="OnRemove">
+                                <Button class="action-btn remove-btn" @click="OnRemove">
+                                    <Icon custom="fa fa-trash-o" ></Icon> <span> Delete</span>
+                                </Button>
+                            </Poptip>
+                        </li>
+                        <li>
+                            <Button class="action-btn">
+                                <Icon custom="fa fa-star-o" ></Icon> <span> Star</span>
+                            </Button><router-link :to="`/s/${id}/stargazers`" class="count">0</router-link>
+                        </li>
+                        <li><Button class="action-btn">
+                            <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
+                        </Button><router-link :to="`/s/${id}/forks`" class="count">0</router-link>
+                        </li>
+                    </ul>
                 </section>
             </section>
             <aside>
@@ -104,10 +115,21 @@ export default {
                 indentWithTabs: true,
                 cursorHeight: .7
             },
+            menu: false
         };
     },
     methods: {
-
+        async OnRemove() {
+            try {
+                let rsp = await this.$store.dispatch('snippet/del', this.snippet.id);
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                this.$root.message($m.SUCCESS, 'Remove Success!');
+                this.$router.push('/')
+            } catch (error) {
+                console.error(error.message);
+                this.message($m.ERROR, rsp.msg);
+            }
+        }
     },
     computed: {
         id() {
@@ -138,6 +160,9 @@ export default {
 }
 .header {
     padding: 0 1em;
+    h1 {
+        line-height: 1.5;
+    }
     aside {
         color: #999;
         font-size: .8em;
@@ -148,6 +173,18 @@ export default {
         .actions {
             display: flex;
             align-self: center;
+            .action-menu {
+                display: none;
+                line-height: 2em;
+                padding: .5em 0 0;
+            }
+            .action-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: row;
+            }
         }
         .action-btn {
             font-size: 12px;
@@ -216,9 +253,41 @@ export default {
 }
 @media (max-width: 480px) {
     .header {
+        position: relative;
+        h1 {
+            font-size: 1.5em;
+        }
         .header-section {
             .actions {
-                display: none;
+                .action-menu {
+                    display: inline-block;
+                }
+                .action-list {
+                    flex-direction: column;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 4px;
+                    background-color: #FFF;
+                    position: absolute;
+                    right: .5em;
+                    top: 55%;
+                    li {
+                        width: 6em;
+                        .count {
+                            display: none;
+                        }
+                        .action-btn {
+                            border: 0;
+                            margin: 0;
+                            .ivu-icon {
+                                display: inline-block;
+                                width: 1em;
+                            }
+                        }
+                    }
+                }
+                .action-menu-hide {
+                    display: none;
+                }
             }
         }
     }
