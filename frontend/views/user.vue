@@ -86,25 +86,12 @@
                         </aside>
                     </h1>
                 </div>
-                <div class="statistics">
-                    <router-link :to="`/s/${s.id}`" class="count">
-                        <Icon custom="fa fa-file-o" ></Icon> <span> {{s.codes.length}} file</span>
-                    </router-link>
-                    <router-link :to="`/s/${s.id}/forks`" class="count">
-                        <Icon custom="fa fa-code-fork" ></Icon> <span> 0 forks</span>
-                    </router-link>
-                    <router-link :to="`/s/${s.id}/comment`" class="count">
-                        <Icon custom="fa fa-commenting-o" ></Icon> <span> 0 comments</span>
-                    </router-link>
-                    <router-link :to="`/s/${s.id}/stargazers`" class="count">
-                        <Icon custom="fa fa-star-o" ></Icon> <span> 0 stars</span>
-                    </router-link>
-                </div>                
+                <Statistics :snippet="s" ></Statistics>              
             </header>
             <section>
                 <section class="code">
                     <section class="code-content">
-                        <pre v-hljs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
+                        <pre v-hljs="s.codes[0].content"><code></code></pre>
                     </section>
                 </section>
             </section>
@@ -115,11 +102,12 @@
 <script>
 import config from "../../config.json";
 import FileIcon from "../components/fileicon";
+import Statistics from '../components/statistics'
 
 export default {
     name: "user",
     components: {
-        FileIcon
+        FileIcon, Statistics
     },
     mounted() {
         this.init();
@@ -352,15 +340,8 @@ export default {
     header {
         display: flex;
         justify-content: space-between;
-        .count {
-            display: inline-block;
-            padding: 0 .5em;
-            .ivu-icon {
-                padding: 0 .2em;
-            }
-            >* {
-                vertical-align: middle;
-            }
+        .statistics {
+            font-size: .8em;
         }
     }
     .info {
@@ -385,11 +366,6 @@ export default {
             }
         }
     }
-    .statistics {
-        font-size: .8em;
-        padding: 2px 0;
-        width: 322px;
-    }
     .code {
         margin: 1em 0;
         .code-content {
@@ -399,6 +375,8 @@ export default {
             code {
                 font-size: .8em;
                 padding: 0;
+                max-height: 19em;
+                overflow-y: hidden;
             }
             border-radius: 6px;
             border: 1px solid #e1e4e8;
@@ -431,10 +409,12 @@ export default {
     .snippet {
         width: 100%;
         padding: .5em 1em;
-        header {
-            flex-direction: column;
-            .statistics {
-                display: none;
+        header .statistics {
+            font-size: 1em;
+        }
+        .code {
+            .code-content code {
+                overflow-y: auto;
             }
         }
     }

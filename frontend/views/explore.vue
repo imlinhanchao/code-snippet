@@ -17,20 +17,7 @@
                             </aside>
                         </h1>
                     </div>
-                    <div class="statistics">
-                        <router-link :to="`/s/${s.id}`" class="count">
-                            <Icon custom="fa fa-file-o" ></Icon> <span> {{s.codes.length}} file</span>
-                        </router-link>
-                        <router-link :to="`/s/${s.id}/forks`" class="count">
-                            <Icon custom="fa fa-code-fork" ></Icon> <span> 0 forks</span>
-                        </router-link>
-                        <router-link :to="`/s/${s.id}/comment`" class="count">
-                            <Icon custom="fa fa-commenting-o" ></Icon> <span> 0 comments</span>
-                        </router-link>
-                        <router-link :to="`/s/${s.id}/stargazers`" class="count">
-                            <Icon custom="fa fa-star-o" ></Icon> <span> 0 stars</span>
-                        </router-link>
-                    </div>                
+                    <Statistics :snippet="s" ></Statistics>
                 </header>
                 <section>
                     <section class="code">
@@ -44,10 +31,11 @@
     </Layout>
 </template>
 <script>
-
+import Statistics from '../components/statistics'
 export default {
     name: "explore",
     components: {
+        Statistics
     },
     async mounted() {
         await this.loadSnippet();
@@ -104,16 +92,6 @@ export default {
     header {
         display: flex;
         justify-content: space-between;
-        .count {
-            display: inline-block;
-            padding: 0 .5em;
-            .ivu-icon {
-                padding: 0 .2em;
-            }
-            >* {
-                vertical-align: middle;
-            }
-        }
     }
     .info {
         display: flex;
