@@ -68,15 +68,13 @@
         </div>
       </section>
     </Content>
-    <Content class="snippet" v-if="info.id">
-        <section class="none" v-if="snippets.length == 0">
+    <Content class="snippet" v-if="info.id" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
+        <section class="none" v-if="snippets.length == 0 && !loading">
             <span>Here is a wasteland of code.</span>
         </section>
-        <section v-for="(s, i) in snippets" v-bind:key="i">
+        <section v-for="(s, i) in snippets" v-bind:key="i" :id="`snippet${i}`">
             <header>
                 <div class="info">
-                    <!-- <img :src="`/api/account/avatar/${s.username}`" /> -->
-                    <!-- <Icon class="icon" :custom="$root.iconName($root.getCodeExt(s.codes[0].filename))"></Icon> -->
                     <h1>
                         <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
                         <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
@@ -97,6 +95,8 @@
                 </section>
             </section>
         </section>
+        <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+        <Page v-show="!loading" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
     </Content>
   </Layout>
 </template>
@@ -133,16 +133,21 @@ export default {
             },
             last_data: new Date().getTime(),
             snippets: [],
-            total: 0
+            total: 0,
+            loading: false,
+            page: 1
         };
     },
     methods: {
         async init() {
+            this.snippets = [];
             this.last_data = new Date().getTime();
+            this.page = 1;
             if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
             } else {
+                this.page = parseInt(this.$route.params.page || 1);
                 this.loadUser(this.$route.params.user);
                 this.loadSnippet(this.$route.params.user);
             }
@@ -151,7 +156,7 @@ export default {
             let rsp = await this.$store.dispatch("account/getInfo", username);
             if (rsp.data.total) {
                 this.info = rsp.data.data[0];
-                this.$util.title(this.info.nickname);
+                this.$util.title(this.info.nickname + (this.$route.params.page ? ' Page ' + this.$route.params.page : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
                 this.$router.push("/");
@@ -159,20 +164,23 @@ export default {
         },
         async loadSnippet(username) {
             try {
+                this.loading = true;
                 let count = 10;
+                this.snippets = [];
                 let rsp = await this.$store.dispatch("snippet/query", {
-                    query: { username, create_time: this.last_data }, index: 0
+                    query: { username }, index: (this.page - 1) * 5, count: 5
                 });
+                this.loading = false;
                 if (!rsp || rsp.state != 0) {
                     this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
                 }
-                this.snippets = [];
+                this.total = rsp.data.total;
                 if (rsp.data.total == 0) return;
                 this.snippets = rsp.data.data;
-                this.total = rsp.data.total;
                 this.last_data = this.snippets[this.snippets.length - 1].create_time
             } catch (error) {
+                this.loading = false;
                 this.$root.message($m.ERROR, err.message);
             }
         },
@@ -206,6 +214,14 @@ export default {
             } catch (err) {
                 this.$root.message($m.ERROR, err.message);
             }
+        },
+        async loadMore() {
+            this.loading = true;
+            await this.loadSnippet(this.$route.params.user);
+            this.loading = false;
+        },
+        async OnPage(page) {
+            this.$router.push(`/u/${this.$route.params.user}/p/${page}`);
         }
     },
     computed: {
@@ -221,6 +237,9 @@ export default {
         },
         uploadInterface() {
             return "/api/lib/upload";
+        },
+        noMore() {
+            return this.loading || this.total == 0
         }
     },
     watch: {
@@ -393,6 +412,10 @@ export default {
             overflow: hidden;
         }
     }
+}
+.loading {
+    position: relative;
+    text-align: center;
 }
 @media (max-width: 800px) {
     .layout {

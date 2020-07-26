@@ -37,7 +37,6 @@
   "devDependencies": {
     "@vue/component-compiler-utils": "^2.3.0",
     "babel-core": "^6.26.3",
-    "codemirror-github-light": "^0.4.2",
     "cross-env": "^7.0.2",
     "file-icons-js": "github:websemantics/file-icons-js",
     "http-proxy-middleware": "^1.0.4",
@@ -49,6 +48,7 @@
     "vue-codemirror": "^4.0.6",
     "vue-hljs-with-line-number": "^1.0.1",
     "vue-hot-reload-api": "^2.3.1",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.5.20",
     "vuex": "^3.5.1"

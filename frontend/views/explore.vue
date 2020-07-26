@@ -3,7 +3,7 @@
         <header class="header">
             <h1><Icon custom="fa fa-file-code-o" ></Icon> Explore Snippet </h1>
         </header>
-        <Content class="snippet">
+        <Content class="snippet" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
             <section v-for="(s, i) in snippets" v-bind:key="i">
                 <header>
                     <div class="info">
@@ -28,6 +28,7 @@
                 </section>
             </section>
         </Content>
+        <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
     </Layout>
 </template>
 <script>
@@ -44,7 +45,8 @@ export default {
         return {
             last_data: new Date().getTime(),
             snippets: [],
-            total: 0
+            total: 0,
+            loading: false
         };
     },
     methods: {
@@ -58,16 +60,26 @@ export default {
                     this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
                 }
-                if (rsp.data.total == 0) return;
-                this.snippets = rsp.data.data;
+                if (rsp.data.total == 0) return this.total = 0;
+                rsp.data.data.forEach(s => {
+                    this.snippets.push(s);
+                })
                 this.total = rsp.data.total;
                 this.last_data = this.snippets[this.snippets.length - 1].create_time
             } catch (error) {
                 this.$root.message($m.ERROR, err.message);
             }
         },
+        async loadMore() {
+            this.loading = true;
+            await this.loadSnippet();
+            this.loading = false;
+        }
     },
     computed: {
+        noMore() {
+            return this.loading || this.total == 0
+        }
     },
     watch: {
     }
@@ -135,6 +147,10 @@ export default {
             overflow: hidden;
         }
     }
+}
+.loading {
+    position: relative;
+    text-align: center;
 }
 
 @media (max-width: 480px) {

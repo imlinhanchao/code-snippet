@@ -14,6 +14,7 @@ import 'highlight.js/styles/railscasts.css';
 import 'vue-hljs-with-line-number/line-number.css';
 import axios from 'axios';
 import config from '../config.json'
+import InfiniteScroll from 'vue-infinite-scroll'
 
 const isDebug = process.env.NODE_ENV !== 'production';
 Vue.config.debug = isDebug;
@@ -30,6 +31,7 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(iView)
 Vue.use(VueHljs);
+Vue.use(InfiniteScroll);
 
 // Router config
 const RouterConfig = {

@@ -20,6 +20,13 @@ const routers = [{
                 title: 'User'
             },
             component: () => import('./views/user')
+        },
+        {
+            path: 'u/:user/p/:page',
+            meta: {
+                title: 'User'
+            },
+            component: () => import('./views/user')
         }, {
             path: 'edit/:id',
             meta: {
