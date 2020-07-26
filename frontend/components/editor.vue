@@ -36,7 +36,7 @@
             <article class="editor" v-for="(f, i) in files" v-show="!f.remove" v-bind:key="i" :id="`code${i}`">
                 <section class="editor-header">
                     <section class="code-info">
-                        <Input :maxlength="20" class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
+                        <Input :maxlength="50" class="filename" @on-change="OnChangeName(f, i)" type="text" placeholder="Filename include extension..." v-model="f.filename">
                             <span slot="append" class="editor-remove">
                             <Poptip 
                                 confirm

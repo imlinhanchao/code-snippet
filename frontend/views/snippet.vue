@@ -6,7 +6,7 @@
                     <img :src="`/api/account/avatar/${snippet.username}`" />
                     <span>
                         <router-link :to="`/u/${snippet.username}`">{{snippet.username}}</router-link> /
-                        <router-link :to="`/s/${snippet.id}`">{{snippet.codes[0].filename}}</router-link>
+                        <router-link :title="snippet.codes[0].filename" :to="`/s/${snippet.id}`">{{snippet.codes[0].filename}}</router-link>
                     </span>
                 </h1>
                 <section class="actions">
@@ -161,11 +161,19 @@ export default {
 .header {
     padding: 0 1em;
     h1 {
+        font-size: 1.5em;
         line-height: 1.5;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        overflow: hidden;
     }
     aside {
         color: #999;
         font-size: .8em;
+    }
+    .info img {
+        border-radius: 50%;
     }
     .header-section {
         display: flex;
@@ -184,13 +192,16 @@ export default {
                 margin: 0;
                 display: flex;
                 flex-direction: row;
+                li {
+                    white-space: nowrap;
+                }
             }
         }
         .action-btn {
             font-size: 12px;
             font-weight: bold;
             color: #24292e;
-            margin: 0 0 0 1.5em;
+            margin: 0 0 0 1em;
             position: relative;
             border-radius: 4px 0 0 4px;
             span {
@@ -245,10 +256,12 @@ export default {
     .code-list {
         flex: 1;
         padding: 0 1em;
+        width: 0;
     }
     .code-anchor {
         margin-top: 1em;
         padding: 0 1em;
+        max-width: 20%;
     }
 }
 @media (max-width: 480px) {

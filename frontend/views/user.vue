@@ -16,6 +16,7 @@
                 :on-format-error="$root.fileFormatError"
                 :on-exceeded-size="$root.fileMaxSize"
                 type="drag"
+                accept="image/*"
             >
                 <Button class="upload-btn" type="text">
                 <Icon type="ios-cloud-upload" size="30"></Icon>
@@ -74,11 +75,11 @@
         <section v-for="(s, i) in snippets" v-bind:key="i">
             <header>
                 <div class="info">
-                    <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <!-- <img :src="`/api/account/avatar/${s.username}`" /> -->
                     <!-- <Icon class="icon" :custom="$root.iconName($root.getCodeExt(s.codes[0].filename))"></Icon> -->
                     <h1>
-                        <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> /
+                        <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
+                        <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
                         <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
                         <aside>
                             <p>Created at {{new Date(s.create_time * 1000).toLocaleString()}}</p>
@@ -137,6 +138,7 @@ export default {
     },
     methods: {
         async init() {
+            this.last_data = new Date().getTime();
             if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
@@ -165,6 +167,7 @@ export default {
                     this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
                 }
+                this.snippets = [];
                 if (rsp.data.total == 0) return;
                 this.snippets = rsp.data.data;
                 this.total = rsp.data.total;
@@ -221,7 +224,8 @@ export default {
         }
     },
     watch: {
-        $router: (to, from) => {
+        $route(to, from) {
+            console.log(to)
             this.init();
         }
     }
@@ -269,12 +273,12 @@ export default {
             position: relative;
             border: 1px solid #CCC;
             img {
-                width: 100%;
+                height: 100%;
                 display: block;
                 z-index: 1;
                 position: absolute;
-                top: 0;
-                bottom: 0;
+                left: 0;
+                right: 0;
                 margin: auto;
             }
             &:hover .avatar-upload{
@@ -342,23 +346,29 @@ export default {
         justify-content: space-between;
         .statistics {
             font-size: .8em;
+            padding-top: 3px;
         }
     }
     .info {
         display: flex;
         font-size: 1.2em;
+        flex: 1;
+        white-space: nowrap;
+        width: 0;
         .icon {
-            font-size: 2.5em;
+            font-size: 1em;
             display: inline-block;
             padding: 5px;
-            vertical-align: top;
+            vertical-align: middle;
             line-height: 1;
         }
         h1 {
             font-size: .8em;
             font-weight: normal;
-            a { 
-                vertical-align: top;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            >* { 
+                vertical-align: middle;
             }
             aside {
                 color: #666;

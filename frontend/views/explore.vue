@@ -7,7 +7,7 @@
             <section v-for="(s, i) in snippets" v-bind:key="i">
                 <header>
                     <div class="info">
-                        <img :src="`/api/account/avatar/${s.username}`" />
+                        <img :src="s.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${s.username}`" />
                         <h1>
                             <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> /
                             <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
@@ -22,7 +22,7 @@
                 <section>
                     <section class="code">
                         <section class="code-content">
-                            <pre v-hljs="s.codes[0].content.split('\n').slice(0, 10).join('\n')"><code></code></pre>
+                            <pre v-hljs="s.codes[0].content"><code></code></pre>
                         </section>
                     </section>
                 </section>
@@ -96,17 +96,23 @@ export default {
     .info {
         display: flex;
         font-size: 1.2em;
+        flex: 1;
+        white-space: nowrap;
+        width: 0;
         img {
             width: 2.5em;
             height: 2.5em;
             display: inline-block;
             padding: 5px;
             vertical-align: top;
+            border-radius: 50%;
         }
         h1 {
             font-size: .8em;
             font-weight: normal;
             vertical-align: top;
+            text-overflow: ellipsis;
+            overflow: hidden;
             aside {
                 color: #666;
                 font-size: .8em;
@@ -121,6 +127,8 @@ export default {
             }
             code {
                 font-size: .8em;
+                max-height: 19em;
+                overflow-y: hidden;
             }
             border-radius: 6px;
             border: 1px solid #e1e4e8;

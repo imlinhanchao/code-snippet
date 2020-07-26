@@ -11,7 +11,8 @@ export default {
     components: {
         Editor
     },
-    mounted() {
+    async mounted() {
+        let rsp = await this.$store.dispatch('account/checklogin');
         if (!this.$root.isLogin) {
             this.$router.replace('/explore');
         }
