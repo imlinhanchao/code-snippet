@@ -15,7 +15,7 @@ export default {
     },
     computed: {
         class_name() {
-            let name = FileIcons.getClass(this.filename);
+            let name = FileIcons.getClassWithColor(this.filename);
             return name || 'fa fa-file-code-o';
         }
     }
