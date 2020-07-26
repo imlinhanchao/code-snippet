@@ -131,7 +131,7 @@ export default {
                 overflow-y: hidden;
             }
             border-radius: 6px;
-            border: 1px solid #e1e4e8;
+            border: 1px solid #515a6e;
             overflow: hidden;
         }
     }

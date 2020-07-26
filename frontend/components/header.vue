@@ -150,17 +150,17 @@ export default {
             right: -.5em;
         }
         +.menu {
-            color: #24292e;
+            color: #cecac3;;
         }
     }
     .sub-menu {
         list-style: none;
-        color: #000;
+        color: #e8e6e3;;
         position: absolute;
         top: .7em;
         right: -20em;
         width: 8em;
-        background: #FFF;
+        background: #181a1b;;
         border: 1px solid #CCC;
         border-radius: 0.5em;
         padding: 3em 0 1em;

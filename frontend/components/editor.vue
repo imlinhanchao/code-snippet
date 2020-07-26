@@ -115,16 +115,6 @@ export default {
     },
     data() {
         return {
-            editorOptions: {
-                tabSize: 4,
-                indentUnit: 4,
-                mode: 'clike',
-                theme: 'github',
-                lineNumbers: true,
-                lineWrapping: true,
-                indentWithTabs: true,
-                cursorHeight: .7
-            },
             snippet: {
                 title: '',
                 description: '',
@@ -364,16 +354,16 @@ export default {
 </script>
 <style scoped lang="less">
 .vue-codemirror {
-    border: 1px solid #e1e4e8;
+    border: 1px solid #373c3e;
     border-radius: 0 0 .5em .5em;
 }
 .editor {
     margin: 1em 0;
 }
 .editor-header {
-    background: #fafbfc;
+    background: #1a1c1e;
     padding: .5em;
-    border: 1px solid #e1e4e8;
+    border: 1px solid #373c3e;
     border-bottom: 0;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -461,9 +451,6 @@ export default {
 }
 </style>
 <style lang="less">
-.CodeMirror-gutter {
-    background: #FFF;
-}
 .CodeMirror-gutters {
     border: 0;
 }

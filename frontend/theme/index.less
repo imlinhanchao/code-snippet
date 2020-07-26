@@ -12,8 +12,8 @@ html {
 }
 
 body {
-    background: #FFF;
-    color: #24292e;
+    background: #181a1b;;
+    color: #cecac3;;
     min-height: 100%; 
     margin: auto;
     font: 400 1em/1.8 'Open Sans', Helvetica Neue, Helvetica, Arial, PingFang SC, Lantinghei SC, Microsoft Yahei, sans-serif;
@@ -31,13 +31,146 @@ a {
     color: #2d8cf0;
 }
 
+.ivu-input {
+    border-color: #393e40;
+    color: #aca49a;
+    background-color: #181a1b;
+    background-image: none;
+}
+
+.ivu-input-group-append .ivu-btn, .ivu-input-group-prepend .ivu-btn {
+    border-color: transparent;
+    background-color: transparent;
+    color: inherit;
+}
+
+.ivu-btn {
+    background-image: none;
+    color: #aca49a;
+    background-color: #181a1b;
+    border-color: #393e40;
+    &:hover {
+        background-color: #303436;
+        color: inherit;
+    }
+}
+
+.ivu-btn.disabled, .ivu-btn.disabled.active, .ivu-btn.disabled:active, .ivu-btn.disabled:focus, .ivu-btn.disabled:hover, .ivu-btn[disabled], .ivu-btn[disabled].active, .ivu-btn[disabled]:active, .ivu-btn[disabled]:focus, .ivu-btn[disabled]:hover, fieldset[disabled] .ivu-btn, fieldset[disabled] .ivu-btn.active, fieldset[disabled] .ivu-btn:active, fieldset[disabled] .ivu-btn:focus, fieldset[disabled] .ivu-btn:hover {
+    color: #c6c1ba;
+    background-color: #1d1f20;
+    border-color: #393e40;
+}
+
+.ivu-input-group-append .ivu-btn, .ivu-input-group-prepend .ivu-btn {
+    border-color: transparent;
+    background-color: transparent;
+    color: inherit;
+}
+
+.ivu-btn.disabled, .ivu-btn.disabled.active, .ivu-btn.disabled:active, .ivu-btn.disabled:focus, .ivu-btn.disabled:hover, .ivu-btn[disabled], .ivu-btn[disabled].active, .ivu-btn[disabled]:active, .ivu-btn[disabled]:focus, .ivu-btn[disabled]:hover, fieldset[disabled] .ivu-btn, fieldset[disabled] .ivu-btn.active, fieldset[disabled] .ivu-btn:active, fieldset[disabled] .ivu-btn:focus, fieldset[disabled] .ivu-btn:hover {
+    color: #c6c1ba;
+    background-color: #1d1f20;
+    border-color: #393e40;
+}
+
+.ivu-input-group-append, .ivu-input-group-prepend {
+    color: #aca49a;
+    background-color: #1c1e1f;
+    border-color: #393e40;
+}
+
+.ivu-input-group-append {
+    border-left-color: initial;
+}
+
+.ivu-btn-text {
+    color: #aca49a;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.ivu-btn-success {
+    color: #FFF;
+    background-color: #19be6b;
+    border-color: #19be6b;
+    &:hover {
+        color: #e8e6e3;
+        background-color: #2a966e;
+    }
+}
+
+.ivu-btn-info {
+    color: #fff;
+    background-color: #2db7f5;
+    border-color: #2db7f5;
+    &:hover {
+        background-color: #0d68a5;
+        color: #e8e6e3;
+    }
+}
+
+.ivu-form-item-error .ivu-input-group-append, .ivu-form-item-error .ivu-input-group-prepend {
+    background-color: rgb(24, 26, 27);
+}
+
+.ivu-alert-desc {
+    color: rgb(172, 164, 154);
+}
+
+.ivu-alert-with-desc .ivu-alert-message {
+    color: rgb(205, 201, 195);
+}
+
+.ivu-alert-error {
+    border-color: rgb(136, 40, 0);
+    background-color: rgb(66, 24, 0);
+}
+
+.ivu-alert-success {
+    border-color: rgb(26, 118, 63);
+    background-color: rgb(0, 62, 31);
+}
+
+.ivu-alert-info[data-v-d5394a] {
+    border-color: rgb(0, 74, 127);
+    background-color: rgb(28, 31, 32);
+}
+
+.ivu-alert-warning {
+    border-color: rgb(142, 99, 0);
+    background-color: rgb(66, 50, 0);
+}
+
+ul.ivu-page {
+    text-align: center;
+    .ivu-page-prev, .ivu-page-next, .ivu-page-item {
+        background: transparent;
+        a {
+            color: #f0f0f0;
+        }
+    }
+    .ivu-page-disabled a, .ivu-page-item-active a {
+        color: #515a6e;
+    }
+}
+
 code.hljs {
     padding: 0;
 }
 .hljs-ln {
     border-spacing: 0;
+    .hljs-ln-numbers {
+        background-color: #181a1b;
+        color: #f0f0f0;
+    }
 }
-.hljs-ln-numbers {
-    background-color: #fafafa;
+
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #f0f0f0;
 }
 

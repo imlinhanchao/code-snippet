@@ -29,7 +29,7 @@
     text-align: center;
     font-size: 2.5em;
     font-weight: bold;
-    color: #000;
+    color: #f0f0f0;
     a { 
         color: inherit;
         vertical-align: middle;
@@ -48,7 +48,7 @@
         <article>
         <section class="layout-logo">
             <router-link to="/">
-                <img src="../assets/logo-dark.png" alt="" />
+                <img src="../assets/logo-light.png" alt="" />
                 <span>Code Snippit</span>
             </router-link>
         </section> 
@@ -108,7 +108,7 @@
                 </Input>
             </FormItem>
             <div class="login-footer">
-                <Button style="width: 100%;" type="primary" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
+                <Button type="success" style="width: 100%;" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
             </div>
         </Form>
         </article>

@@ -10,7 +10,7 @@ import Util from './util';
 import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
-import 'highlight.js/styles/github-gist.css';
+import 'highlight.js/styles/railscasts.css';
 import 'vue-hljs-with-line-number/line-number.css';
 import axios from 'axios';
 import config from '../config.json'
@@ -78,7 +78,7 @@ new Vue({
             tabSize: 4,
             indentUnit: 4,
             mode: 'clike',
-            theme: 'github',
+            theme: 'ayu-dark',
             lineNumbers: true,
             lineWrapping: true,
             indentWithTabs: true,

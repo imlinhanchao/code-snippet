@@ -28,11 +28,11 @@
                             </Poptip>
                         </li>
                         <li>
-                            <Button class="action-btn">
+                            <Button class="action-btn count-btn">
                                 <Icon custom="fa fa-star-o" ></Icon> <span> Star</span>
                             </Button><router-link :to="`/s/${id}/stargazers`" class="count">0</router-link>
                         </li>
-                        <li><Button class="action-btn">
+                        <li><Button class="action-btn count-btn">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
                         </Button><router-link :to="`/s/${id}/forks`" class="count">0</router-link>
                         </li>
@@ -104,16 +104,6 @@ export default {
                 fork_from: '',
                 username: '',
                 codes: []
-            },
-            editorOptions: {
-                tabSize: 4,
-                indentUnit: 4,
-                mode: 'clike',
-                theme: 'github',
-                lineNumbers: true,
-                lineWrapping: true,
-                indentWithTabs: true,
-                cursorHeight: .7
             },
             menu: false
         };
@@ -200,10 +190,9 @@ export default {
         .action-btn {
             font-size: 12px;
             font-weight: bold;
-            color: #24292e;
             margin: 0 0 0 1em;
             position: relative;
-            border-radius: 4px 0 0 4px;
+            border-radius: 4px;
             span {
                 vertical-align: middle;
                 padding: 0 3px;
@@ -215,13 +204,16 @@ export default {
                 color: #E40000
             }
         }
+        .count-btn {
+            border-radius: 4px 0 0 4px;
+        }
         .count {
             font-size: 12px;
             vertical-align: middle;
             display: inline-block;
-            border: 1px solid #dcdee2;
+            border: 1px solid #373c3e;
             border-left: 0;
-            padding: 5px 1em 5px;
+            padding: 5px 1em 4px;
             border-radius: 0 4px 4px 0;
         }
     }
@@ -232,9 +224,9 @@ export default {
 .code {
     margin: 1em 0;
     .code-header {
-        background: #fafbfc;
+        background: #1a1c1e;
         padding: .5em;
-        border: 1px solid #e1e4e8;
+        border: 1px solid #373c3e;
         border-bottom: 0;
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
@@ -248,7 +240,7 @@ export default {
         }
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
-        border: 1px solid #e1e4e8;
+        border: 1px solid #373c3e;
     }
 }
 .codes {
