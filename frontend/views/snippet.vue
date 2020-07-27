@@ -81,7 +81,6 @@ export default {
             this.$router.push('/');
             return;
         }
-        CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js'
 
         let rsp = await this.$store.dispatch('snippet/get', this.id);
         if (rsp && rsp.state == 0) {

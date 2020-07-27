@@ -111,7 +111,6 @@ export default {
             }  
 
         }
-        CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js'
     },
     data() {
         return {
