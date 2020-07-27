@@ -122,6 +122,10 @@ new Vue({
                 mode: this.getCodeMode(this.getCodeExt(f.filename)).mime,
                 readOnly
             })
+        },
+        plsLogin() {
+            localStorage.setItem('redirect', this.$route.path);
+            this.$router.replace('/login');
         }
     },
     computed: {

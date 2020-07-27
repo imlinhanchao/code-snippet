@@ -118,7 +118,7 @@ export default {
         },
         async OnStar() {
             try {
-                if (!this.$root.isLogin) return this.$router.push('/login');
+                if (!this.$root.isLogin) return this.$root.plsLogin();
                 let rsp = await this.$store.dispatch(this.snippet.stared ? 'fav/del' : 'fav/create', this.snippet.id);
                 if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
                 await this.Init();
