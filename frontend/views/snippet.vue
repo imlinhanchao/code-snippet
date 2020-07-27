@@ -28,9 +28,11 @@
                             </Poptip>
                         </li>
                         <li>
-                            <Button class="action-btn count-btn">
-                                <Icon custom="fa fa-star-o" ></Icon> <span> Star</span>
-                            </Button><router-link :to="`/s/${id}/stargazers`" class="count">0</router-link>
+                            <Button class="action-btn count-btn" @click="OnStar">
+                                <Icon custom="fa fa-star-o" v-if="!snippet.stared"></Icon>
+                                <Icon custom="fa fa-star" v-if="snippet.stared"></Icon> 
+                                <span> Star</span>
+                            </Button><router-link :to="`/s/${id}/stargazers`" class="count">{{snippet.stars.length}}</router-link>
                         </li>
                         <li><Button class="action-btn count-btn">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
@@ -82,12 +84,7 @@ export default {
             return;
         }
 
-        let rsp = await this.$store.dispatch('snippet/get', this.id);
-        if (rsp && rsp.state == 0) {
-            this.snippet = rsp.data;
-        } else {
-            this.$root.message($m.ERROR, rsp.msg);
-        }  
+        await this.Init();
     },
     data() {
         return {
@@ -116,8 +113,26 @@ export default {
                 this.$router.push('/')
             } catch (error) {
                 console.error(error.message);
-                this.message($m.ERROR, rsp.msg);
+                this.message($m.ERROR, error.message);
             }
+        },
+        async OnStar() {
+            try {
+                let rsp = await this.$store.dispatch(this.snippet.stared ? 'fav/del' : 'fav/create', this.snippet.id);
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                await this.Init();
+            } catch (error) {
+                console.error(error.message);
+                this.message($m.ERROR, error.message);
+            }
+        },
+        async Init() {
+            let rsp = await this.$store.dispatch('snippet/get', this.id);
+            if (rsp && rsp.state == 0) {
+                this.snippet = rsp.data;
+            } else {
+                this.$root.message($m.ERROR, rsp.msg);
+            }  
         }
     },
     computed: {
