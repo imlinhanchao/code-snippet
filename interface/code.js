@@ -91,35 +91,45 @@ class Module extends App {
     }
 
     async get(snippet) {
-        let codes = await Code.findAll({
-            where: { snippet },
-            order: [['create_time', 'ASC']]
-        });
+        try {
+            let codes = await Code.findAll({
+                where: { snippet },
+                order: [['create_time', 'ASC']]
+            });
 
-        if (!codes) {
-            throw this.error.notexisted;
+            if (!codes) {
+                throw this.error.notexisted;
+            }
+
+            return codes.map(d => App.filter(d, this.saftKey));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
         }
-
-        return codes.map(d => App.filter(d, this.saftKey));
     }
 
     async getAll(snippets) {
-        let codes = await Code.findAll({
-            where: {
-                snippet: {
-                    [Code.db.Op.in]: snippets
+        try {
+            let codes = await Code.findAll({
+                where: {
+                    snippet: {
+                        [Code.db.Op.in]: snippets
+                    }
                 }
+            });
+
+            if (!codes) {
+                throw this.error.notexisted;
             }
-        });
 
-        if (!codes) {
-            throw this.error.notexisted;
+            return codes.map(d => App.filter(d, this.saftKey));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
         }
-
-        return codes.map(d => App.filter(d, this.saftKey));
     }
     
-    async query(data) {
+    async query(data, onlyData = false) {
         // $ = like
         let ops = {
             filename: App.ops.like,
@@ -134,7 +144,8 @@ class Module extends App {
             );
 
             if (onlyData) return queryData;
-            return queryData;
+            queryData.data = queryData.data.map(q => App.filter(q, this.saftKey))
+            return this.okquery(queryData);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
