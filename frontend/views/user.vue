@@ -96,7 +96,7 @@
             </section>
         </section>
         <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-        <Page v-show="!loading" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
+        <Page v-show="!loading && total > 5" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
     </Content>
   </Layout>
 </template>
