@@ -58,7 +58,7 @@ window.$m = {
     get ERROR() { return 3 },
 };
 
-CodeMirror.modeURL = 'https://libs.cdnjs.net/codemirror/5.55.0/mode/%N/%N.min.js';
+CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
 
 new Vue({
     el: '#app',
