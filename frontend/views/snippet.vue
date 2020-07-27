@@ -113,7 +113,7 @@ export default {
                 this.$router.push('/')
             } catch (error) {
                 console.error(error.message);
-                this.message($m.ERROR, error.message);
+                this.$root.message($m.ERROR, error.message);
             }
         },
         async OnStar() {
@@ -124,7 +124,7 @@ export default {
                 await this.Init();
             } catch (error) {
                 console.error(error.message);
-                this.message($m.ERROR, error.message);
+                this.$root.message($m.ERROR, error.message);
             }
         },
         async Init() {
