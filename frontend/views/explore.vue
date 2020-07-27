@@ -132,15 +132,16 @@ export default {
         }
     }
     .code {
-        margin: 1em 0;
+        margin: .5em 0 2em;
         .code-content {
             pre {
                 margin: 0;
             }
             code {
                 font-size: .8em;
+                padding: 0;
+                overflow: auto;
                 max-height: 19em;
-                overflow-y: hidden;
             }
             border-radius: 6px;
             border: 1px solid #515a6e;
