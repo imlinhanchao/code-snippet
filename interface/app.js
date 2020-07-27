@@ -50,17 +50,18 @@ class App {
 
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
         
-        data.query = data.query || {};
+        data = data || {};
         
         // 生成查询条件
-        let q = { where: {}, order: [] };
-        data.query = App.filter(data.query, keys);
-        q.where = App.where(data.query, ops);
+        let q = { where: {} };
+        data = App.filter(data, keys);
+        q.where = App.where(data, ops);
+        q.group = field;
 
         let datalist = [], total = 0;
         try {
-            q.attributes = [[Model.db.fn('COUNT', Model.db.col(field)), 'total']];
-            total = (await Model.findOne(q)).dataValues.total; // 获取总数
+            q.attributes = [[Model.db.fn('COUNT', Model.db.col(field)), 'count'], field];
+            total = await Model.findAll(q); // 获取总数
             return total;
         } catch (err) {
             if (err.isdefine) throw (err);
