@@ -313,8 +313,12 @@ export default {
     }
     .codes {
         flex-direction: column-reverse;
+        .code-list {
+            width: auto;
+        }
         .code-anchor {
             padding: 0;
+            max-width: none;
         }
     }
 }
