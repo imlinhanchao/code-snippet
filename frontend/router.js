@@ -6,6 +6,11 @@ const routers = [{
         title: 'Home'
     },
     component: Index,
+    async beforeRouteEnter(to, from, next) {
+        if (to.meta.login && !this.$root.isLogin) {
+            this.$router.replace('/login');
+        }
+    },
     children: [
         {
             path: '',

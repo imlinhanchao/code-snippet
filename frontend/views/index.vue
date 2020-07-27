@@ -35,6 +35,9 @@ export default {
     },
     async mounted() {
         let rsp = await this.$store.dispatch('account/checklogin');
+        if(this.$route.meta.login && !this.$root.isLogin) {
+            this.$router.replace('/login');
+        }
     },
     data() {
         return {};
