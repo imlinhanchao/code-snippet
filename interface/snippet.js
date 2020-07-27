@@ -107,10 +107,13 @@ class Module extends App {
         }
 
         info.codes = await this.code.get(id);
+        info.stars = await this.fav.get(id, true);
+        info.stared = info.stars.find(s => s.username == this.account.user.username) != undefined;
 
-        if (onlyData) return App.filter(info, this.saftKey.concat(['codes']));
+        let extendKeys = ['codes', 'stars', 'stared'];
+        if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
 
-        return this.okquery(App.filter(info, this.saftKey.concat(['codes'])));
+        return this.okquery(App.filter(info, this.saftKey.concat(extendKeys)));
     }
     
     async query(data, onlyData = false) {
@@ -132,12 +135,11 @@ class Module extends App {
             if (data.fields.indexOf('codes') >= 0) {
                 var ids = queryData.data.map(b => b.id);
                 let codes = await this.code.getAll(ids, true);
-                let stars = await this.fav.count({
-                    snippet: ids
-                }, true);
+                let stars = await this.fav.getAll(ids, true);
                 queryData.data.forEach(d => {
-                    let star = stars.find(s => s.snippet == d.id) || { count: 0 };
-                    d.stars = star.count;
+                    let star = stars.filter(s => s.snippet == d.id)
+                    d.stars = star.length;
+                    d.stared = d.stars > 0 && star.find(s => s.username == this.account.user.username) != undefined;
                     d.codes = codes.filter(c => c.snippet == d.id);
                 });
             }
