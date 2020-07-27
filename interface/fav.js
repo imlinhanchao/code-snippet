@@ -33,13 +33,11 @@ class Module extends App {
         }
     }
 
-    async del(snippet) {
+    async del(data) {
         try {
+            data.username = this.account.user.username;
             let fav = await Fav.destroy({
-                where: {
-                    snippet,
-                    username: this.account.user.username
-                }
+                where: data
             });
             return this.okdelete(fav.id);
         } catch (err) {
@@ -64,6 +62,27 @@ class Module extends App {
             if(onlyData) return favs
 
             return this.okquery(favs);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async getAll(snippets) {
+        try {
+            let favs = await Fav.findAll({
+                where: {
+                    snippet: {
+                        [Fav.db.Op.in]: snippets
+                    }
+                }
+            });
+
+            if (!favs) {
+                throw this.error.notexisted;
+            }
+
+            return favs.map(d => App.filter(d, this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
