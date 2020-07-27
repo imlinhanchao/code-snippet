@@ -108,7 +108,7 @@ class Module extends App {
 
         info.codes = await this.code.get(id);
         info.stars = await this.fav.get(id, true);
-        info.stared = info.stars.find(s => s.username == this.account.user.username) != undefined;
+        info.stared = this.account.islogin && info.stars.find(s => s.username == this.account.user.username) != undefined;
 
         let extendKeys = ['codes', 'stars', 'stared'];
         if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
@@ -139,7 +139,7 @@ class Module extends App {
                 queryData.data.forEach(d => {
                     let star = stars.filter(s => s.snippet == d.id)
                     d.stars = star.length;
-                    d.stared = d.stars > 0 && star.find(s => s.username == this.account.user.username) != undefined;
+                    d.stared = this.account.islogin && d.stars > 0 && star.find(s => s.username == this.account.user.username) != undefined;
                     d.codes = codes.filter(c => c.snippet == d.id);
                 });
             }
