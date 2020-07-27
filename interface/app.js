@@ -44,6 +44,30 @@ class App {
         }
     }
 
+    // 通用统计接口
+    async count(data, Model, ops, field='id') {
+        let keys = Model.keys();
+
+        keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
+        
+        data.query = data.query || {};
+        
+        // 生成查询条件
+        let q = { where: {}, order: [] };
+        data.query = App.filter(data.query, keys);
+        q.where = App.where(data.query, ops);
+
+        let datalist = [], total = 0;
+        try {
+            q.attributes = [[Model.db.fn('COUNT', Model.db.col(field)), 'total']];
+            total = (await Model.findOne(q)).dataValues.total; // 获取总数
+            return total;
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (App.error.db(err));
+        }
+    }
+
     // 通用查询接口
     async query(data, Model, ops) {
         let keys = Model.keys();
