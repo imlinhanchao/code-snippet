@@ -3,6 +3,7 @@ const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
 const Code = require('./code');
+const Fav = require('./fav');
 const Snippet = model.snippet;
 
 let __error__ = Object.assign({
@@ -16,6 +17,7 @@ class Module extends App {
         this.name = 'Snippet';
         this.account = new Account(session);
         this.code = new Code(session);
+        this.fav = new Fav(session);
         this.saftKey = ['id', 'create_time', 'update_time'].concat(Snippet.keys());
     }
 
@@ -130,8 +132,14 @@ class Module extends App {
             if (data.fields.indexOf('codes') >= 0) {
                 var ids = queryData.data.map(b => b.id);
                 let codes = await this.code.getAll(ids, true);
-                queryData.data.forEach(d => d.codes =
-                    codes.filter(c => c.snippet == d.id));
+                let stars = await this.fav.count({
+                    snippet: ids
+                }, true);
+                queryData.data.forEach(d => {
+                    let star = stars.find(s => s.snippet == d.id) || { count: 0 };
+                    d.stars = star.count;
+                    d.codes = codes.filter(c => c.snippet == d.id);
+                });
             }
 
             if (onlyData) return queryData;

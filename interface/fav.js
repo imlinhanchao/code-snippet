@@ -91,6 +91,29 @@ class Module extends App {
             throw (this.error.db(err));
         }
     }
+
+    async count(data, onlyData = false) {
+        // $ = like
+        let ops = {
+            username: App.ops.equal,
+            snippet: App.ops.in,
+            create_time: App.ops.less
+        };
+
+        try {
+            let total = await super.count(
+                data, Fav, ops, 'snippet'
+            );
+
+            total = total.map(t => ({ count: t.dataValues.count, snippet: t.snippet }));
+        
+            if (onlyData) return total;
+            return this.okquery(total);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
 }
 
 module.exports = Module;
