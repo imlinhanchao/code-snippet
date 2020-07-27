@@ -217,7 +217,9 @@ export default {
                         this.loginModel = false;
                         this.$emit('input', false);
                         this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} !`, 'Hi !');
-                        this.$router.push('/');
+                        let path = localStorage.getItem('redirect') || '/';
+                        this.$router.push(path);
+                        localStorage.removeItem('redirect');
                     } else {
                         this.$root.message($m.ERROR, rsp.msg);
                     }

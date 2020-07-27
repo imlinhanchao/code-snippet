@@ -105,6 +105,9 @@ export default {
             if (rsp && rsp.state == 0) {
                 this.snippet = rsp.data;
                 this.files = rsp.data.codes;
+                // if (this.snippet.username != this.$root.loginUser.username) {
+                //     this.$router.push(`/s/${this.snippet.id}`);
+                // }
                 setTimeout(() => this.files.forEach(this.loadCodeMode), 200);
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
