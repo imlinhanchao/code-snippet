@@ -42,7 +42,7 @@
                                 confirm
                                 title="Are you sure want to delete this code ?"
                                 @on-ok="OnRemove(i)">
-                                <Button :style="{ color: files.length <= 1 ? '#CCC': '#000'}" 
+                                <Button :style="{ color: files.length <= 1 ? '#535353': '#f0f0f0'}" 
                             :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
                             </Poptip></span>
                         </Input>
@@ -432,13 +432,14 @@ export default {
 }
 .layout-form {
     width: 100%;
-    max-width: 1280px;
+    max-width: 980px;
     margin: auto;
-    margin-top: 1em;
+    margin: 1em 0;
     padding: 0 1em;
 }
 .snippet-form {
     display: flex;
+    justify-content: center;
     .snippet-anchor {
         margin-top: 1em;
         padding: 0 1em;
