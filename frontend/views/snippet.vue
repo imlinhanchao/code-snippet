@@ -46,26 +46,50 @@
             </aside>
         </header>
         <article>
-            <section class="code-desc">
-                {{snippet.description}}
-            </section>
-            <article class="codes">
-                <section class="code-list">
-                    <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
-                        <section class="code-header">
-                            <span>{{c.filename}}</span>
-                        </section>
-                        <section class="code-content">
-                            <pre v-hljs="c.content"><code></code></pre>
-                        </section>
+            <Tabs :animated="false" class="snippet-tabs" v-model="tab" @on-click="OnTab">
+                <TabPane label="Code" icon="md-code" name="code">
+                    <section class="code-desc">
+                        {{snippet.description}}
                     </section>
-                </section>
+                    <article class="codes">
+                        <section class="code-list">
+                            <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
+                                <section class="code-header">
+                                    <span>{{c.filename}}</span>
+                                </section>
+                                <section class="code-content">
+                                    <pre v-hljs="c.content"><code></code></pre>
+                                </section>
+                            </section>
+                        </section>
                         <section class="code-anchor" v-if="snippet.codes.length > 1">
-                    <Anchor show-ink :bounds="10" :scroll-offset="65">
-                        <AnchorLink v-for="(f, i) in snippet.codes" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
-                    </Anchor>
-                </section>
-            </article>
+                            <Anchor show-ink :bounds="10" :scroll-offset="65">
+                                <AnchorLink v-for="(f, i) in snippet.codes" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
+                            </Anchor>
+                        </section>
+                    </article>
+                </TabPane>
+                <TabPane label="Stars" icon="md-star-outline" name="star">
+                    <Row class="stars">
+                        <Col span="8" v-for="(s, i) in stars" v-bind:key="i">
+                            <article class="star-info">
+                                <section>
+                                    <img :src="s.username == $root.loginUser.username ? 
+                                        $root.fileUrl($root.loginUser.avatar, '/img/user.png') : 
+                                        `/api/account/avatar/${s.username}`" />
+                                </section>
+                                <section class="star-name">
+                                    <p class="nikename">{{s.nickname}}</p>
+                                    <p class="lastlogin">Last Login: <Time :time="s.lastlogin"></Time></p>
+                                </section>
+                            </article>
+                        </Col>
+                    </Row>
+                </TabPane>
+                <TabPane label="Forks" icon="md-git-branch" name="fork">
+
+                </TabPane>
+            </Tabs>
         </article>
   </Layout>
 </template>
@@ -101,7 +125,9 @@ export default {
                 username: '',
                 codes: []
             },
-            menu: false
+            stars: [],
+            menu: false,
+            tab: 'code'
         };
     },
     methods: {
@@ -127,14 +153,50 @@ export default {
                 this.$root.message($m.ERROR, error.message);
             }
         },
-        async Init() {
+        async OnTab(name) {
+            let title = this.snippet.description;
+            let path = this.$route.path;
+            switch(name) {
+                case 'code': path = `/s/${this.snippet.id}`; break;
+                case 'star': path = `/s/${this.snippet.id}/star`; title += ' - Star'; break;
+            }
+            if (path == this.$route.path) return;
+            this.$router.push(path);
+            this.$util.title(title);
+        },
+        async getSnippet(id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
             if (rsp && rsp.state == 0) {
                 this.snippet = rsp.data;
+                return true;
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
                 this.$router.push('/');
+                return false;
             }  
+        },
+        async getStars(username) {
+            let rsp = await this.$store.dispatch('account/query', {
+                username
+            });
+            if (rsp && rsp.state == 0) {
+                this.stars = rsp.data.data;
+                return true;
+            } else {
+                this.$root.message($m.ERROR, rsp.msg);
+                this.$router.push('/');
+                return false;
+            }  
+        },
+        async Init() {
+            if(!await this.getSnippet('snippet/get', this.id)) return;
+            this.getStars(this.snippet.stars.map(s => s.username));
+            let title = this.snippet.description;
+            if (this.$route.meta.title == 'Star') {
+                this.tab = 'star';
+                title += ' - Star'
+            }
+            this.$util.title(title);
         }
     },
     computed: {
@@ -222,6 +284,7 @@ export default {
         }
         .count-btn {
             border-radius: 4px 0 0 4px;
+            height: 100%;
         }
         .count {
             font-size: 12px;
@@ -231,6 +294,7 @@ export default {
             border-left: 0;
             padding: 5px 1em 6px;
             border-radius: 0 4px 4px 0;
+            height: 100%;
         }
     }
 }
@@ -267,11 +331,41 @@ export default {
         padding: 0 1em;
         width: 0;
     }
-    .code-anchor {
-        margin-top: 1em;
+}
+.code-anchor {
+    margin-top: 1em;
+    padding: 0 1em;
+    max-width: 20%;
+}
+.snippet-tabs {
+    margin: 1em 0;
+}
+.star-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .star-name {
+        display: flex;
+        flex-direction: column;
         padding: 0 1em;
-        max-width: 20%;
+        .username {
+            font-size: 1.2em;
+        }
+        .lastlogin {
+            font-size: .5em;
+        }
     }
+    img {
+        width: 4.5em;
+        height: 4.5em;
+        display: inline-block;
+        padding: 3px;
+        margin: 5px;
+        vertical-align: top;
+        border-radius: 50%;
+        background: #FFF;
+    }
+
 }
 @media (max-width: 480px) {
     .header {
@@ -318,10 +412,11 @@ export default {
         .code-list {
             width: auto;
         }
-        .code-anchor {
-            padding: 0;
-            max-width: none;
-        }
+    }
+    .code-anchor {
+        padding: 0;
+        max-width: none;
+        margin-top: 0;
     }
 }
 </style>
