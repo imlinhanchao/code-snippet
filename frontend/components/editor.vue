@@ -111,8 +111,8 @@ export default {
                 setTimeout(() => this.files.forEach(this.loadCodeMode), 200);
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
+                this.$router.push('/');
             }  
-
         }
     },
     data() {
@@ -358,6 +358,7 @@ export default {
 .vue-codemirror {
     border: 1px solid #373c3e;
     border-radius: 0 0 .5em .5em;
+    overflow: hidden;
 }
 .editor {
     margin: 1em 0;

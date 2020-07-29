@@ -133,6 +133,7 @@ export default {
                 this.snippet = rsp.data;
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
+                this.$router.push('/');
             }  
         }
     },
@@ -256,6 +257,7 @@ export default {
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
         border: 1px solid #373c3e;
+        overflow: hidden;
     }
 }
 .codes {
