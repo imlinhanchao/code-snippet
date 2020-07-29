@@ -309,7 +309,7 @@ export default {
             }
             .lastlogin {
                 color: #CCC;
-                font-size: .5em;
+                font-size: .8em;
             }
             .motto {
                 font-size: 1em;
