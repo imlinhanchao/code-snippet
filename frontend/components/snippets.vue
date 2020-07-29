@@ -9,7 +9,7 @@
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
                     <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
                     <aside>
-                        <p>Created at {{new Date(s.create_time * 1000).toLocaleString()}}</p>
+                        <p>Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
                         <p>{{s.description}}</p>
                     </aside>
                 </h1>

@@ -42,7 +42,7 @@
                 </section>
             </section>
             <aside>
-                <p>Created at {{new Date(snippet.create_time * 1000).toLocaleString()}}</p>
+                <p>Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
             </aside>
         </header>
         <article>
@@ -228,7 +228,7 @@ export default {
             display: inline-block;
             border: 1px solid #373c3e;
             border-left: 0;
-            padding: 5px 1em 4px;
+            padding: 5px 1em 6px;
             border-radius: 0 4px 4px 0;
         }
     }

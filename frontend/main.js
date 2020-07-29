@@ -15,6 +15,7 @@ import 'vue-hljs-with-line-number/line-number.css';
 import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
+import locale from 'iview/dist/locale/en-US';
 
 const isDebug = process.env.NODE_ENV !== 'production';
 Vue.config.debug = isDebug;
@@ -29,7 +30,7 @@ Vue.prototype.$util = Util;
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(iView)
+Vue.use(iView, { locale })
 Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
 
