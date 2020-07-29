@@ -50,7 +50,17 @@ const actions = {
     },
     async getInfo({ commit }, username) {
         try {
-            let rsp = await axios.post('/account/query', { username })
+            let rsp = await axios.post('/account/query', { username: [ username ] })
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async query({ commit }, query) {
+        try {
+            let rsp = await axios.post('/account/query', query)
             rsp = rsp.data;
             return rsp;
         } catch (error) {

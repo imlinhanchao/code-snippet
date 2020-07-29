@@ -272,7 +272,7 @@ class Module extends App {
     async query(query, fields=null, onlyData=false) {
         let ops = {
             id: App.ops.in,
-            username: App.ops.equal,
+            username: App.ops.in,
         };
         query = App.filter(query, Object.keys(ops));
         try {
