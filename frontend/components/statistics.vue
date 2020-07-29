@@ -14,7 +14,7 @@
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}/comment`" class="count">
-                    <Icon custom="fa fa-commenting-o" ></Icon> <span> 0 </span> <span class="text">comments</span>
+                    <Icon type="md-chatboxes" ></Icon> <span> 0 </span> <span class="text">comments</span>
                 </router-link>
             </li>
             <li>
@@ -88,9 +88,10 @@ export default {
             position: absolute;
             flex-direction: column;
             right: .0;
-            background: #FFF;
-            border: 1px solid #f0f0f0;
+            background: #24292e;
+            box-shadow: 0px 0px 1px #f0f0f0;
             top: 50%;
+            color: #f0f0f0;
             li {
                 display: flex;
                 flex-direction: row;

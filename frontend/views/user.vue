@@ -68,33 +68,11 @@
         </div>
       </section>
     </Content>
-    <Content class="snippet" v-if="info.id" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
+    <Content class="snippet" v-if="info.id">
         <section class="none" v-if="snippets.length == 0 && !loading">
             <span>Here is a wasteland of code.</span>
         </section>
-        <section v-for="(s, i) in snippets" v-bind:key="i" :id="`snippet${i}`">
-            <header>
-                <div class="info">
-                    <h1>
-                        <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
-                        <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
-                        <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
-                        <aside>
-                            <p>Created at {{new Date(s.create_time * 1000).toLocaleString()}}</p>
-                            <p>{{s.description}}</p>
-                        </aside>
-                    </h1>
-                </div>
-                <Statistics :snippet="s" ></Statistics>              
-            </header>
-            <section>
-                <section class="code">
-                    <section class="code-content">
-                        <pre v-hljs="s.codes[0].content"><code></code></pre>
-                    </section>
-                </section>
-            </section>
-        </section>
+        <Snippets :snippets="snippets" ></Snippets>
         <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
         <Page v-show="!loading && total > 5" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
     </Content>
@@ -103,12 +81,12 @@
 <script>
 import config from "../../config.json";
 import FileIcon from "../components/fileicon";
-import Statistics from '../components/statistics'
+import Snippets from '../components/snippets'
 
 export default {
     name: "user",
     components: {
-        FileIcon, Statistics
+        FileIcon, Snippets
     },
     mounted() {
         this.init();

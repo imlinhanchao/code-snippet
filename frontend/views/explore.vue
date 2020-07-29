@@ -4,39 +4,17 @@
             <h1><Icon custom="fa fa-file-code-o" ></Icon> Explore Snippet </h1>
         </header>
         <Content class="snippet" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
-            <section v-for="(s, i) in snippets" v-bind:key="i">
-                <header>
-                    <div class="info">
-                        <img :src="s.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${s.username}`" />
-                        <h1>
-                            <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> /
-                            <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
-                            <aside>
-                                <p>Created at {{new Date(s.create_time * 1000).toLocaleString()}}</p>
-                                <p>{{s.description}}</p>
-                            </aside>
-                        </h1>
-                    </div>
-                    <Statistics :snippet="s" ></Statistics>
-                </header>
-                <section>
-                    <section class="code">
-                        <section class="code-content">
-                            <pre v-hljs="s.codes[0].content"><code></code></pre>
-                        </section>
-                    </section>
-                </section>
-            </section>
+            <Snippets :snippets="snippets" ></Snippets>
         </Content>
         <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
     </Layout>
 </template>
 <script>
-import Statistics from '../components/statistics'
+import Snippets from '../components/snippets'
 export default {
     name: "explore",
     components: {
-        Statistics
+        Snippets
     },
     async mounted() {
         await this.loadSnippet();
@@ -101,53 +79,6 @@ export default {
     max-width: 900px;
     padding: 1.5em 2em;
     width: 100%;
-    header {
-        display: flex;
-        justify-content: space-between;
-    }
-    .info {
-        display: flex;
-        font-size: 1.2em;
-        flex: 1;
-        white-space: nowrap;
-        width: 0;
-        img {
-            width: 2.5em;
-            height: 2.5em;
-            display: inline-block;
-            padding: 5px;
-            vertical-align: top;
-            border-radius: 50%;
-        }
-        h1 {
-            font-size: .8em;
-            font-weight: normal;
-            vertical-align: top;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            aside {
-                color: #666;
-                font-size: .8em;
-            }
-        }
-    }
-    .code {
-        margin: .5em 0 2em;
-        .code-content {
-            pre {
-                margin: 0;
-            }
-            code {
-                font-size: .8em;
-                padding: 0;
-                overflow: auto;
-                max-height: 19em;
-            }
-            border-radius: 6px;
-            border: 1px solid #515a6e;
-            overflow: hidden;
-        }
-    }
 }
 .loading {
     position: relative;
