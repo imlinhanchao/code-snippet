@@ -60,7 +60,7 @@
                         </section>
                     </section>
                 </section>
-                <section class="code-anchor">
+                        <section class="code-anchor" v-if="snippet.codes.length > 1">
                     <Anchor show-ink :bounds="10" :scroll-offset="65">
                         <AnchorLink v-for="(f, i) in snippet.codes" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
                     </Anchor>

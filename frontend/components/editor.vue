@@ -83,7 +83,7 @@
                 </section>
             </article>
         </Form>
-        <section class="snippet-anchor">
+        <section class="snippet-anchor" v-if="files.length > 1">
             <Anchor show-ink :bounds="10" :scroll-offset="65">
                 <AnchorLink v-for="(f, i) in files" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
             </Anchor>
