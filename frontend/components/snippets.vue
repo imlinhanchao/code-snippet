@@ -1,10 +1,11 @@
 <template>
-<article class="layout">
+<article class="snippet-layout">
     <section v-for="(s, i) in snippets" v-bind:key="i" :id="`snippet${i}`">
         <header>
             <div class="info">
+                <img v-if="userIcon" :src="s.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${s.username}`" />
                 <h1>
-                    <FileIcon class="icon" :filename="s.codes[0].filename"></FileIcon>
+                    <FileIcon v-if="fileIcon" class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
                     <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
                     <aside>
@@ -13,7 +14,7 @@
                     </aside>
                 </h1>
             </div>
-            <Statistics :snippet="s" ></Statistics>              
+            <Statistics :snippet="s"></Statistics>              
         </header>
         <section>
             <section class="code">
@@ -28,21 +29,32 @@
 
 <script>
 import Statistics from '../components/statistics'
+import FileIcon from "../components/fileicon";
 export default {
     components: {
-        Statistics,
+        Statistics, FileIcon,
     },
     props: {
         snippets: {
             default: []
+        },
+        fileIcon: {
+            type: Boolean,
+            default: false
+        },
+        userIcon: {
+            type: Boolean,
+            default: true
         }
     }
 }
 </script>
 
 <style lang="less" scoped>
-.layout {
+.snippet-layout {
     width: 100%;
+    display: flex;
+    flex-direction: column;
     header {
         display: flex;
         justify-content: space-between;

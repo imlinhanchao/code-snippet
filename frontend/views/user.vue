@@ -68,11 +68,11 @@
         </div>
       </section>
     </Content>
-    <Content class="snippet" v-if="info.id">
+    <Content class="snippet" v-if="info.id" >
         <section class="none" v-if="snippets.length == 0 && !loading">
             <span>Here is a wasteland of code.</span>
         </section>
-        <Snippets :snippets="snippets" ></Snippets>
+        <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
         <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
         <Page v-show="!loading && total > 5" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
     </Content>
@@ -80,13 +80,12 @@
 </template>
 <script>
 import config from "../../config.json";
-import FileIcon from "../components/fileicon";
 import Snippets from '../components/snippets'
 
 export default {
     name: "user",
     components: {
-        FileIcon, Snippets
+        Snippets
     },
     mounted() {
         this.init();
