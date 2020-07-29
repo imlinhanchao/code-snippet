@@ -22,8 +22,8 @@
                     <li><router-link :to="`/u/${$root.loginUser.username}/star`">My Star</router-link></li>
                     <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Fork</router-link></li>
                     <li class="divider"></li>
-                    <li><router-link :to="`/settings`">Setting</router-link></li>
-                    <li><router-link :to="`/login`">Sign out</router-link></li>
+                    <li><router-link to="/settings">Setting</router-link></li>
+                    <li><router-link to="/login">Sign out</router-link></li>
                 </ul>
             </span>
             <span class="menu">
@@ -147,7 +147,7 @@ export default {
     position: relative;
     &:hover {
         .sub-menu {
-            right: -.5em;
+            right: -.8em;
         }
         +.menu {
             color: #cecac3;;
@@ -157,7 +157,7 @@ export default {
         list-style: none;
         color: #e8e6e3;;
         position: absolute;
-        top: .7em;
+        top: .5em;
         right: -20em;
         width: 8em;
         background: #181a1b;;
