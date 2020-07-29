@@ -42,6 +42,11 @@
         vertical-align: middle;
     }
 }
+.captcha-img {
+    height: 28px; 
+    margin: -4px -7px;
+    background: #FFF
+}
 </style>
 <template>
     <Layout class="layout">
@@ -104,7 +109,7 @@
                         class="refresh-captcha"
                         @click="rand=Math.random()"
                     ></Icon>
-                    <img slot="append" :src="`/api/lib/captcha?r=${rand}`" style="height: 28px; margin: -4px -7px;" />
+                    <img slot="append" :src="`/api/lib/captcha?r=${rand}`" class="captcha-img" />
                 </Input>
             </FormItem>
             <div class="login-footer">
