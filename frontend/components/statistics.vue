@@ -18,7 +18,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="`/s/${snippet.id}/stargazers`" class="count">
+                <router-link :to="`/s/${snippet.id}/star`" class="count">
                     <Icon custom="fa fa-star-o" v-if="!snippet.stared" ></Icon>
                     <Icon custom="fa fa-star" v-if="snippet.stared" ></Icon> 
                     <span> {{snippet.stars}} </span> <span class="text">stars</span>

@@ -22,7 +22,8 @@ const routers = [{
         {
             path: 'u/:user',
             meta: {
-                title: 'User'
+                title: 'User',
+                notitle: true
             },
             component: () => import('./views/user')
         },
@@ -42,7 +43,15 @@ const routers = [{
         }, {
             path: '/s/:id',
             meta: {
-                title: 'Snippet'
+                title: 'Snippet',
+                notitle: true
+            },
+            component: () => import('./views/snippet')
+        }, {
+            path: '/s/:id/star',
+            meta: {
+                title: 'Star',
+                notitle: true
             },
             component: () => import('./views/snippet')
         }, {
@@ -58,7 +67,10 @@ const routers = [{
     meta: {
         title: 'Login'
     },
-    component: () => import('./views/login')
+    component: () => import('./views/login'),
+    async beforeRouteEnter(to, from, next) {
+        console.log(to)
+    }
 }, {
     path: '/register',
     meta: {
