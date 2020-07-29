@@ -50,7 +50,7 @@ app.use(session({
 app.use('/api', api);
 
 // 其他页面交给vue处理
-app.use(function (req, res/*, next*/) {F
+app.use(function (req, res/*, next*/) {
     res.sendFile('public/index.html');
 });
 
