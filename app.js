@@ -50,8 +50,8 @@ app.use(session({
 app.use('/api', api);
 
 // 其他页面交给vue处理
-app.use(function (req, res/*, next*/) {
-    res.sendfile('public/index.html');
+app.use(function (req, res/*, next*/) {F
+    res.sendFile('public/index.html');
 });
 
 // error handler
