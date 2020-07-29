@@ -133,7 +133,7 @@ export default {
             let rsp = await this.$store.dispatch("account/getInfo", username);
             if (rsp.data.total) {
                 this.info = rsp.data.data[0];
-                this.$util.title(this.info.nickname + (this.$route.params.page ? ' Page ' + this.$route.params.page : ''));
+                this.$util.title(this.info.nickname + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
                 this.$router.push("/");
