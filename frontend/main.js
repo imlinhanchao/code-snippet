@@ -43,7 +43,7 @@ const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
-    Util.title(to.meta.title);
+    if(!to.meta.notitle) Util.title(to.meta.title);
     next();
 });
 
@@ -144,6 +144,14 @@ new Vue({
         },
         isLogin() {
             return this.$store.getters['account/isLogin'];
+        }
+    },
+    watch: {
+        $route(to, from) {
+            console.info(to);
+            if (to.path == '/login') {
+                localStorage.setItem('redirect', from.path);
+            }
         }
     }
 });
