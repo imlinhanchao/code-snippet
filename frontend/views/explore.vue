@@ -31,9 +31,11 @@ export default {
         async loadSnippet(query={}) {
             try {
                 let count = 10;
+                this.loading = true;
                 let rsp = await this.$store.dispatch("snippet/query", {
                     query: { create_time: this.last_data, ...query }, index: 0
                 });
+                this.loading = false;
                 if (!rsp || rsp.state != 0) {
                     this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
@@ -46,12 +48,12 @@ export default {
                 this.last_data = this.snippets[this.snippets.length - 1].create_time
             } catch (error) {
                 this.$root.message($m.ERROR, err.message);
+                this.loading = false;
             }
         },
         async loadMore() {
-            this.loading = true;
             await this.loadSnippet();
-            this.loading = false;
+            
         }
     },
     computed: {
