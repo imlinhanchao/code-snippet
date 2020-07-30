@@ -145,7 +145,7 @@ export default {
                 let count = 10;
                 this.snippets = [];
                 let rsp = await this.$store.dispatch("snippet/query", {
-                    query: { username }, index: (this.page - 1) * 5, count: 5
+                    query: { username, private: this.isCurrentUser ? false : undefined }, index: (this.page - 1) * 5, count: 5
                 });
                 this.loading = false;
                 if (!rsp || rsp.state != 0) {

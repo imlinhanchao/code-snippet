@@ -106,6 +106,10 @@ class Module extends App {
             throw this.error.notexisted;
         }
 
+        if (info.private && (!this.account.islogin || info.username != this.account.user.username)) {
+            throw this.error.limited;
+        }
+
         info.codes = await this.code.get(id);
         info.stars = await this.fav.get(id, true);
         info.stared = this.account.islogin && info.stars.find(s => s.username == this.account.user.username) != undefined;
@@ -130,6 +134,9 @@ class Module extends App {
             let queryData = await super.query(
                 data, Snippet, ops
             );
+
+            queryData.data = queryData.data.filter(q => (!q.private 
+                || (this.account.islogin && q.username == this.account.user.username)))
 
             data.fields = data.fields || ['codes'].concat(this.saftKey)
             if (data.fields.indexOf('codes') >= 0) {
