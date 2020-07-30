@@ -160,7 +160,12 @@ export default {
             let rsp = await this.$store.dispatch("account/getInfo", username);
             if (rsp.data.total) {
                 this.info = rsp.data.data[0];
-                this.$util.title(this.info.nickname + (this.$route.params.page.snippet ? ' - Page ' + this.$route.params.page.snippet : ''));
+                let title = this.info.nickname;
+                switch(this.$route.params.type) {
+                    case 'snippet': title = title + '\' Snippets';break;
+                    case 'star': title = title + '\' Stars';break;
+                }
+                this.$util.title(title + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
                 this.$router.push("/");

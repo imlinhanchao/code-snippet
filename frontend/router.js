@@ -30,7 +30,8 @@ const routers = [{
         {
             path: 'u/:user/:type/:page',
             meta: {
-                title: 'User'
+                title: 'User',
+                notitle: true
             },
             component: () => import('./views/user')
         }, {
