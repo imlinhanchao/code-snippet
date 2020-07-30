@@ -138,7 +138,6 @@ export default {
     },
     methods: {
         async init() {
-            this.snippets = [];
             if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
@@ -169,7 +168,7 @@ export default {
                 this.$util.title(title + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
-                this.$router.push("/");
+                this.$router.push('');
             }
         },
         async loadSnippet(username) {
