@@ -175,7 +175,6 @@ export default {
             try {
                 this.loading = true;
                 let count = 10;
-                this.snippets = [];
                 let rsp = await this.$store.dispatch("snippet/query", {
                     query: { username, private: this.isCurrentUser ? false : undefined }, index: (this.page.snippet - 1) * 5, count: 5
                 });
@@ -196,7 +195,6 @@ export default {
             try {
                 this.loading = true;
                 let count = 10;
-                this.snippets = [];
                 let rsp = await this.$store.dispatch('fav/query', {
                     query: { username }, index: (this.page.star - 1) * 5, count: 5
                 });
