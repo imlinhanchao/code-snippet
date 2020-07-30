@@ -151,6 +151,7 @@ export default {
                         this.loadStar(this.$route.params.user);
                         break;
                     default:
+                        this.tab = 'snippet';
                         this.page.snippet = parseInt(this.$route.params.page || 1);
                         this.loadSnippet(this.$route.params.user);
                 }
