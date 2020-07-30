@@ -123,6 +123,7 @@ class Module extends App {
     async query(data, onlyData = false) {
         // $ = like
         let ops = {
+            id: App.ops.in,
             title: App.ops.like,
             description: App.ops.like,
             username: App.ops.equal,
