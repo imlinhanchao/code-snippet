@@ -70,6 +70,7 @@
                     </article>
                 </TabPane>
                 <TabPane label="Stars" icon="md-star-outline" name="star">
+                    <p v-if="stars.length == 0" style="text-align:center;margin: 5em auto;">Nobody star yet.</p>
                     <Row class="stars">
                         <Col span="8" v-for="(s, i) in stars" v-bind:key="i">
                             <article class="star-info">
