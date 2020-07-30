@@ -68,14 +68,28 @@
         </div>
       </section>
     </Content>
-    <Content class="snippet" v-if="info.id" >
-        <section class="none" v-if="snippets.length == 0 && !loading">
-            <span>Here is a wasteland of code.</span>
-        </section>
-        <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
-        <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-        <Page v-show="!loading && total > 5" :total="total" :current="page" size="small" @on-change="OnPage" :page-size="5"/>
-    </Content>
+    <Tabs :animated="false" class="user-tabs" v-model="tab" @on-click="OnTab" v-if="info.id">
+        <TabPane label="Snippets" icon="md-code" name="snippet">
+            <article class="snippet" >
+                <section class="none" v-if="snippets.length == 0 && !loading">
+                    <span>Here is a wasteland of code.</span>
+                </section>
+                <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
+                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                <Page v-show="!loading && total.snippet > 5" :total="total.snippet" :current="page.snippet" size="small" @on-change="OnPage('snippet', ...arguments)" :page-size="5"/>
+            </article>
+        </TabPane>
+        <TabPane label="Stars" icon="md-star-outline" name="star">
+            <article class="snippet" >
+                <section class="none" v-if="stars.length == 0 && !loading">
+                    <span>{{info.nickname}} doesn’t have any starred snippet yet.</span>
+                </section>
+                <Snippets :snippets="stars" :file-icon="true" :user-icon="false"></Snippets>
+                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                <Page v-show="!loading && total.star > 5" :total="total.star" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
+            </article>
+        </TabPane>
+    </Tabs>
   </Layout>
 </template>
 <script>
@@ -108,32 +122,45 @@ export default {
                 nickname: "",
                 motto: ""
             },
-            last_data: new Date().getTime(),
             snippets: [],
-            total: 0,
+            stars: [],
+            total: {
+                snippet: 0,
+                star: 0
+            },
             loading: false,
-            page: 1
+            page: {
+                snippet: 1,
+                star: 1,
+            },
+            tab: 'snippet',
         };
     },
     methods: {
         async init() {
             this.snippets = [];
-            this.last_data = new Date().getTime();
-            this.page = 1;
             if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
             } else {
-                this.page = parseInt(this.$route.params.page || 1);
                 this.loadUser(this.$route.params.user);
-                this.loadSnippet(this.$route.params.user);
+                switch(this.$route.params.type) {
+                    case 'star':
+                        this.tab = 'star';
+                        this.page.star = parseInt(this.$route.params.page || 1);
+                        this.loadStar(this.$route.params.user);
+                        break;
+                    default:
+                        this.page.snippet = parseInt(this.$route.params.page || 1);
+                        this.loadSnippet(this.$route.params.user);
+                }
             }
         },
         async loadUser(username) {
             let rsp = await this.$store.dispatch("account/getInfo", username);
             if (rsp.data.total) {
                 this.info = rsp.data.data[0];
-                this.$util.title(this.info.nickname + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
+                this.$util.title(this.info.nickname + (this.$route.params.page.snippet ? ' - Page ' + this.$route.params.page.snippet : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
                 this.$router.push("/");
@@ -145,20 +172,47 @@ export default {
                 let count = 10;
                 this.snippets = [];
                 let rsp = await this.$store.dispatch("snippet/query", {
-                    query: { username, private: this.isCurrentUser ? false : undefined }, index: (this.page - 1) * 5, count: 5
+                    query: { username, private: this.isCurrentUser ? false : undefined }, index: (this.page.snippet - 1) * 5, count: 5
                 });
                 this.loading = false;
                 if (!rsp || rsp.state != 0) {
                     this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
                     return;
                 }
-                this.total = rsp.data.total;
+                this.total.snippet = rsp.data.total;
                 if (rsp.data.total == 0) return;
                 this.snippets = rsp.data.data;
-                this.last_data = this.snippets[this.snippets.length - 1].create_time
             } catch (error) {
                 this.loading = false;
-                this.$root.message($m.ERROR, err.message);
+                this.$root.message($m.ERROR, error.message);
+            }
+        },
+        async loadStar(username) {
+            try {
+                this.loading = true;
+                let count = 10;
+                this.snippets = [];
+                let rsp = await this.$store.dispatch('fav/query', {
+                    query: { username }, index: (this.page.star - 1) * 5, count: 5
+                });
+                this.loading = false;
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                let snippet = rsp.data.data.map(d => d.snippet);
+                this.loading = true;
+                rsp = await this.$store.dispatch("snippet/query", {
+                    query: { id: snippet }, index: 0
+                });
+                this.loading = false;
+                if (!rsp || rsp.state != 0) {
+                    this.$Message.error(rsp ? rsp.msg : 'Something Wrong...');
+                    return;
+                }
+                this.total.star = rsp.data.total;
+                if (rsp.data.total == 0) return;
+                this.stars = rsp.data.data;
+            } catch (error) {
+                this.loading = false;
+                this.$root.message($m.ERROR, error.message);
             }
         },
         handleSuccess(res, file) {
@@ -197,8 +251,13 @@ export default {
             await this.loadSnippet(this.$route.params.user);
             this.loading = false;
         },
-        async OnPage(page) {
-            this.$router.push(`/u/${this.$route.params.user}/p/${page}`);
+        OnPage(type, page) {
+            this.$router.push(`/u/${this.$route.params.user}/${type}/${page}`);
+        },
+        async OnTab(tab) {
+            let type = this.$route.params.type || 'snippet';
+            if (tab == type) return;
+            this.$router.push(`/u/${this.$route.params.user}/${tab}/${this.page[tab]}`);
         }
     },
     computed: {
@@ -214,9 +273,6 @@ export default {
         },
         uploadInterface() {
             return "/api/lib/upload";
-        },
-        noMore() {
-            return this.loading || this.total == 0
         }
     },
     watch: {
@@ -328,8 +384,8 @@ export default {
     }
 }
 .snippet {
-    width: 70%;
-    padding: 2.5em 2em;
+    width: 100%;
+    padding: 0 .5em;
     .none {
         text-align: center;
         display: flex;
@@ -389,6 +445,11 @@ export default {
             overflow: hidden;
         }
     }
+}
+.user-tabs {
+    width: 70%;
+    margin-top: 2em;
+    padding: 0 1em;
 }
 .loading {
     position: relative;
