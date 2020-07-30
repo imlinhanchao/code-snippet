@@ -3,9 +3,10 @@
         <Form class="layout-form">
             <article class="snippet">
                 <section class="snippet-data">
+                    <section style="padding: 0 1em" class="isprivate" v-if="snippet.private && isUpdate"><Icon custom="fa fa-lock" title="Private"></Icon></section>
                     <Input class="description" :class="{ isprivate: snippet.private }" type="text" placeholder="Snippet description..." v-model="snippet.description"></Input>
                     <section class="setting">
-                        <span class="private" :class="{ isprivate: snippet.private }" @click="snippet.private = !snippet.private" :title="snippet.private ? 'Private' : 'Public'">
+                        <span v-if="!isUpdate" class="private" :class="{ isprivate: snippet.private }" @click="snippet.private = !snippet.private" :title="snippet.private ? 'Private' : 'Public'">
                             <Icon custom="fa fa-lock" v-if="snippet.private"></Icon>
                             <Icon custom="fa fa-unlock-alt" v-if="!snippet.private"></Icon>
                         </span>
@@ -24,7 +25,7 @@
                             </a>
                             <DropdownMenu slot="list" style="max-height: 30em; overflow:auto;">
                                 <DropdownItem v-for="l in validLangs" :name="l.language" v-bind:key="l.language" 
-                                style="text-align: left;">
+                                style="text-align: left;padding: 2px 8px">
                                     <img :src="l.icon" class="lang_img"/> <span class="lang_name">{{l.language}}</span>
                                 </DropdownItem>
                             </DropdownMenu>
@@ -102,6 +103,7 @@ export default {
     async mounted() {
         if (this.id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
+            this.$root.isLogin || await this.$store.dispatch('account/checklogin');
             if (rsp && rsp.state == 0) {
                 this.snippet = rsp.data;
                 this.files = rsp.data.codes;
@@ -382,10 +384,6 @@ export default {
         }
         .command.iscmd {
             color: #2d8cf0;
-        }
-        .isprivate {
-            color: #e4c811;
-            text-shadow: 0 0 2px #e3deb9;
         }
     }
     .description.isprivate {

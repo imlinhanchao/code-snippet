@@ -8,6 +8,7 @@
                     <FileIcon v-if="fileIcon" class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
                     <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
+                    <Icon custom="fa fa-lock isprivate" v-if="s.private" title="Private"></Icon>
                     <aside>
                         <p>Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
                         <p>{{s.description}}</p>

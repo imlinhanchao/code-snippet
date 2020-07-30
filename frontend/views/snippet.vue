@@ -7,6 +7,7 @@
                     <span>
                         <router-link :to="`/u/${snippet.username}`">{{snippet.username}}</router-link> /
                         <router-link :title="snippet.codes[0].filename" :to="`/s/${snippet.id}`">{{snippet.codes[0].filename}}</router-link>
+                        <Icon custom="fa fa-lock isprivate" title="Private" v-if="snippet.private"></Icon>
                     </span>
                 </h1>
                 <section class="actions">

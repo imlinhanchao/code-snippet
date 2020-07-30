@@ -19,6 +19,11 @@ body {
     font: 400 1em/1.8 'Open Sans', Helvetica Neue, Helvetica, Arial, PingFang SC, Lantinghei SC, Microsoft Yahei, sans-serif;
 }
 
+.isprivate {
+    color: #e4c811;
+    text-shadow: 0 0 2px #e3deb9;
+}
+
 .ivu-layout {
     background-color: transparent; 
 }
@@ -167,6 +172,17 @@ ul.ivu-page {
         .ivu-tabs-tab-active {
             color: #dcdee2;
         }
+    }
+}
+
+.ivu-select-dropdown {
+    background-color: #24292e;
+    .ivu-dropdown-item {
+        &:hover {
+            background-color: transparent;
+            font-weight: bold;
+        }
+        color: #dcdee2;
     }
 }
 
