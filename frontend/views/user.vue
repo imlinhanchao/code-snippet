@@ -82,11 +82,21 @@
         <TabPane label="Stars" icon="md-star-outline" name="star">
             <article class="snippet" >
                 <section class="none" v-if="stars.length == 0 && !loading">
-                    <span>{{info.nickname}} doesn’t have any starred snippet yet.</span>
+                    <span>{{info.nickname}} doesn’t have any starred snippets yet.</span>
                 </section>
                 <Snippets :snippets="stars" :file-icon="true" :user-icon="false"></Snippets>
                 <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                 <Page v-show="!loading && total.star > 5" :total="total.star" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
+            </article>
+        </TabPane>
+        <TabPane label="Forks" icon="md-git-branch" name="fork">
+            <article class="snippet" >
+                <section class="none" v-if="forks.length == 0 && !loading">
+                    <span>{{info.nickname}} doesn’t have any forked snippets yet.</span>
+                </section>
+                <Snippets :snippets="forks" :file-icon="true" :user-icon="false"></Snippets>
+                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                <Page v-show="!loading && total.fork > 5" :total="total.fork" :current="page.fork" size="small" @on-change="OnPage('fork', ...arguments)" :page-size="5"/>
             </article>
         </TabPane>
     </Tabs>
@@ -124,14 +134,17 @@ export default {
             },
             snippets: [],
             stars: [],
+            forks: [],
             total: {
                 snippet: 0,
-                star: 0
+                star: 0,
+                fork: 0
             },
             loading: false,
             page: {
                 snippet: 1,
                 star: 1,
+                fork: 1,
             },
             tab: 'snippet',
         };
@@ -149,6 +162,11 @@ export default {
                         this.page.star = parseInt(this.$route.params.page || 1);
                         this.loadStar(this.$route.params.user);
                         break;
+                    case 'fork':
+                        this.tab = 'fork';
+                        this.page.fork = parseInt(this.$route.params.page || 1);
+                        this.loadFork(this.$route.params.user);
+                        break;
                     default:
                         this.tab = 'snippet';
                         this.page.snippet = parseInt(this.$route.params.page || 1);
@@ -164,6 +182,7 @@ export default {
                 switch(this.$route.params.type) {
                     case 'snippet': title = title + '\' Snippets';break;
                     case 'star': title = title + '\' Stars';break;
+                    case 'fork': title = title + '\' Forks';break;
                 }
                 this.$util.title(title + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
             } else {
@@ -174,7 +193,6 @@ export default {
         async loadSnippet(username) {
             try {
                 this.loading = true;
-                let count = 10;
                 let rsp = await this.$store.dispatch("snippet/query", {
                     query: { username, private: this.isCurrentUser ? false : undefined }, index: (this.page.snippet - 1) * 5, count: 5
                 });
@@ -194,14 +212,15 @@ export default {
         async loadStar(username) {
             try {
                 this.loading = true;
-                let count = 10;
                 let rsp = await this.$store.dispatch('fav/query', {
                     query: { username }, index: (this.page.star - 1) * 5, count: 5
                 });
-                this.loading = false;
-                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                if (rsp.state != 0) {
+                    this.loading = false;
+                    return this.$root.message($m.ERROR, rsp.msg);
+                }
+
                 let snippet = rsp.data.data.map(d => d.snippet);
-                this.loading = true;
                 rsp = await this.$store.dispatch("snippet/query", {
                     query: { id: snippet }, index: 0
                 });
@@ -213,6 +232,29 @@ export default {
                 this.total.star = rsp.data.total;
                 if (rsp.data.total == 0) return;
                 this.stars = rsp.data.data;
+            } catch (error) {
+                this.loading = false;
+                this.$root.message($m.ERROR, error.message);
+            }
+        },
+        async loadFork(username) {
+            try {
+                this.loading = true;
+                let rsp = await this.$store.dispatch('snippet/query', {
+                    query: { 
+                        username, fork_from: {
+                            op: '!=', val: ''
+                        } 
+                    }, index: (this.page.fork - 1) * 5, count: 5
+                });
+                this.loading = false;
+                if (rsp.state != 0) {
+                    return this.$root.message($m.ERROR, rsp.msg);
+                }
+
+                this.total.fork = rsp.data.total;
+                if (rsp.data.total == 0) return;
+                this.forks = rsp.data.data;
             } catch (error) {
                 this.loading = false;
                 this.$root.message($m.ERROR, error.message);
@@ -260,7 +302,7 @@ export default {
         async OnTab(tab) {
             let type = this.$route.params.type || 'snippet';
             if (tab == type) return;
-            this.$router.push(`/u/${this.$route.params.user}/${tab}/${this.page[tab]}`);
+            this.$router.push(`/u/${this.$route.params.user}/${tab}`);
         }
     },
     computed: {
