@@ -37,7 +37,7 @@
                         </li>
                         <li><Button class="action-btn count-btn">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
-                        </Button><router-link :to="`/s/${id}/forks`" class="count">0</router-link>
+                        </Button><router-link :to="`/s/${id}/forks`" class="count">{{snippet.forks}}</router-link>
                         </li>
                     </ul>
                 </section>
@@ -282,7 +282,7 @@ export default {
             position: relative;
             border-radius: 4px;
             span {
-                vertical-align: middle;
+                /*vertical-align: middle;*/
                 padding: 0 3px;
             }
             .ivu-icon {

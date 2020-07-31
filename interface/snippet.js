@@ -139,7 +139,12 @@ class Module extends App {
             info.fork = await this.get(info.fork_from, true);
         }
 
-        let extendKeys = ['codes', 'stars', 'stared', 'fork'];
+        let forks = await super.count({ fork_from: [info.id] }, Snippet, {
+            fork_from: App.ops.in,
+        }, 'fork_from');
+        info.forks = forks.length > 0 ? forks[0].dataValues.count : 0;
+
+        let extendKeys = ['codes', 'stars', 'stared', 'fork', 'forks'];
         if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
 
         return this.okquery(App.filter(info, this.saftKey.concat(extendKeys)));
