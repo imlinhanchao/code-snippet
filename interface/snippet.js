@@ -132,8 +132,10 @@ class Module extends App {
         }
 
         info.codes = await this.code.get(id);
-        info.stars = await this.fav.get(id, true);
-        info.stared = this.account.islogin && info.stars.find(s => s.username == this.account.user.username) != undefined;
+        info.stared = this.account.islogin && (await this.fav.query({
+            query: { username: this.account.user.username, snippet: [info.id] },
+            index: 0, count: 1
+        })).total > 0;
 
         if (info.fork_from) {
             info.fork = await this.get(info.fork_from, true);

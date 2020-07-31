@@ -34,6 +34,14 @@ const routers = [{
                 notitle: true
             },
             component: () => import('./views/user')
+        },
+        {
+            path: 'u/:user/:type',
+            meta: {
+                title: 'User',
+                notitle: true
+            },
+            component: () => import('./views/user')
         }, {
             path: 'edit/:id',
             meta: {
@@ -49,9 +57,16 @@ const routers = [{
             },
             component: () => import('./views/snippet')
         }, {
-            path: '/s/:id/star',
+            path: '/s/:id/:type',
             meta: {
-                title: 'Star',
+                title: 'Snippet',
+                notitle: true
+            },
+            component: () => import('./views/snippet')
+        }, {
+            path: '/s/:id/:type/:page',
+            meta: {
+                title: 'Snippet',
                 notitle: true
             },
             component: () => import('./views/snippet')

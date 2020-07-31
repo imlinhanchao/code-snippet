@@ -33,7 +33,7 @@
                                 <Icon custom="fa fa-star-o" v-if="!snippet.stared"></Icon>
                                 <Icon custom="fa fa-star" v-if="snippet.stared"></Icon> 
                                 <span> Star</span>
-                            </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars.length}}</router-link>
+                            </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars}}</router-link>
                         </li>
                         <li><Button class="action-btn count-btn" @click="OnFork">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
@@ -77,7 +77,8 @@
                     </article>
                 </TabPane>
                 <TabPane label="Stars" icon="md-star-outline" name="star">
-                    <p v-if="stars.length == 0" style="text-align:center;margin: 5em auto;">Nobody star yet.</p>
+                    <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody star yet.</p>
+                    <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="stars">
                         <Col span="8" v-for="(s, i) in stars" v-bind:key="i">
                             <article class="star-info">
@@ -93,6 +94,7 @@
                             </article>
                         </Col>
                     </Row>
+                    <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
                 <TabPane label="Forks" icon="md-git-branch" name="fork">
 
@@ -131,12 +133,19 @@ export default {
                 input: '',
                 fork_from: '',
                 username: '',
-                codes: []
+                codes: [],
+                stars: 0,
+                forks: 0
             },
             stars: [],
             forks: [],
             menu: false,
-            tab: 'code'
+            tab: 'code',
+            page: {
+                star: 1,
+                fork: 1
+            },
+            loading: false,
         };
     },
     methods: {
@@ -185,10 +194,13 @@ export default {
                 this.$root.message($m.ERROR, error.message);
             }
         },
+        OnPage(type, page) {
+            this.$router.push(`/s/${this.snippet.id}/${type}/${page}`);
+        },
         async getSnippet(id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
             if (rsp && rsp.state == 0) {
-                this.snippet = rsp.data;
+                this.snippet = Object.assign(this.snippet, rsp.data);
                 return true;
             } else {
                 this.$root.message($m.ERROR, rsp.msg);
@@ -196,28 +208,51 @@ export default {
                 return false;
             }  
         },
-        async getStars(username) {
-            let rsp = await this.$store.dispatch('account/query', {
-                username
-            });
-            if (rsp && rsp.state == 0) {
-                this.stars = rsp.data.data;
-                return true;
-            } else {
-                this.$root.message($m.ERROR, rsp.msg);
-                this.$router.push('/');
-                return false;
-            }  
+        async getStars(id) {
+            try {
+                this.loading = true;
+                let rsp = await this.$store.dispatch('fav/query', {
+                    query: { snippet: [ id ] }, index: (this.page.star - 1) * 12, count: 12
+                });
+                this.snippet.stars = rsp.data.total;
+                
+                if (rsp.state != 0) {
+                    this.loading = false;
+                    return this.$Message.error(rsp.msg);
+                }
+
+                let username = rsp.data.data.map(d => d.username);
+                rsp = await this.$store.dispatch('account/query', {
+                    username
+                });
+                this.loading = false;
+
+                if (rsp && rsp.state == 0) {
+                    this.stars = rsp.data.data;
+                    return true;
+                } else {
+                    this.$Message.error(rsp.msg);
+                    return false;
+                }  
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
         },
         async Init() {
             if(!await this.getSnippet('snippet/get', this.id)) return;
-            this.getStars(this.snippet.stars.map(s => s.username));
             let title = this.snippet.description;
-            if (this.$route.meta.title == 'Star') {
-                this.tab = 'star';
-                title += ' - Star'
+            switch(this.$route.params.type) {
+                case 'star':
+                    this.tab = 'star';
+                    this.page.star = parseInt(this.$route.params.page || 1);
+                    title += ' - Star';
+                    break;
+                default:
+                    this.tab = 'code';
             }
             this.$util.title(title);
+            this.getStars(this.snippet.id);
         }
     },
     computed: {
@@ -233,6 +268,10 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.loading {
+    text-align: center;
+    margin: 2em auto;
+}
 .layout {
     width: 100%;
     max-width: 1280px;
