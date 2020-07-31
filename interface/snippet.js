@@ -25,7 +25,7 @@ class Module extends App {
         return __error__;
     }
     
-    async new(data) {
+    async new(data, onlyData=false) {
         try {
             data.username = this.account.user.username;
             if (!App.haskeys(data, ['codes'])) throw this.error.param;
@@ -34,6 +34,7 @@ class Module extends App {
             data.codes.forEach(c => c.snippet = snippet.id);
             snippet.codes = (await this.code.create(data.codes))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
+            if (onlyData) return snippet;
             return this.okcreate(snippet);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -91,6 +92,26 @@ class Module extends App {
             });
             await this.code.del(data.id);
             return this.okdelete(info.id);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async fork(data) {
+        try {
+            if (!App.haskeys(data, ['id'])) throw this.error.param;
+
+            let snippet = await this.get(data.id, true);
+
+            if (snippet.private && (!this.account.islogin || snippet.username != this.account.user.username)) {
+                throw this.error.limited;
+            }
+    
+            snippet.fork_from = snippet.id;
+            delete snippet.id;
+
+            return await this.new(snippet);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

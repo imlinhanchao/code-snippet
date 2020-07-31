@@ -24,6 +24,7 @@ class Module extends App {
     async create(codes) {
         try {
             if (codes.length <= 0) return [];
+            codes.forEach(c => c.id = undefined);
             return await Code.bulkCreate(codes);
         } catch (err) {
             if (err.isdefine) throw (err);
