@@ -72,12 +72,14 @@ export default {
         white-space: nowrap;
         width: 0;
         img {
-            width: 2.5em;
-            height: 2.5em;
+            width: 2em;
+            height: 2em;
             display: inline-block;
-            padding: 5px;
+            border: 1px solid #FFF;
             vertical-align: top;
             border-radius: 50%;
+            background: #FFF;
+            margin: 5px;
         }
         h1 {
             font-size: .8em;

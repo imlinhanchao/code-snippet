@@ -197,7 +197,7 @@ class Module extends App {
 
                 queryData.data.forEach(d => {
                     if (d.fork_from == '') return;
-                    d.fork = snippets.data.find(s => s.id = d.fork_from);
+                    d.fork = snippets.data.find(s => s.id == d.fork_from);
                 });
             }
 
