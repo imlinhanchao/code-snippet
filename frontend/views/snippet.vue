@@ -87,7 +87,7 @@
                                         $root.fileUrl($root.loginUser.avatar, '/img/user.png') : 
                                         `/api/account/avatar/${s.username}`" />
                                 </section>
-                                <section class="star-name">
+                                <section class="info">
                                     <p class="nikename">{{s.nickname}}</p>
                                     <p class="lastlogin">Last Login: <Time :time="s.lastlogin"></Time></p>
                                 </section>
@@ -97,7 +97,24 @@
                     <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
                 <TabPane label="Forks" icon="md-git-branch" name="fork">
-
+                    <p v-if="forks.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody fork yet.</p>
+                    <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                    <Row class="forks">
+                        <Col span="8" v-for="(s, i) in forks" v-bind:key="i" style="min-width: 11em">
+                            <article class="fork-info">
+                                <section>
+                                    <img :src="s.username == $root.loginUser.username ? 
+                                        $root.fileUrl($root.loginUser.avatar, '/img/user.png') : 
+                                        `/api/account/avatar/${s.username}`" />
+                                </section>
+                                <section class="info">
+                                    <p class="nikename">{{s.user.nickname}}</p>
+                                    <p class="source"><router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link></p>
+                                </section>
+                            </article>
+                        </Col>
+                    </Row>
+                    <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
             </Tabs>
         </article>
@@ -177,6 +194,7 @@ export default {
             switch(name) {
                 case 'code': path = `/s/${this.snippet.id}`; break;
                 case 'star': path = `/s/${this.snippet.id}/star`; title += ' - Star'; break;
+                case 'fork': path = `/s/${this.snippet.id}/fork`; title += ' - Fork'; break;
             }
             if (path == this.$route.path) return;
             this.$router.push(path);
@@ -214,12 +232,13 @@ export default {
                 let rsp = await this.$store.dispatch('fav/query', {
                     query: { snippet: [ id ] }, index: (this.page.star - 1) * 12, count: 12
                 });
-                this.snippet.stars = rsp.data.total;
                 
                 if (rsp.state != 0) {
                     this.loading = false;
                     return this.$Message.error(rsp.msg);
                 }
+
+                this.snippet.stars = rsp.data.total;
 
                 let username = rsp.data.data.map(d => d.username);
                 rsp = await this.$store.dispatch('account/query', {
@@ -229,6 +248,43 @@ export default {
 
                 if (rsp && rsp.state == 0) {
                     this.stars = rsp.data.data;
+                    return true;
+                } else {
+                    this.$Message.error(rsp.msg);
+                    return false;
+                }  
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
+        },        
+        async getForks(id) {
+            try {
+                this.loading = true;
+                let rsp = await this.$store.dispatch('snippet/query', {
+                    query: { fork_from: [ id ] }, index: (this.page.fork - 1) * 12, count: 12
+                });
+                
+                if (rsp.state != 0) {
+                    this.loading = false;
+                    return this.$Message.error(rsp.msg);
+                }
+
+                this.snippet.forks = rsp.data.total;
+                let forks = rsp.data.data;
+
+                let username = forks.map(d => d.username);
+                rsp = await this.$store.dispatch('account/query', {
+                    username
+                });
+                this.loading = false;
+
+                if (rsp && rsp.state == 0) {
+                    let users = rsp.data.data;
+                    forks.forEach(f => {
+                        f.user = users.find(u => u.username == f.username);
+                    });
+                    this.forks = forks;
                     return true;
                 } else {
                     this.$Message.error(rsp.msg);
@@ -248,11 +304,17 @@ export default {
                     this.page.star = parseInt(this.$route.params.page || 1);
                     title += ' - Star';
                     break;
+                case 'fork':
+                    this.tab = 'fork';
+                    this.page.fork = parseInt(this.$route.params.page || 1);
+                    title += ' - Fork';
+                    break;
                 default:
                     this.tab = 'code';
             }
             this.$util.title(title);
             this.getStars(this.snippet.id);
+            this.getForks(this.snippet.id);
         }
     },
     computed: {
@@ -274,7 +336,7 @@ export default {
 }
 .layout {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1080px;
     margin: auto;
     margin-top: 1em;
 }
@@ -405,19 +467,24 @@ export default {
 .snippet-tabs {
     margin: 1em 0;
 }
-.star-info {
+.star-info, .fork-info {
     display: flex;
     flex-direction: row;
     align-items: center;
-    .star-name {
+    .info {
         display: flex;
         flex-direction: column;
-        padding: 0 1em;
+        padding: 0 .5em;
+        width: calc(100% - 4.8em);
         .username {
             font-size: 1.2em;
         }
         .lastlogin {
             font-size: .5em;
+        }
+        p {
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
     img {
@@ -482,6 +549,11 @@ export default {
         padding: 0;
         max-width: none;
         margin-top: 0;
+    }
+    .stars, .forks {
+        .ivu-col {
+            width: 100%;
+        }
     }
 }
 </style>
