@@ -33,7 +33,7 @@
                                 <Icon custom="fa fa-star-o" v-if="!snippet.stared"></Icon>
                                 <Icon custom="fa fa-star" v-if="snippet.stared"></Icon> 
                                 <span> Star</span>
-                            </Button><router-link :to="`/s/${id}/stargazers`" class="count">{{snippet.stars.length}}</router-link>
+                            </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars.length}}</router-link>
                         </li>
                         <li><Button class="action-btn count-btn" @click="OnFork">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
@@ -134,6 +134,7 @@ export default {
                 codes: []
             },
             stars: [],
+            forks: [],
             menu: false,
             tab: 'code'
         };
