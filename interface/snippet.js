@@ -135,7 +135,11 @@ class Module extends App {
         info.stars = await this.fav.get(id, true);
         info.stared = this.account.islogin && info.stars.find(s => s.username == this.account.user.username) != undefined;
 
-        let extendKeys = ['codes', 'stars', 'stared'];
+        if (info.fork_from) {
+            info.fork = await this.get(info.fork_from, true);
+        }
+
+        let extendKeys = ['codes', 'stars', 'stared', 'fork'];
         if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
 
         return this.okquery(App.filter(info, this.saftKey.concat(extendKeys)));
@@ -160,16 +164,34 @@ class Module extends App {
             queryData.data = queryData.data.filter(q => (!q.private 
                 || (this.account.islogin && q.username == this.account.user.username)))
 
-            data.fields = data.fields || ['codes'].concat(this.saftKey)
+            data.fields = data.fields || ['codes', 'stars', 'fork'].concat(this.saftKey)
             if (data.fields.indexOf('codes') >= 0) {
                 var ids = queryData.data.map(b => b.id);
                 let codes = await this.code.getAll(ids, true);
+                queryData.data.forEach(d => {
+                    d.codes = codes.filter(c => c.snippet == d.id);
+                });
+            }
+
+            if (data.fields.indexOf('stars') >= 0) {
                 let stars = await this.fav.getAll(ids, true);
                 queryData.data.forEach(d => {
                     let star = stars.filter(s => s.snippet == d.id)
                     d.stars = star.length;
                     d.stared = this.account.islogin && d.stars > 0 && star.find(s => s.username == this.account.user.username) != undefined;
-                    d.codes = codes.filter(c => c.snippet == d.id);
+                });
+            }
+
+            var fork_ids = queryData.data.map(b => b.fork_from);
+            fork_ids = fork_ids.filter(d => d !== '');
+            if (data.fields.indexOf('fork_from') >= 0 && fork_ids.length > 0) {
+                let snippets = await this.query({
+                    query: { id: fork_ids }, index: 0, count: -1, fields: ['id', 'codes', 'username']
+                }, true);
+
+                queryData.data.forEach(d => {
+                    if (d.fork_from == '') return;
+                    d.fork = snippets.data.find(s => s.id = d.fork_from);
                 });
             }
 

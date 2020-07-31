@@ -43,6 +43,12 @@
                 </section>
             </section>
             <aside>
+                <p v-if="snippet.fork">
+                    fork from 
+                    <router-link :to="`/s/${snippet.fork.id}`" :title="`${snippet.fork.username} / ${snippet.fork.codes[0].filename}`">
+                    {{snippet.fork.username}} / {{snippet.fork.codes[0].filename}}
+                    </router-link>
+                </p>
                 <p>Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
             </aside>
         </header>
@@ -222,6 +228,8 @@ export default {
         width: 1.2em;
         height: 1.2em;
         vertical-align: middle;
+        border: 1px solid #FFF;
+        background: #FFF;
     }
     span {
         font-size: .8em;

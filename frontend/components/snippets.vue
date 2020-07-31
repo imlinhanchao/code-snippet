@@ -10,6 +10,7 @@
                     <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
                     <Icon custom="fa fa-lock isprivate" v-if="s.private" title="Private"></Icon>
                     <aside>
+                        <p v-if="s.fork">fork from <router-link :to="`/s/${s.fork.id}`" :title="`${s.fork.username} / ${s.fork.codes[0].filename}`">{{s.fork.username}} / {{s.fork.codes[0].filename}}</router-link></p>
                         <p>Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
                         <p>{{s.description}}</p>
                     </aside>
@@ -87,6 +88,10 @@ export default {
             aside {
                 color: #666;
                 font-size: .8em;
+                p {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
             }
         }
     }
