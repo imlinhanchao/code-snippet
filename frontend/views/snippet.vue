@@ -35,7 +35,7 @@
                                 <span> Star</span>
                             </Button><router-link :to="`/s/${id}/stargazers`" class="count">{{snippet.stars.length}}</router-link>
                         </li>
-                        <li><Button class="action-btn count-btn">
+                        <li><Button class="action-btn count-btn" @click="OnFork">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
                         </Button><router-link :to="`/s/${id}/forks`" class="count">{{snippet.forks}}</router-link>
                         </li>
@@ -172,6 +172,18 @@ export default {
             this.$router.push(path);
             this.$util.title(title);
         },
+        async OnFork() {
+            try {
+                if (!this.$root.isLogin) return this.$root.plsLogin();
+                let rsp = await this.$store.dispatch('snippet/fork', this.snippet.id);
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                this.$router.push(`/s/${rsp.data.id}`);
+                this.$root.message($m.SUCCESS, 'Fork Success');
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
+        },
         async getSnippet(id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
             if (rsp && rsp.state == 0) {
@@ -213,6 +225,9 @@ export default {
         }
     },
     watch: {
+        $route() {
+            this.Init();
+        }
     }
 };
 </script>
