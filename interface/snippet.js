@@ -149,6 +149,7 @@ class Module extends App {
         // $ = like
         let ops = {
             id: App.ops.in,
+            fork_from: App.ops.in,
             title: App.ops.like,
             description: App.ops.like,
             username: App.ops.equal,
@@ -164,9 +165,9 @@ class Module extends App {
             queryData.data = queryData.data.filter(q => (!q.private 
                 || (this.account.islogin && q.username == this.account.user.username)))
 
-            data.fields = data.fields || ['codes', 'stars', 'fork'].concat(this.saftKey)
+            data.fields = data.fields || ['codes', 'stars', 'fork', 'forks'].concat(this.saftKey)
+            var ids = queryData.data.map(b => b.id);
             if (data.fields.indexOf('codes') >= 0) {
-                var ids = queryData.data.map(b => b.id);
                 let codes = await this.code.getAll(ids, true);
                 queryData.data.forEach(d => {
                     d.codes = codes.filter(c => c.snippet == d.id);
@@ -184,7 +185,7 @@ class Module extends App {
 
             var fork_ids = queryData.data.map(b => b.fork_from);
             fork_ids = fork_ids.filter(d => d !== '');
-            if (data.fields.indexOf('fork_from') >= 0 && fork_ids.length > 0) {
+            if (data.fields.indexOf('fork_from') >= 0) {
                 let snippets = await this.query({
                     query: { id: fork_ids }, index: 0, count: -1, fields: ['id', 'codes', 'username']
                 }, true);
@@ -192,6 +193,14 @@ class Module extends App {
                 queryData.data.forEach(d => {
                     if (d.fork_from == '') return;
                     d.fork = snippets.data.find(s => s.id = d.fork_from);
+                });
+            }
+
+            if (data.fields.indexOf('forks') >= 0) {
+                let forks = await super.count({ fork_from: ids }, Snippet, ops, 'fork_from');
+                queryData.data.forEach(d => {
+                    let f = forks.find(f => f.dataValues.fork_from == d.id);
+                    d.forks = f ? f.dataValues.count : 0;
                 });
             }
 

@@ -9,7 +9,7 @@
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}/forks`" class="count">
-                    <Icon custom="fa fa-code-fork" ></Icon> <span> 0 </span> <span class="text">forks</span>
+                    <Icon custom="fa fa-code-fork" ></Icon> <span> {{snippet.forks}} </span> <span class="text">forks</span>
                 </router-link>
             </li>
             <li>
