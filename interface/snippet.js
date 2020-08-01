@@ -135,7 +135,7 @@ class Module extends App {
         info.stared = this.account.islogin && (await this.fav.query({
             query: { username: this.account.user.username, snippet: [info.id] },
             index: 0, count: 1
-        })).total > 0;
+        }, true)).total > 0;
 
         if (info.fork_from) {
             info.fork = await this.get(info.fork_from, true);
