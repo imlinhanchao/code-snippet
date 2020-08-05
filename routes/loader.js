@@ -5,6 +5,7 @@ function loader(Module) {
     var express = require('express');
     var router = express.Router();
     router.all('/:fn*', function (req, res, next) {
+        if (req.params.fn.slice(0, 1) == '_') return res.json(App.error.limited);
         let fn = req.params.fn;
         if (Module.cache && Module.cache[fn]) {
             res.header('Cache-Control', `public,max-age=${Module.cache[fn]}`);
