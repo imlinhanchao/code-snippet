@@ -242,6 +242,13 @@ export default {
                     if (f.filename ===  '') {
                         throw new Error(`The filename of <a href="#code${i}">#${i}</a> is empty! `);
                     }
+                    if (f.content ===  '') {
+                        throw new Error(`The content of <a href="#code${i}">#${i}</a> is empty! `);
+                    }
+                }
+
+                if(Array.from(new Set(this.files.filter(f => !f.remove).map(f => f.filename))).length != this.files.length) {
+                    throw new Error('There are duplicate filenames!');
                 }
     
                 return snippet;
