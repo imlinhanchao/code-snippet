@@ -97,6 +97,7 @@ new Vue({
             if (type == $m.SUCCESS) {
                 setTimeout(() => this.msg.content = '', 2000);
             }
+            window.scrollTo(0, 0);
         },
         fileFormatError(file) {
             this.message($m.WARN,

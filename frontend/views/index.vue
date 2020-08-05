@@ -80,7 +80,7 @@ export default {
 .message {
     a {
         display: inline-block;
-        border-bottom: 1px dashed #000;
+        border-bottom: 1px dashed #aca49a;
     }
 }
 </style>
