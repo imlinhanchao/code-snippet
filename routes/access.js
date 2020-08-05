@@ -3,8 +3,13 @@ var router = express.Router();
 const modules = require(require('path').resolve(process.cwd(), 'modules.js'));
 const App = modules.app;
 const Account = modules.account;
+const config = require('../config');
 
 router.all('/:interface/:fn*', function (req, res, next) {
+    if (req.hostname == config.base.preview_domain) {
+        return res.status(404).send('404 not found');
+    }
+
     // 允许不登录访问的接口，若所有函数都允许，则写为 interface: '*'
     const no_login_interface = {
         account: ['login', 'query', 'exist', 'create', 'exists', 'avatar'],

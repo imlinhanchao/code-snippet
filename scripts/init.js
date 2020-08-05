@@ -38,6 +38,7 @@ async function main() {
     }
     config.base['port'] = parseInt(await rl.inputData('Port', config.base['port']));
     config.base['domain'] = await rl.inputData('Domain', `http://localhost:${config.base['port']}`);
+    config.base['preview_domain'] = await rl.inputData('Preview Demain', `preview.local`);
 
     config.base['name'] = await rl.inputData('Website Name', config.base['name']);
     
@@ -52,13 +53,7 @@ async function main() {
     dbConfig['host'] = await rl.inputData('Database Host', 'localhost');
     dbConfig['user'] = await rl.inputData('Database User', 'root');
     dbConfig['password'] = await rl.inputData('Database Password', '');
-    
-    if (await rl.inputData('Do you config WeiXin? ', 'Y') == 'Y') {
-        config.weixin['appid'] = await rl.inputData('App Id', config.weixin['appid']);
-        config.weixin['appsecret'] = await rl.inputData('App Secret', config.weixin['appsecret']);
-        config.weixin['encodingAESKey'] = await rl.inputData('Encoding AESKey', config.weixin['encodingAESKey']);        
-        config.weixin['token'] = await rl.inputData('Token', config.weixin['token']);        
-    }
+
 
     fs.writeFile(path.join(__dirname, '../config.json'),
         JSON.stringify(config, null, 4),

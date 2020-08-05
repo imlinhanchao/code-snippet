@@ -17,6 +17,7 @@ if (!fs.existsSync(path.join(__dirname, 'config.json'))) {
 }
 
 let api = require('./routes/api');
+let view = require('./routes/view');
 let config = require('./config');
 
 let app = express();
@@ -48,6 +49,7 @@ app.use(session({
 }));
 
 app.use('/api', api);
+app.use('/view', view);
 
 // 其他页面交给vue处理
 app.use(function (req, res/*, next*/) {
