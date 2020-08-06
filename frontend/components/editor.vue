@@ -107,6 +107,7 @@ export default {
             if (rsp && rsp.state == 0) {
                 this.snippet = rsp.data;
                 this.files = rsp.data.codes;
+                this.autoexec = this.snippet.command === '';
                 if (this.snippet.username != this.$root.loginUser.username) {
                     this.$router.push(`/s/${this.snippet.id}`);
                 }
@@ -140,7 +141,6 @@ export default {
             }],
             error_msg: '',
             autoexec: true,
-            canAutoExec: false,
             loading: false,
             
         };
@@ -182,6 +182,10 @@ export default {
         },
         canSubmit() {
             return this.snippet.description !== '' && this.hasInvaidFile
+        },
+        canAutoExec() {
+            let lang = this.langs.find(l => l.language == this.snippet.language);
+            return lang ? !!lang.auto : false;
         }
     },
     methods: {
@@ -222,7 +226,6 @@ export default {
             if (info && this.snippet.language != info.lang.language) {
                 this.snippet.language = info.lang.language;
                 this.snippet.command = info.command;
-                this.canAutoExec = !!info.lang.auto;
             }
         },
         OnRemove(i) {
@@ -254,6 +257,7 @@ export default {
                     throw new Error('There are duplicate filenames!');
                 }
     
+                snippet.command = this.autoexec ? '' : snippet.command;
                 return snippet;
             } catch (error) {
                 throw error;
@@ -361,7 +365,6 @@ export default {
             let file = this.files.find(f => f.filename.split('.').slice(-1).join('') == lang.ext);
             let filename = file ? file.filename : 'main.' + lang.ext;
             this.snippet.command = this.getCommand(lang, filename);
-            this.canAutoExec = !!lang.auto
         }
     }
 };
