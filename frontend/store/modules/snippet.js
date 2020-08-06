@@ -68,6 +68,18 @@ const actions = {
             console.error(e.message);
             throw e;
         }
+    },
+    async execute({ commit }, { snippet, codes }) {
+        try {
+            let rsp = await axios.post('/snippet/execute/', {
+                ...snippet, codes: codes.map(c => ({ name: c.filename, contenct: c.content }))
+            });
+            rsp = rsp.data;
+            return rsp;
+        } catch (e) {
+            console.error(e.message);
+            throw e;
+        }
     }
 };
 const getters = {

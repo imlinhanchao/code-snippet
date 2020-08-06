@@ -30,7 +30,7 @@
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
-                        <Button slot="append" title="Try execute"><Icon custom="fa fa-rocket" /></Button>
+                        <Button slot="append" title="Try execute" @click="OnRun"><Icon custom="fa fa-rocket" /></Button>
                     </Input>
                 </section>
             </article>
@@ -89,16 +89,19 @@
                 <AnchorLink v-for="(f, i) in files" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
             </Anchor>
         </section>
+        <Execute v-model="executeModal" :input="snippet.input"></Execute>
     </section>
 </template>
 
 <script>
 import VueCodeMirror from 'vue-codemirror'
+import Execute from './execute'
 
 export default {
     name: "editor",
     components: {
-        codemirror: VueCodeMirror.codemirror
+        codemirror: VueCodeMirror.codemirror,
+        Execute
     },
     async mounted() {
         if (this.id) {
@@ -124,6 +127,7 @@ export default {
     },
     data() {
         return {
+            executeModal: false,
             snippet: {
                 title: '',
                 description: '',
@@ -300,6 +304,9 @@ export default {
                 this.$root.message($m.ERROR, err.message);
                 this.loading = false;
             }
+        },
+        OnRun() {
+            this.executeModal = true;
         },
         isExecute(f) {
             let exts = this.langs.map(l => l.ext);
