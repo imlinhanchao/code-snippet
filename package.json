@@ -34,6 +34,7 @@
     "session-file-store": "^1.4.0",
     "svg-captcha": "^1.4.0",
     "uuid": "^8.2.0",
+    "vue-clipboard2": "^0.3.1",
     "vue-highlight.js": "^3.1.0"
   },
   "devDependencies": {

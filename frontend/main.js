@@ -19,7 +19,9 @@ import locale from 'iview/dist/locale/en-US';
 import CodeMirror from 'codemirror';
 import LoadMode from './loadmode';
 import 'codemirror/mode/meta';
-
+import VueClipboard from 'vue-clipboard2'
+ 
+VueClipboard.config.autoSetContainer = true // add this line
 LoadMode(CodeMirror, "plain");
 CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
 window.CodeMirror = CodeMirror;
@@ -41,6 +43,7 @@ Vue.use(VueRouter);
 Vue.use(iView, { locale })
 Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
+Vue.use(VueClipboard)
 
 // Router config
 const RouterConfig = {

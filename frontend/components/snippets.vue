@@ -20,6 +20,10 @@
         </header>
         <section>
             <section class="code">
+                <section class="code-header">
+                    <section>{{s.codes[0].filename}}</section>
+                    <Action :snippet="s" :code="s.codes[0]"></Action>
+                </section>
                 <section class="code-content">
                     <pre v-hljs="s.codes[0].content"><code></code></pre>
                 </section>
@@ -32,9 +36,10 @@
 <script>
 import Statistics from '../components/statistics'
 import FileIcon from "../components/fileicon";
+import Action from '../components/action';
 export default {
     components: {
-        Statistics, FileIcon,
+        Statistics, FileIcon, Action
     },
     props: {
         snippets: {
@@ -99,6 +104,16 @@ export default {
     }
     .code {
         margin: .5em 0 2em;
+        .code-header {
+            background: #1a1c1e;
+            padding: .5em;
+            border: 1px solid #515a6e;
+            border-bottom: 0;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
         .code-content {
             pre {
                 margin: 0;
@@ -109,7 +124,8 @@ export default {
                 overflow: auto;
                 max-height: 19em;
             }
-            border-radius: 6px;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
             border: 1px solid #515a6e;
             overflow: hidden;
         }

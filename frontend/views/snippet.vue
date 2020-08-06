@@ -63,12 +63,7 @@
                             <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
                                 <section class="code-header">
                                     <section>{{c.filename}}</section>
-                                    <section class="action">
-                                        <a v-if="$root.getCodeExt(c.filename) == 'html'" class="action-link" :href="`${$config.base.preview_url}/view/${snippet.id}/${c.filename}`"
-                                        target="_blank" title="preview">
-                                            <Icon custom="fa fa-chrome"></Icon>
-                                        </a>
-                                    </section>
+                                    <Action :snippet="snippet" :code="c"></Action>
                                 </section>
                                 <section class="code-content">
                                     <pre v-hljs="c.content"><code></code></pre>
@@ -128,11 +123,13 @@
 </template>
 <script>
 import VueCodeMirror from 'vue-codemirror'
+import Action from '../components/action'
 
 export default {
     name: "snippet",
     components: {
-        codemirror: VueCodeMirror.codemirror
+        codemirror: VueCodeMirror.codemirror,
+        Action
     },
     async mounted() {
         if(!this.id) {
@@ -445,12 +442,6 @@ export default {
         border-top-right-radius: 6px;
         display: flex;
         justify-content: space-between;
-        .action {
-            padding: 0 .5em;
-        }
-        .action-link {
-            vertical-align: middle;
-        }
     }
     .code-content {
         pre {
