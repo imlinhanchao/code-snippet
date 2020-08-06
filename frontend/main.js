@@ -67,6 +67,7 @@ window.$m = {
     get ERROR() { return 3 },
 };
 
+if (location.hostname == config.base.preview_domain) location = config.base.domain + location.pathname;
 
 new Vue({
     el: '#app',
