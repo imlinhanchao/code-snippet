@@ -207,7 +207,7 @@ export default {
             let editor = this.getEditor(i);
             if (!editor) return;
             editor.setOption('mode', this.getMode(this.getExt(f)).mime);
-            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
+            this.$code.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
             let ext = this.getExt(f);
             if (f.execute && ext != f.ext) {
                 let lang = this.getLanguage(f);
@@ -307,10 +307,10 @@ export default {
             let editor = this.getEditor(i);
             if (!editor) return;
             editor.setOption('mode', this.getMode(this.getExt(f)).mime);
-            CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
+            this.$code.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
         },
         getMode(ext) {
-            return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
+            return this.$code.findModeByExtension(ext) || this.$code.findModeByExtension('text');
         },
         getExt(f) {
             return f.filename.split('.').slice(-1).join('');

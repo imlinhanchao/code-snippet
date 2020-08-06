@@ -16,7 +16,13 @@ import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
 import locale from 'iview/dist/locale/en-US';
+import CodeMirror from 'codemirror';
+import LoadMode from './loadmode';
+import 'codemirror/mode/meta';
 
+LoadMode(CodeMirror, "plain");
+CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
+window.CodeMirror = CodeMirror;
 const isDebug = process.env.NODE_ENV !== 'production';
 Vue.config.debug = isDebug;
 Vue.config.devtools = isDebug;
@@ -27,6 +33,7 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = '/api/';
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
+Vue.prototype.$code = CodeMirror;
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
@@ -59,7 +66,6 @@ window.$m = {
     get ERROR() { return 3 },
 };
 
-CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
 
 new Vue({
     el: '#app',
@@ -114,7 +120,7 @@ new Vue({
             return name ? img : defaults;
         },
         getCodeMode(ext) {
-            return CodeMirror.findModeByExtension(ext) || CodeMirror.findModeByExtension('text');
+            return this.$code.findModeByExtension(ext) || this.$code.findModeByExtension('text');
         },
         getCodeExt(f) {
             return f.split('.').slice(-1).join('');
