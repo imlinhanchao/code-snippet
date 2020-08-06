@@ -13,6 +13,10 @@ let orm = {
         type: db.ID,
         comment: '所属片段 ID'
     },
+    order: {
+        type: db.INTEGER,
+        comment: '添加順序'
+    },
     input: {
         type: db.TEXT,
         comment: '运行默认输入'
