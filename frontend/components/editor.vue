@@ -195,6 +195,7 @@ export default {
                 ext: ''
             });
             this.$router.replace(`#code${this.files.length - 1}`)
+            setTimeout(() => this.files.forEach(this.loadCodeMode), 200);
         },
         onEditorReady(cm) {
             console.log('the editor is readied!', cm)
@@ -236,9 +237,11 @@ export default {
                 let snippet = this.snippet;
                 snippet.codes = this.files;
     
+                let order = 0;
                 for(let i = 0; i < this.files.length; i++) {
                     let f = this.files[i];
                     if (f.remove) continue;
+                    snippet.codes[i].order = order++;
                     if (f.filename ===  '') {
                         throw new Error(`The filename of <a href="#code${i}">#${i}</a> is empty! `);
                     }

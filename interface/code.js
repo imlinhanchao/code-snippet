@@ -95,7 +95,7 @@ class Module extends App {
         try {
             let codes = await Code.findAll({
                 where: { snippet },
-                order: [['create_time', 'ASC']]
+                order: [['order', 'ASC']]
             });
 
             if (!codes) {

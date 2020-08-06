@@ -176,6 +176,7 @@ class Module extends App {
             var ids = queryData.data.map(b => b.id);
             if (data.fields.indexOf('codes') >= 0) {
                 let codes = await this.code.getAll(ids, true);
+                codes.sort((a,b) => a.order - b.order);
                 queryData.data.forEach(d => {
                     d.codes = codes.filter(c => c.snippet == d.id);
                 });
