@@ -4,6 +4,7 @@ const App = require('./app');
 const Account = require('./account');
 const Code = require('./code');
 const Fav = require('./fav');
+const Glot = require('./glot');
 const Snippet = model.snippet;
 
 let __error__ = Object.assign({
@@ -12,7 +13,9 @@ let __error__ = Object.assign({
 
 class Module extends App {
     constructor(session) {
-        super([ ]);
+        super([
+            { fun: App.ok, name: 'okrun', msg: '执行成功' },
+        ]);
         this.session = session;
         this.name = 'Snippet';
         this.account = new Account(session);
@@ -62,19 +65,20 @@ class Module extends App {
                 return true;
             }), this.saftKey);
 
-            // Filter out all code ids that do not belong to this snippet.
-            let codes_id = (await this.code.get(data.id)).map(c => c.id);
-
-            data.codes = data.codes.filter(c => codes_id.indexOf(c.id) >= 0);
-
-            let removeCodes = data.codes.filter(c => c.remove).map(c => c.id);
-            data.codes = data.codes.filter(c => !c.remove);
             data.codes.forEach(c => {
                 c.snippet = data.id;
                 c.filename = c.filename.trim();
                 c.content = c.content.replace(/\t/g, '    ');
             });
+
+            // Filter out all code ids that do not belong to this snippet.
+            let codes_id = (await this.code.get(data.id)).map(c => c.id);
             let createCodes = data.codes.filter(c => !c.id);
+            data.codes = data.codes.filter(c => codes_id.indexOf(c.id) >= 0);
+
+            let removeCodes = data.codes.filter(c => c.remove).map(c => c.id);
+            data.codes = data.codes.filter(c => !c.remove);
+            
 
             await this.code.remove(removeCodes);
             await this.code.create(createCodes);
@@ -225,6 +229,33 @@ class Module extends App {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
         }
+    }
+
+    async execute(data) {
+        const keys = ['language', 'codes', 'command'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+
+        let result = await Glot.compiler(data.language, data.codes, data.input || '', data.command);
+
+        return this.okrun(result);
+    }
+
+    async run(data) {
+        const keys = ['id', 'type'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+
+        let snippet = await this.get(data.id, true);
+
+        let files = snippet.codes.map(c => ({ name: c.filename, content: c.content }));
+        let result = await Glot.compiler(snippet.language, files, data.input || snippet.input, snippet.autoexec ? '' : snippet.command);
+
+        return this.okrun(result);
     }
 }
 

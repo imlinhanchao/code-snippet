@@ -2,10 +2,12 @@
     "base": {
         "name": "Code Snippet",
         "port": 3000,
-        "domain": "",
+        "domain": "http://localhost:3000",
+        "preview_url": "http://preview.local:3000",
         "identityKey": "",
         "secret": "",
-        "salt": ""
+        "salt": "",
+        "glot": ""
     },
     "file": {
         "upload": "/public/upload/",

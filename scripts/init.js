@@ -42,6 +42,7 @@ async function main() {
     config.base['preview_domain'] = new URL(config.base['preview_url']).hostname;
 
     config.base['name'] = await rl.inputData('Website Name', config.base['name']);
+    config.base['glot'] = await rl.inputData('Glot Token', config.base['glot']);
     
     config.file['maxSize'] = await rl.inputData('Max Size File Upload(MB)', config.file['maxSize']);
     
