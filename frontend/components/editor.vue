@@ -108,6 +108,10 @@ export default {
                 this.snippet = rsp.data;
                 this.files = rsp.data.codes;
                 this.autoexec = this.snippet.command === '';
+                if (this.autoexec) {
+                    let info = this.getExcuteInfo();
+                    this.snippet.command = info.command;
+                }
                 if (this.snippet.username != this.$root.loginUser.username) {
                     this.$router.push(`/s/${this.snippet.id}`);
                 }
