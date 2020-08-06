@@ -62,7 +62,13 @@
                         <section class="code-list">
                             <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
                                 <section class="code-header">
-                                    <span>{{c.filename}}</span>
+                                    <section>{{c.filename}}</section>
+                                    <section class="action">
+                                        <a v-if="$root.getCodeExt(c.filename) == 'html'" class="action-link" :href="`${$config.base.preview_url}/view/${snippet.id}/${c.filename}`"
+                                        target="_blank" title="preview">
+                                            <Icon custom="fa fa-chrome"></Icon>
+                                        </a>
+                                    </section>
                                 </section>
                                 <section class="code-content">
                                     <pre v-hljs="c.content"><code></code></pre>
@@ -437,6 +443,14 @@ export default {
         border-bottom: 0;
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        .action {
+            padding: 0 .5em;
+        }
+        .action-link {
+            vertical-align: middle;
+        }
     }
     .code-content {
         pre {

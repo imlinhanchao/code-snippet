@@ -103,7 +103,6 @@
   </Layout>
 </template>
 <script>
-import config from "../../config.json";
 import Snippets from '../components/snippets'
 
 export default {
@@ -313,7 +312,7 @@ export default {
             let img =
                 this.info.avatar.indexOf("http") == 0
                 ? this.info.avatar
-                : config.file.fileurl + this.info.avatar;
+                : this.$config.file.fileurl + this.info.avatar;
             return this.info.avatar ? img : "/img/user.png";
         },
         uploadInterface() {
@@ -521,6 +520,9 @@ export default {
                 padding-left: 1em;
             }
         }
+    }
+    .user-tabs {
+        width: 100%;
     }
     .snippet {
         width: 100%;

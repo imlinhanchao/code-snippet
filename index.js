@@ -54,6 +54,12 @@ app.use(
         target: `http://localhost:${config.base.port}`
     })
 );
+app.use(
+    '/view',
+    createProxyMiddleware({
+        target: `http://localhost:${config.base.port}`
+    })
+);
 
 app.use(bundler.middleware());
 

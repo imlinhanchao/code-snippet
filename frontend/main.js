@@ -33,6 +33,7 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = '/api/';
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
+Vue.prototype.$config = config;
 Vue.prototype.$code = CodeMirror;
 
 Vue.use(Vuex);

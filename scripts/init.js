@@ -38,7 +38,8 @@ async function main() {
     }
     config.base['port'] = parseInt(await rl.inputData('Port', config.base['port']));
     config.base['domain'] = await rl.inputData('Domain', `http://localhost:${config.base['port']}`);
-    config.base['preview_domain'] = await rl.inputData('Preview Demain', `preview.local`);
+    config.base['preview_url'] = await rl.inputData('Preview Domain', `http://preview.local:${config.base['port']}`);
+    config.base['preview_domain'] = new URL(config.base['preview_url']).hostname;
 
     config.base['name'] = await rl.inputData('Website Name', config.base['name']);
     
