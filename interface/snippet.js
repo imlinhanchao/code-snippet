@@ -31,7 +31,11 @@ class Module extends App {
             if (!App.haskeys(data, ['codes'])) throw this.error.param;
 
             let snippet = App.filter(await super.new(data, Snippet), this.saftKey);
-            data.codes.forEach(c => c.snippet = snippet.id);
+            data.codes.forEach(c => {
+                c.snippet = snippet.id
+                c.filename = c.filename.trim();
+                c.content = c.content.replace(/\t/g, '    ');
+            });
             snippet.codes = (await this.code.create(data.codes))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
             if (onlyData) return snippet;
@@ -60,14 +64,17 @@ class Module extends App {
 
             // Filter out all code ids that do not belong to this snippet.
             let codes_id = (await this.code.get(data.id)).map(c => c.id);
-            let createCodes = data.codes.filter(c => !c.id);
 
             data.codes = data.codes.filter(c => codes_id.indexOf(c.id) >= 0);
 
             let removeCodes = data.codes.filter(c => c.remove).map(c => c.id);
             data.codes = data.codes.filter(c => !c.remove);
-            data.codes.forEach(c => c.snippet = data.id);
-            createCodes.forEach(c => c.snippet = data.id);
+            data.codes.forEach(c => {
+                c.snippet = data.id;
+                c.filename = c.filename.trim();
+                c.content = c.content.replace(/\t/g, '    ');
+            });
+            let createCodes = data.codes.filter(c => !c.id);
 
             await this.code.remove(removeCodes);
             await this.code.create(createCodes);
