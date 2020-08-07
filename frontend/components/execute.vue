@@ -1,22 +1,48 @@
 <template>
-    <Modal v-model="executeModal" title="Execute Codes" width="500" :mask-closable="false" @on-visible-change="OnChange">
-        <section class="content">
-            
-        </section>
-        <section slot="footer" class="footer">
-            <Button type="error" @click="OnExecute" :loading="loading">Execute</Button>
-        </section>
-    </Modal>
+    <section>
+        <Modal v-model="executeModal" title="Execute Codes" width="500" @on-visible-change="OnChange">
+            <section class="content">
+                <Tabs v-model="tab">
+                    <TabPane label="Input" name="input" icon="md-return-left">
+                        <p><Input v-model="input" type="textarea" :rows="6" placeholder="Text entered here will be sent to stdin." >
+                        </Input></p>
+                        <p><Checkbox v-model="defaultInput">Save the Input as Example</Checkbox></p>
+                    </TabPane>
+                    <TabPane label="Output" name="output" icon="ios-arrow-forward">
+                        <section class="result">
+                            <p v-if="executed || loading">> {{snippet.command}}</p>
+                            <p v-if="!executed || loading">{{tip}}</p>
+                            <p v-html="toHtml(result.stderr)" v-if="result.stderr" style="color: #f44336"></p>
+                            <p v-html="toHtml(result.stdout)" v-if="result.stdout"></p>
+                            <p v-html="toHtml(result.error)" v-if="result.error"></p>
+                        </section>
+                    </TabPane>
+                </Tabs>
+            </section>
+            <section slot="footer" class="footer">
+                <Button type="error" @click="OnExecute" :loading="loading">Execute</Button>
+                <Button @click="executeModal = false">Cancel</Button>
+            </section>
+        </Modal>
+    </section>
 </template>
 
 <script>
 export default {
-    name: 'Action',
+    name: 'Execute',
     data() {
         return {
             executeModal: false,
             defaultInput: true,
-            loading: false
+            loading: false,
+            result: {
+                stdout: '',
+                stderr: '',
+                error: ''
+            },
+            executed: false,
+            input: '',
+            tab: 'input'
         }
     },
     props: {
@@ -25,14 +51,24 @@ export default {
             default: false,
             required: true
         },
-        input: {
-            type: String,
-            default: '',
+        auto: {
+            type: Boolean,
+            default: false
+        },
+        snippet: {
+            type: Object,
+            default: {},
+            required: true
+        },
+        codes: {
+            type: Array,
+            default: [],
             required: true
         }
     },
     mounted() {
         this.executeModal = this.value;
+        this.inpuet = this.snippet.input;
     },
     watch: {
         value(val) {
@@ -50,13 +86,64 @@ export default {
         }
     },
     computed: {
+        status() {
+            if (this.result.stderr) {
+                return 'error';
+            }
+            else if(!this.executed) {
+                return 'info'
+            }
+            else {
+                return 'success'
+            }
+        },
+        tip() {
+            if (this.executed) {
+                return this.result.stderr ? 'Compiler Error!' : 'Compiler Success';
+            }
+            else if (this.loading) {
+                return 'Compiling...';
+            }
+            else {
+                return 'Press execute to compile.';
+            }
+        }
     },
     methods: {
         OnChange (val) {
             this.$emit("input", val);
         },
-        OnExecute() {
-
+        async OnExecute() {
+            try {
+                this.tab = 'output';
+                this.executed = false;
+                this.result = {
+                    stdout: '',
+                    stderr: '',
+                    error: ''
+                };
+                this.loading = true;
+                let snippet = Object.assign({}, this.snippet);
+                if (this.auto) snippet.command = '';
+                let rsp = await this.$store.dispatch("snippet/execute", { snippet, codes: this.codes });
+                this.loading = false;
+                this.executed = true;
+                if (rsp.state != 0) {
+                    this.result.stderr = rsp.msg;
+                    return;
+                }
+                this.result = rsp.data;
+            } catch (err) {
+                this.result.stderr = err.message;
+                this.loading = false;
+            }
+        },
+        toHtml(text) {
+            return  text.replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/\t/g, '    ')
+                        .replace(/\n/g, '<br>')
+                        .replace(/\s/g, '&nbsp;')
         }
     }
 }
@@ -64,8 +151,19 @@ export default {
 
 <style lang="less" scoped>
 .footer {
+    display: flex;
+    justify-content: space-between;
     button {
-        width: 100%;
+        width: 45%;
+        margin: 0 2.5%;
     }
+}
+p {
+    margin: .5em 0 ;
+}
+.result {
+    padding: .5em 1em;
+    background: #2b2b2c;
+    height: 100%;
 }
 </style>

@@ -89,7 +89,7 @@
                 <AnchorLink v-for="(f, i) in files" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
             </Anchor>
         </section>
-        <Execute v-model="executeModal" :input="snippet.input"></Execute>
+        <Execute v-model="executeModal" :snippet="snippet" :codes="files" :auto="autoexec"></Execute>
     </section>
 </template>
 
