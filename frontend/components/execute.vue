@@ -78,7 +78,7 @@ export default {
     },
     mounted() {
         this.executeModal = this.value;
-        this.inpuet = this.snippet.input;
+        this.input = this.snippet.input;
         this.defaultInput = this.edit;
     },
     watch: {
@@ -91,7 +91,7 @@ export default {
             }
         },
         input(val) {
-            if (this.input != val && this.defaultInput) {
+            if (this.input != this.snippet.input && this.defaultInput) {
                 this.$emit("change", val);
             }
         }
@@ -138,6 +138,7 @@ export default {
                 };
                 this.loading = true;
                 let snippet = Object.assign({}, this.snippet);
+                snippet.input = this.input;
                 if (this.auto) snippet.command = '';
                 if (!snippet.language) snippet.language = this.getLanguage(this.codes[0]).language;
                 let rsp = await this.$store.dispatch("snippet/execute", { snippet, codes: this.codes });
