@@ -80,18 +80,6 @@ const actions = {
             console.error(e.message);
             throw e;
         }
-    },
-    async run({ commit }, { id, type }) {
-        try {
-            let rsp = await axios.post('/snippet/run/', {
-                id, type
-            });
-            rsp = rsp.data;
-            return rsp;
-        } catch (e) {
-            console.error(e.message);
-            throw e;
-        }
     }
 };
 const getters = {

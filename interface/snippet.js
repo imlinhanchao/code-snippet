@@ -242,21 +242,6 @@ class Module extends App {
 
         return this.okrun(result);
     }
-
-    async run(data) {
-        const keys = ['id', 'type'];
-
-        if (!App.haskeys(data, keys)) {
-            throw (this.error.param);
-        }
-
-        let snippet = await this.get(data.id, true);
-
-        let files = snippet.codes.map(c => ({ name: c.filename, content: c.content }));
-        let result = await Glot.compiler(snippet.language, files, data.input || snippet.input, snippet.autoexec ? '' : snippet.command);
-
-        return this.okrun(result);
-    }
 }
 
 module.exports = Module;

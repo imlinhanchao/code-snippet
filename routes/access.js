@@ -14,7 +14,7 @@ router.all('/:interface/:fn*', function (req, res, next) {
     const no_login_interface = {
         account: ['login', 'query', 'exist', 'create', 'exists', 'avatar'],
         lib: ['captcha'],
-        snippet: ['query', 'get', 'run']
+        snippet: ['query', 'get', 'execute']
     };
 
     let account = new Account(req.session);
