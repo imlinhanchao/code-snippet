@@ -207,7 +207,6 @@ export default {
                 ext: ''
             });
             this.$router.replace(`#code${this.files.length - 1}`)
-            setTimeout(() => this.files.forEach(this.loadCodeMode), 200);
         },
         onEditorReady(cm) {
             console.log('the editor is readied!', cm)
@@ -216,16 +215,13 @@ export default {
             console.log('the editor is focus!', cm)
         },
         OnChangeName(f, i) {
-            let editor = this.getEditor(i);
-            if (!editor) return;
-            editor.setOption('mode', this.getMode(this.getExt(f)).mime);
-            this.$code.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
             let ext = this.getExt(f);
             if (f.execute && ext != f.ext) {
                 let lang = this.getLanguage(f);
                 f.command = this.getCommand(lang, f.filename);
             }
             f.ext = ext;
+            this.loadCodeMode(f, i);
         },
         OnExecute() {
             this.snippet.execute = !this.snippet.execute;

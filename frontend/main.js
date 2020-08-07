@@ -131,7 +131,7 @@ new Vue({
             return f.split('.').slice(-1).join('');
         },
         getCodeOptions(f, readOnly=false) {
-            return Object.assign(this.editorOptions, {
+            return Object.assign(Object.assign({}, this.editorOptions), {
                 mode: this.getCodeMode(this.getCodeExt(f.filename)).mime,
                 readOnly
             })
