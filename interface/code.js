@@ -45,7 +45,7 @@ class Module extends App {
                 }
             });
            
-            let keys = ['filename', 'content', 'command'];
+            let keys = ['filename', 'content', 'order', 'input', 'command', 'execute'];
             for (let i = 0; i < data.length; i++) {
                 let newData = codes.find(c => c.id == data[i].id);
                 if (!newData) continue;

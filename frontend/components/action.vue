@@ -10,12 +10,18 @@
             v-clipboard:error="onError">
             <Icon custom="fa fa-files-o"></Icon>
         </a>
+        <Icon class="action-link execute" custom="fa fa-terminal" v-if="code.execute" title="Execute" @click="executeModal = true"></Icon>
+        <Execute v-model="executeModal" :snippet="code" :codes="[code]" :auto="false"></Execute>
     </section>
 </template>
 
 <script>
+import Execute from '../components/execute'
 export default {
     name: 'Action',
+    components: {
+        Execute
+    },
     props: {
         snippet: {
             required: true
@@ -24,13 +30,18 @@ export default {
             required: true
         }
     },
+    data() {
+        return {
+            executeModal: false
+        }
+    },
     computed: {
     },
     methods: {
         onCopy() {
             this.$Message.success('The code has been copied to your clipboard!');
         },
-        onError: function (e) {
+        onError(e) {
             this.$Message.error('Copy Failed:' + e.message);
         }
     }
@@ -45,5 +56,11 @@ export default {
 .action-link {
     display: inline-block;
     padding: 0 .5em;
+}
+.execute {
+    cursor: pointer;
+    &:hover {
+        color: #2d8cf0;
+    }
 }
 </style>

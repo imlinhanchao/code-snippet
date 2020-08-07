@@ -6,11 +6,17 @@
                     <TabPane label="Input" name="input" icon="md-return-left">
                         <p><Input v-model="input" type="textarea" :rows="6" placeholder="Text entered here will be sent to stdin." >
                         </Input></p>
-                        <p><Checkbox v-model="defaultInput">Save the Input as Example</Checkbox></p>
+                        <p v-if="edit"><Checkbox v-model="defaultInput">Save the Input as Example</Checkbox></p>
                     </TabPane>
                     <TabPane label="Output" name="output" icon="ios-arrow-forward">
                         <section class="result">
-                            <p v-if="executed || loading">> {{snippet.command}}</p>
+                            <p v-if="executed || loading">
+                                <span 
+                                style="color:#9be14f">{{$root.loginUser.username}}</span>@<span 
+                                style="color:#fce96c">localhost</span>:<span 
+                                style="color:#86b1d6">~</span>$ 
+                                {{auto ? './auto-execute' : snippet.command}}&nbsp;&nbsp;
+                            </p>
                             <p v-if="!executed || loading">{{tip}}</p>
                             <p v-html="toHtml(result.stderr)" v-if="result.stderr" style="color: #f44336"></p>
                             <p v-html="toHtml(result.stdout)" v-if="result.stdout"></p>
@@ -64,11 +70,16 @@ export default {
             type: Array,
             default: [],
             required: true
+        },
+        edit: {
+            type: Boolean,
+            default: false
         }
     },
     mounted() {
         this.executeModal = this.value;
         this.inpuet = this.snippet.input;
+        this.defaultInput = this.edit;
     },
     watch: {
         value(val) {
@@ -107,7 +118,10 @@ export default {
             else {
                 return 'Press execute to compile.';
             }
-        }
+        },
+        langs() {
+            return this.$store.getters['snippet/langs'];
+        },
     },
     methods: {
         OnChange (val) {
@@ -125,6 +139,7 @@ export default {
                 this.loading = true;
                 let snippet = Object.assign({}, this.snippet);
                 if (this.auto) snippet.command = '';
+                if (!snippet.language) snippet.language = this.getLanguage(this.codes[0]).language;
                 let rsp = await this.$store.dispatch("snippet/execute", { snippet, codes: this.codes });
                 this.loading = false;
                 this.executed = true;
@@ -144,6 +159,11 @@ export default {
                         .replace(/\t/g, '    ')
                         .replace(/\n/g, '<br>')
                         .replace(/\s/g, '&nbsp;')
+        },
+        getLanguage(f) {
+            let ext = f.filename.split('.').slice(-1).join('');
+            let lang = this.langs.find(l => l.ext == ext)
+            return lang;
         }
     }
 }
@@ -160,10 +180,13 @@ export default {
 }
 p {
     margin: .5em 0 ;
+    padding: 0 1em;
+    white-space: nowrap;
 }
 .result {
-    padding: .5em 1em;
+    padding: .5em 0;
     background: #2b2b2c;
     height: 100%;
+    overflow: auto;
 }
 </style>

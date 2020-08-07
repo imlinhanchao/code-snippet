@@ -59,7 +59,7 @@
                                 <img :src="getLanguage(f).icon" class="lang_img" v-if="getLanguage(f)" /> 
                                 {{getLanguage(f).language}}
                             </span>
-                            <Button slot="append" title="Try execute"><Icon custom="fa fa-rocket" /></Button>
+                            <Button slot="append" title="Try execute" @click="OnRunCode(f)"><Icon custom="fa fa-rocket" /></Button>
                         </Input>
                     </section>
                 </section>
@@ -89,7 +89,8 @@
                 <AnchorLink v-for="(f, i) in files" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
             </Anchor>
         </section>
-        <Execute v-model="executeModal" :snippet="snippet" :codes="files" :auto="autoexec"></Execute>
+        <Execute v-model="executeModal" :snippet="snippet" :codes="files" :auto="autoexec" :edit="true"></Execute>
+        <Execute v-model="executeCode" :snippet="code" :codes="[code]" :auto="false" :edit="true"></Execute>
     </section>
 </template>
 
@@ -128,6 +129,7 @@ export default {
     data() {
         return {
             executeModal: false,
+            executeCode: false,
             snippet: {
                 title: '',
                 description: '',
@@ -150,7 +152,7 @@ export default {
             error_msg: '',
             autoexec: true,
             loading: false,
-            
+            code: {}
         };
     },
     watch: {
@@ -231,6 +233,7 @@ export default {
                 this.snippet.language = info.lang.language;
                 this.snippet.command = info.command;
             }
+            this.autoexec = this.canAutoExec;
         },
         OnRemove(i) {
             if (!this.files[i].id)
@@ -303,6 +306,10 @@ export default {
         },
         OnRun() {
             this.executeModal = true;
+        },
+        OnRunCode(f) {
+            this.code = f;
+            this.executeCode = true;
         },
         isExecute(f) {
             let exts = this.langs.map(l => l.ext);

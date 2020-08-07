@@ -56,7 +56,7 @@
                         <Icon custom="fa fa-lock " title="Private"></Icon>
                         Private
                     </span>
-                    <span class="tag isexecute" v-if="snippet.execute">
+                    <span class="tag isexecute" v-if="snippet.execute" style="cursor:pointer" @click="executeModal = true">
                         <Icon custom="fa fa-terminal " title="Execute"></Icon>
                         Execute
                     </span>
@@ -65,7 +65,7 @@
         </header>
         <article>
             <Tabs :animated="false" class="snippet-tabs" v-model="tab" @on-click="OnTab">
-                <TabPane label="Code" icon="md-code" name="code">
+                <TabPane :label="getLabel('Code', 0, { type: 'md-code' })" name="code">
                     <section class="code-desc">
                         {{snippet.description}}
                     </section>
@@ -73,7 +73,7 @@
                         <section class="code-list">
                             <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
                                 <section class="code-header">
-                                    <section>{{c.filename}}</section>
+                                    <section class="filename">{{c.filename}}</section>
                                     <Action :snippet="snippet" :code="c"></Action>
                                 </section>
                                 <section class="code-content">
@@ -88,7 +88,7 @@
                         </section>
                     </article>
                 </TabPane>
-                <TabPane label="Stars" icon="md-star-outline" name="star">
+                <TabPane :label="getLabel('Stars', stars.length, { type: 'md-star-outline' })" name="star">
                     <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody star yet.</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="stars">
@@ -108,7 +108,7 @@
                     </Row>
                     <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
-                <TabPane label="Forks" icon="md-git-branch" name="fork">
+                <TabPane :label="getLabel('Forks', forks.length, { type: 'md-git-branch' })" name="fork">
                     <p v-if="forks.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody fork yet.</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="forks">
@@ -130,17 +130,19 @@
                 </TabPane>
             </Tabs>
         </article>
+        <Execute v-model="executeModal" :snippet="snippet" :codes="snippet.codes" :auto="snippet.command == ''"></Execute>
   </Layout>
 </template>
 <script>
 import VueCodeMirror from 'vue-codemirror'
 import Action from '../components/action'
+import Execute from '../components/execute'
 
 export default {
     name: "snippet",
     components: {
         codemirror: VueCodeMirror.codemirror,
-        Action
+        Action, Execute
     },
     async mounted() {
         if(!this.id) {
@@ -177,6 +179,7 @@ export default {
                 fork: 1
             },
             loading: false,
+            executeModal: false,
         };
     },
     methods: {
@@ -228,6 +231,27 @@ export default {
         },
         OnPage(type, page) {
             this.$router.push(`/s/${this.snippet.id}/${type}/${page}`);
+        },
+        getLabel(title, count, { custom, type }) {
+            return (h) => {
+                return h('div', [
+                    h('Icon', {
+                        props: {
+                            custom,
+                            type
+                        }
+                    } ),
+                    h('span', title),
+                    h('Badge', {
+                        props: {
+                            count
+                        },
+                        style: {
+                            paddingLeft: '5px'
+                        }
+                    })
+                ])
+            }
         },
         async getSnippet(id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
@@ -384,14 +408,15 @@ export default {
         .ext-info {
             padding: 1em 0 0;
             i {
-                font-size: 1.5em;
+                font-size: 1.2em;
             }
             .tag {
                 background: #24292e;
-                padding: 5px 10px;
+                padding: 5px 15px;
                 border: 1px solid #2e3233;
                 border-radius: 15px;
                 text-shadow: none;
+                margin: 0 .2em;
             }
         }
     }
@@ -467,6 +492,12 @@ export default {
         border-top-right-radius: 6px;
         display: flex;
         justify-content: space-between;
+        .filename {
+            flex: 1;
+            width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
     .code-content {
         pre {
@@ -544,10 +575,11 @@ export default {
                     flex-direction: column;
                     border: 1px solid #e0e0e0;
                     border-radius: 4px;
-                    background-color: #FFF;
+                    background-color: #181a1b;
                     position: absolute;
                     right: .5em;
                     top: 55%;
+                    z-index: 100;
                     li {
                         width: 6em;
                         .count {

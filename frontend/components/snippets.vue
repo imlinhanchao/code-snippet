@@ -8,20 +8,23 @@
                     <FileIcon v-if="fileIcon" class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
                     <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
-                    <Icon custom="fa fa-lock isprivate" v-if="s.private" title="Private"></Icon>
-                    <aside>
-                        <p v-if="s.fork">fork from <router-link :to="`/s/${s.fork.id}`" :title="`${s.fork.username} / ${s.fork.codes[0].filename}`">{{s.fork.username}} / {{s.fork.codes[0].filename}}</router-link></p>
-                        <p>Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
-                        <p>{{s.description}}</p>
-                    </aside>
                 </h1>
+                <span class="tags">
+                    <Icon custom="fa fa-lock isprivate" v-if="s.private" title="Private"></Icon>
+                    <Icon custom="fa fa-terminal isexecute" v-if="s.execute" title="Execute" @click="OnExecute(s)"></Icon>
+                </span>
             </div>
             <Statistics :snippet="s"></Statistics>              
         </header>
+        <section class="aside-info">
+            <p v-if="s.fork">fork from <router-link :to="`/s/${s.fork.id}`" :title="`${s.fork.username} / ${s.fork.codes[0].filename}`">{{s.fork.username}} / {{s.fork.codes[0].filename}}</router-link></p>
+            <p>Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
+            <p>{{s.description}}</p>
+        </section>
         <section>
             <section class="code">
                 <section class="code-header">
-                    <section>{{s.codes[0].filename}}</section>
+                    <section class="filename">{{s.codes[0].filename}}</section>
                     <Action :snippet="s" :code="s.codes[0]"></Action>
                 </section>
                 <section class="code-content">
@@ -35,6 +38,7 @@
             </section>
         </section>
     </section>
+    <Execute v-model="executeModal" :snippet="snippet" :codes="snippet.codes" :auto="snippet.command == ''"></Execute>
 </article>
 </template>
 
@@ -42,9 +46,10 @@
 import Statistics from '../components/statistics'
 import FileIcon from "../components/fileicon";
 import Action from '../components/action';
+import Execute from '../components/execute'
 export default {
     components: {
-        Statistics, FileIcon, Action
+        Statistics, FileIcon, Action, Execute
     },
     props: {
         snippets: {
@@ -57,6 +62,20 @@ export default {
         userIcon: {
             type: Boolean,
             default: true
+        }
+    },
+    data() {
+        return {
+            executeModal: false,
+            snippet: {
+                codes: []
+            }
+        }
+    },
+    methods: {
+        OnExecute(snippet) {
+            this.snippet = Object.assign({}, snippet);
+            this.executeModal = true;
         }
     }
 }
@@ -97,14 +116,22 @@ export default {
             vertical-align: top;
             text-overflow: ellipsis;
             overflow: hidden;
-            aside {
-                color: #666;
-                font-size: .8em;
-                p {
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                }
+        }
+        .tags {
+            display: flex;
+            align-items: center;
+            padding: 0 .3em;
+            i {
+                margin: 0 .3em;
             }
+        }
+    }
+    .aside-info {
+        color: #666;
+        font-size: .8em;
+        p {
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
     .code {
@@ -118,6 +145,12 @@ export default {
             border-top-right-radius: 6px;
             display: flex;
             justify-content: space-between;
+            .filename {
+                flex: 1;
+                width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
         .code-content {
             pre {
@@ -135,5 +168,8 @@ export default {
             overflow: hidden;
         }
     }
+}
+.isexecute {
+    cursor: pointer;
 }
 </style>
