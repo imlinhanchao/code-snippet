@@ -14,7 +14,6 @@ class GlotApp extends App {
     constructor() {
         super([{
         }]);
-        this.langs = {};
     }
 
     static get error() {
