@@ -27,6 +27,11 @@
                 <section class="code-content">
                     <pre v-hljs="s.codes[0].content"><code></code></pre>
                 </section>
+                <router-link :to="`/s/${s.id}`">
+                    <p v-if="s.codes.length > 1" title="more" style="text-align:center">
+                        <Icon type="ios-more"></Icon>
+                    </p>
+                </router-link>
             </section>
         </section>
     </section>
