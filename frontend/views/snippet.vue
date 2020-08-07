@@ -7,7 +7,6 @@
                     <span>
                         <router-link :to="`/u/${snippet.username}`">{{snippet.username}}</router-link> /
                         <router-link :title="snippet.codes[0].filename" :to="`/s/${snippet.id}`">{{snippet.codes[0].filename}}</router-link>
-                        <Icon custom="fa fa-lock isprivate" title="Private" v-if="snippet.private"></Icon>
                     </span>
                 </h1>
                 <section class="actions">
@@ -43,13 +42,25 @@
                 </section>
             </section>
             <aside>
-                <p v-if="snippet.fork">
-                    fork from 
-                    <router-link :to="`/s/${snippet.fork.id}`" :title="`${snippet.fork.username} / ${snippet.fork.codes[0].filename}`">
-                    {{snippet.fork.username}} / {{snippet.fork.codes[0].filename}}
-                    </router-link>
-                </p>
-                <p>Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
+                <section>
+                    <p v-if="snippet.fork">
+                        fork from 
+                        <router-link :to="`/s/${snippet.fork.id}`" :title="`${snippet.fork.username} / ${snippet.fork.codes[0].filename}`">
+                        {{snippet.fork.username}} / {{snippet.fork.codes[0].filename}}
+                        </router-link>
+                    </p>
+                    <p>Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
+                </section>
+                <section class="ext-info">
+                    <span class="tag isprivate" v-if="snippet.private">
+                        <Icon custom="fa fa-lock " title="Private"></Icon>
+                        Private
+                    </span>
+                    <span class="tag isexecute" v-if="snippet.execute">
+                        <Icon custom="fa fa-terminal " title="Execute"></Icon>
+                        Execute
+                    </span>
+                </section>
             </aside>
         </header>
         <article>
@@ -365,10 +376,24 @@ export default {
         white-space: nowrap;
         flex: 1;
         overflow: hidden;
+        position: relative;
     }
     aside {
         color: #999;
         font-size: .8em;
+        .ext-info {
+            padding: 1em 0 0;
+            i {
+                font-size: 1.5em;
+            }
+            .tag {
+                background: #24292e;
+                padding: 5px 10px;
+                border: 1px solid #2e3233;
+                border-radius: 15px;
+                text-shadow: none;
+            }
+        }
     }
     .info img {
         border-radius: 50%;
