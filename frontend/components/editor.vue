@@ -95,13 +95,12 @@
 </template>
 
 <script>
-import VueCodeMirror from 'vue-codemirror'
-import Execute from './execute'
+import Execute from '../components/execute'
 
 export default {
     name: "editor",
     components: {
-        codemirror: VueCodeMirror.codemirror,
+        codemirror: () => import('vue-codemirror/src/codemirror'),
         Execute
     },
     async mounted() {
