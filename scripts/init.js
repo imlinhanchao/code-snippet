@@ -73,6 +73,7 @@ async function main() {
         });
     rl.close();
 
+    fs.mkdir(path.join(__dirname, '..', 'public', 'dist'))
 }
 
 function initDB () {

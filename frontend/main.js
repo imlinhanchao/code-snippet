@@ -9,9 +9,11 @@ import store from './store';
 import Util from './util';
 import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
-import './theme/index.less';
 import 'highlight.js/styles/railscasts.css';
 import 'vue-hljs-with-line-number/line-number.css';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/ayu-dark.css';
+import './theme/index.less';
 import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
