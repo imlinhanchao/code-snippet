@@ -42,7 +42,7 @@ Vue.use(iView, locale);
 // Router config
 const RouterConfig = {
     mode: 'history',
-    routes: Routers∂
+    routes: Routers
 };
 const router = new VueRouter(RouterConfig);
 
