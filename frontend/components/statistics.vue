@@ -57,6 +57,8 @@ export default {
 
 <style lang="less" scoped>
 .statistics {
+    display: flex;
+    align-items: center;
     .statistics-menu {
         display: none;
     }

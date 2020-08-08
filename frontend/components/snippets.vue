@@ -7,7 +7,7 @@
                 <h1>
                     <FileIcon v-if="fileIcon" class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>
-                    <router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link>
+                    <router-link :to="`/s/${s.id}`" :title="s.codes[0].filename">{{s.codes[0].filename}}</router-link>
                 </h1>
                 <span class="tags">
                     <Icon custom="fa fa-lock isprivate" v-if="s.private" title="Private"></Icon>
@@ -44,9 +44,9 @@
 
 <script>
 import Statistics from '../components/statistics'
-import FileIcon from "../components/fileicon";
+import FileIcon from '../components/fileicon';
 import Action from '../components/action';
-import Execute from '../components/execute'
+import Execute from '../components/execute';
 export default {
     components: {
         Statistics, FileIcon, Action, Execute
@@ -100,6 +100,8 @@ export default {
         flex: 1;
         white-space: nowrap;
         width: 0;
+        display: flex;
+        align-items: center;
         img {
             width: 2em;
             height: 2em;
