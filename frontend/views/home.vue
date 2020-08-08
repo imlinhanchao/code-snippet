@@ -4,12 +4,11 @@
     </Layout>
 </template>
 <script>
-import Editor from '../components/editor';
 
 export default {
     name: "home",
     components: {
-        Editor
+        Editor: () => import('../components/editor')
     },
     async mounted() {
         let rsp = await this.$store.dispatch('account/checklogin');

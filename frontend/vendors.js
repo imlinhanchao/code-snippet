@@ -1,0 +1,8 @@
+import('vue')
+import('vuex')
+import('vue-router')
+import('vue-hljs-with-line-number')
+import('vue-infinite-scroll')
+import('vue-clipboard2')
+import('axios')
+import('regenerator-runtime/runtime')

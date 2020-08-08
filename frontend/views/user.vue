@@ -103,12 +103,10 @@
   </Layout>
 </template>
 <script>
-import Snippets from '../components/snippets'
-
 export default {
     name: "user",
     components: {
-        Snippets
+        Snippets: () => import('../components/snippets')
     },
     mounted() {
         this.init();

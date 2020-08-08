@@ -43,13 +43,12 @@
 </template>
 
 <script>
-import Statistics from '../components/statistics'
-import FileIcon from '../components/fileicon';
-import Action from '../components/action';
-import Execute from '../components/execute';
 export default {
     components: {
-        Statistics, FileIcon, Action, Execute
+        Statistics: () => import('./statistics'), 
+        FileIcon: () => import('./fileicon'), 
+        Action: () => import('./action'), 
+        Execute: () => import('./execute')
     },
     props: {
         snippets: {

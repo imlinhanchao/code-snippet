@@ -10,11 +10,10 @@
     </Layout>
 </template>
 <script>
-import Snippets from '../components/snippets'
 export default {
     name: "explore",
     components: {
-        Snippets
+        Snippets: () => import('../components/snippets')
     },
     async mounted() {
         await this.loadSnippet();

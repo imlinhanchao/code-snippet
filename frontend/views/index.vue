@@ -26,12 +26,10 @@
     </Layout>
 </template>
 <script>
-import Header from '../components/header'
-
 export default {
     name: "index",
     components: {
-        Header
+        Header: () => import('../components/header')
     },
     async mounted() {
         let rsp = await this.$store.dispatch('account/checklogin');

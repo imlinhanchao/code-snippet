@@ -16,11 +16,10 @@
 </template>
 
 <script>
-import Execute from '../components/execute'
 export default {
     name: 'Action',
     components: {
-        Execute
+        Execute: () => import('./execute')
     },
     props: {
         snippet: {

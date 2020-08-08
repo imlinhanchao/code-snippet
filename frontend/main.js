@@ -1,32 +1,33 @@
+import './vendors'
 import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import Vuex from 'vuex';
 import App from './app.vue'
-import iView from 'iview';
+import {
+    locale,
+    Icon, From, FromItem, Input, Checkbox,
+    Dropdown, DropdownMenu, DropdownItem,
+    Button, Poptip, Anchor, AnchorLink,
+    Modal, Tabs, TabPane, Header, Layout, Content,
+    Alert, Footer, Time, Row, Col, Page, LoadingBar, 
+    BackTop, Upload, Badge
+} from 'iview';
 import VueRouter from 'vue-router';
-import Routers from './router';
+import Routers from './router/index';
 import store from './store';
 import Util from './util';
 import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
 import 'highlight.js/styles/railscasts.css';
 import 'vue-hljs-with-line-number/line-number.css';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/ayu-dark.css';
 import './theme/index.less';
 import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
-import locale from 'iview/dist/locale/en-US';
-import CodeMirror from 'codemirror';
-import LoadMode from './loadmode';
-import 'codemirror/mode/meta';
+import lang from 'iview/dist/locale/en-US';
 import VueClipboard from 'vue-clipboard2'
  
 VueClipboard.config.autoSetContainer = true // add this line
-LoadMode(CodeMirror, "plain");
-CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
-window.CodeMirror = CodeMirror;
 const isDebug = process.env.NODE_ENV !== 'production';
 Vue.config.debug = isDebug;
 Vue.config.devtools = isDebug;
@@ -38,11 +39,24 @@ axios.defaults.baseURL = '/api/';
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
-Vue.prototype.$code = CodeMirror;
+
+const iView = {
+    Icon, From, FromItem, Input, Checkbox,
+    Dropdown, DropdownMenu, DropdownItem,
+    Button, Poptip, Anchor, AnchorLink,
+    Modal, Tabs, TabPane, Header, Layout, Content,
+    Alert, Footer, Time, Row, Col, Page, BackTop,
+    Upload, Badge
+};
+
+locale(lang);
+
+for (let k in iView) {
+    Vue.component(k, iView[k]);
+}
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
-Vue.use(iView, { locale })
 Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
@@ -55,13 +69,13 @@ const RouterConfig = {
 const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
-    iView.LoadingBar.start();
+    LoadingBar.start();
     if(!to.meta.notitle) Util.title(to.meta.title);
     next();
 });
 
 router.afterEach(() => {
-    iView.LoadingBar.finish();
+    LoadingBar.finish();
     window.scrollTo(0, 0);
 });
 
@@ -89,16 +103,6 @@ new Vue({
             get title() {
                 return this._title === '' ? ['Notice:', 'Success:', 'Warning:', 'Error:'][this.type] : this._title
             },
-        },
-        editorOptions: {
-            tabSize: 4,
-            indentUnit: 4,
-            mode: 'clike',
-            theme: 'ayu-dark',
-            lineNumbers: true,
-            lineWrapping: true,
-            indentWithTabs: true,
-            cursorHeight: .7
         }
     },
     render: h => h(App),
@@ -126,17 +130,8 @@ new Vue({
             let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;
             return name ? img : defaults;
         },
-        getCodeMode(ext) {
-            return this.$code.findModeByExtension(ext) || this.$code.findModeByExtension('text');
-        },
         getCodeExt(f) {
             return f.split('.').slice(-1).join('');
-        },
-        getCodeOptions(f, readOnly=false) {
-            return Object.assign(Object.assign({}, this.editorOptions), {
-                mode: this.getCodeMode(this.getCodeExt(f.filename)).mime,
-                readOnly
-            })
         },
         plsLogin() {
             localStorage.setItem('redirect', this.$route.path);

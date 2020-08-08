@@ -65,7 +65,7 @@
                 </section>
                 <codemirror :ref="`editor${i}`"
                     v-model="f.content" 
-                    :options="$root.getCodeOptions(f)">
+                    :options="getCodeOptions(f)">
                 </codemirror>
             </article>
             <article class="submit">
@@ -95,13 +95,21 @@
 </template>
 
 <script>
-import Execute from '../components/execute'
+import CodeMirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/ayu-dark.css';
+import LoadMode from '../loadmode';
+import 'codemirror/mode/meta';
+
+LoadMode(CodeMirror, "plain");
+CodeMirror.modeURL = 'https://cdn.bootcdn.net/ajax/libs/codemirror/5.55.0/mode/%N/%N.min.js';
+window.CodeMirror = CodeMirror;
 
 export default {
     name: "editor",
     components: {
         codemirror: () => import('vue-codemirror/src/codemirror'),
-        Execute
+        Execute: () => import('./execute'),
     },
     async mounted() {
         if (this.id) {
@@ -151,7 +159,17 @@ export default {
             error_msg: '',
             autoexec: true,
             loading: false,
-            code: {}
+            code: {},
+            editorOptions: {
+                tabSize: 4,
+                indentUnit: 4,
+                mode: 'clike',
+                theme: 'ayu-dark',
+                lineNumbers: true,
+                lineWrapping: true,
+                indentWithTabs: true,
+                cursorHeight: .7
+            }
         };
     },
     watch: {
@@ -324,10 +342,10 @@ export default {
             let editor = this.getEditor(i);
             if (!editor) return;
             editor.setOption('mode', this.getMode(this.getExt(f)).mime);
-            this.$code.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
+            window.CodeMirror.autoLoadMode(editor, this.getMode(this.getExt(f)).mode)
         },
         getMode(ext) {
-            return this.$code.findModeByExtension(ext) || this.$code.findModeByExtension('text');
+            return window.CodeMirror.findModeByExtension(ext) || window.CodeMirror.findModeByExtension('text');
         },
         getExt(f) {
             return f.filename.split('.').slice(-1).join('');
@@ -378,7 +396,16 @@ export default {
             let file = this.files.find(f => f.filename.split('.').slice(-1).join('') == lang.ext);
             let filename = file ? file.filename : 'main.' + lang.ext;
             this.snippet.command = this.getCommand(lang, filename);
-        }
+        },
+        getCodeMode(ext) {
+            return window.CodeMirror.findModeByExtension(ext) || window.CodeMirror.findModeByExtension('text');
+        },
+        getCodeOptions(f, readOnly=false) {
+            return Object.assign(Object.assign({}, this.editorOptions), {
+                mode: this.getCodeMode(this.$root.getCodeExt(f.filename)).mime,
+                readOnly
+            })
+        },
     }
 };
 </script>
@@ -469,6 +496,7 @@ export default {
         padding: 0 1em;
     }
 }
+
 @media (max-width: 480px) {
     .snippet-form {
         flex-direction: column-reverse;
@@ -479,6 +507,20 @@ export default {
 }
 </style>
 <style lang="less">
+
+.CodeMirror {
+    font-family: Consolas, Menlo, Courier, monospace;;
+    font-size: .8em;
+    line-height: 1.5;
+}
+
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+    font-family: Consolas, Menlo, Courier, monospace;;
+}
+
+div.CodeMirror-cursors {
+    top: 2px;
+}
 .CodeMirror-gutters {
     border: 0;
 }

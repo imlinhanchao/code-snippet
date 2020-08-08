@@ -134,13 +134,11 @@
   </Layout>
 </template>
 <script>
-import Action from '../components/action'
-import Execute from '../components/execute'
-
 export default {
     name: "snippet",
     components: {
-        Action, Execute
+        Action: () => import('../components/action'), 
+        Execute: () => import('../components/execute')
     },
     async mounted() {
         if(!this.id) {
