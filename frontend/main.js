@@ -3,15 +3,7 @@ import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import Vuex from 'vuex';
 import App from './app.vue'
-import {
-    locale,
-    Icon, From, FromItem, Input, Checkbox,
-    Dropdown, DropdownMenu, DropdownItem,
-    Button, Poptip, Anchor, AnchorLink,
-    Modal, Tabs, TabPane, Header, Layout, Content,
-    Alert, Footer, Time, Row, Col, Page, LoadingBar, 
-    BackTop, Upload, Badge
-} from 'iview';
+import iView from 'iview';
 import VueRouter from 'vue-router';
 import Routers from './router/index';
 import store from './store';
@@ -24,7 +16,7 @@ import './theme/index.less';
 import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
-import lang from 'iview/dist/locale/en-US';
+import locale from 'iview/dist/locale/en-US';
 import VueClipboard from 'vue-clipboard2'
  
 VueClipboard.config.autoSetContainer = true // add this line
@@ -40,31 +32,17 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
 
-const iView = {
-    Icon, From, FromItem, Input, Checkbox,
-    Dropdown, DropdownMenu, DropdownItem,
-    Button, Poptip, Anchor, AnchorLink,
-    Modal, Tabs, TabPane, Header, Layout, Content,
-    Alert, Footer, Time, Row, Col, Page, BackTop,
-    Upload, Badge
-};
-
-locale(lang);
-
-for (let k in iView) {
-    Vue.component(k, iView[k]);
-}
-
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
+Vue.use(iView, locale);
 
 // Router config
 const RouterConfig = {
     mode: 'history',
-    routes: Routers
+    routes: Routers∂
 };
 const router = new VueRouter(RouterConfig);
 

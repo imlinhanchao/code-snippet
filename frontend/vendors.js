@@ -1,6 +1,7 @@
 import('vue')
 import('vuex')
 import('vue-router')
+import('iview') 
 import('vue-hljs-with-line-number')
 import('vue-infinite-scroll')
 import('vue-clipboard2')
