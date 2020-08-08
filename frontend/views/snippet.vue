@@ -134,14 +134,12 @@
   </Layout>
 </template>
 <script>
-import VueCodeMirror from 'vue-codemirror'
 import Action from '../components/action'
 import Execute from '../components/execute'
 
 export default {
     name: "snippet",
     components: {
-        codemirror: VueCodeMirror.codemirror,
         Action, Execute
     },
     async mounted() {
