@@ -1,6 +1,7 @@
 <template>
     <section class="action">
-        <a v-if="$root.getCodeExt(code.filename) == 'html'" class="action-link" :href="`${$config.base.preview_url}/view/${snippet.id}/${code.filename}`"
+        <a v-if="$root.getCodeExt(code.filename) == 'html'" @click.prevent="previewModal=true" 
+        class="action-link" :href="`${$config.base.preview_url}/view/${snippet.id}/${code.filename}`"
         target="_blank" title="Preview">
             <Icon custom="fa fa-chrome"></Icon>
         </a>
@@ -11,7 +12,8 @@
             <Icon custom="fa fa-files-o"></Icon>
         </a>
         <Icon class="action-link execute" custom="fa fa-terminal" v-if="code.execute" title="Execute" @click="executeModal = true"></Icon>
-        <Execute v-model="executeModal" :snippet="code" :codes="[code]" :auto="false"></Execute>
+        <Execute v-if="executeModal" v-model="executeModal" :snippet="code" :codes="[code]" :auto="false"></Execute>
+        <Preview v-if="previewModal" v-model="previewModal" :snippet="snippet" :code="code.filename"></Preview>
     </section>
 </template>
 
@@ -19,7 +21,8 @@
 export default {
     name: 'Action',
     components: {
-        Execute: () => import('./execute')
+        Execute: () => import('./execute'),
+        Preview: () => import('./preview')
     },
     props: {
         snippet: {
@@ -31,7 +34,8 @@ export default {
     },
     data() {
         return {
-            executeModal: false
+            executeModal: false,
+            previewModal: false
         }
     },
     computed: {
