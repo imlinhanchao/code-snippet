@@ -12,12 +12,15 @@ import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
 import 'highlight.js/styles/railscasts.css';
 import 'vue-hljs-with-line-number/line-number.css';
-import './theme/index.less';
+import 'mavon-editor/dist/css/index.css'
 import axios from 'axios';
 import config from '../config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
 import locale from 'iview/dist/locale/en-US';
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2';
+import 'mavon-editor/dist/markdown/github-markdown.min.css'
+import mavonEditor from 'mavon-editor'
+import './theme/index.less';
  
 VueClipboard.config.autoSetContainer = true // add this line
 const isDebug = process.env.NODE_ENV !== 'production';
@@ -31,6 +34,7 @@ axios.defaults.baseURL = '/api/';
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
+Vue.prototype.$markdown = mavonEditor;
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
@@ -38,6 +42,7 @@ Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
 Vue.use(iView, { locale });
+Vue.use(mavonEditor)
 
 // Router config
 const RouterConfig = {
@@ -140,5 +145,24 @@ new Vue({
                 localStorage.setItem('redirect', from.path);
             }
         }
+    },
+    mounted() {
+        this.$markdown.externalLink = {
+            markdown_css() {
+                return false;
+            },
+            hljs_js() {
+                return 'https://cdn.bootcdn.net/ajax/libs/highlight.js/10.1.2/highlight.min.js';
+            },
+            hljs_lang(lang) {
+                return 'https://cdn.bootcdn.net/ajax/libs/highlight.js/10.1.2/languages/' + lang + '.min.js';
+            },
+            katex_css() {
+                return 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.11.1/katex.min.css';
+            },
+            katex_js() {
+                return 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.11.1/katex.min.js';
+            },
+        };
     }
 });

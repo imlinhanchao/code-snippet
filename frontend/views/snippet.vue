@@ -99,15 +99,32 @@
                                     <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
                                     <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
                                     <span>commented on <Time :time="c.create_time"></Time></span>
-                                    <span v-if="c.reply">
+                                    <span class="header-reply" v-if="c.reply">
                                         Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
                                     </span>
                                 </div>
                                 <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
                             </section>
-                            <section class="comment-content">
-                                {{c.content}}
+                            <section class="comment-content markdown-body" 
+                            v-html="$markdown.markdownIt.render(c.content)">
                             </section>
+                        </section>
+                        <section class="comment-textarea" v-show="$root.isLogin">
+                            <p class="comment-reply" v-if="replyfloor !== null">
+                                Reply <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
+                            </p>
+                            <mavon-editor ref="md" v-model="comment.content"
+                                language="en" :subfield="false"
+                                toolbarsBackground="#1a1c1e"
+                                previewBackground="#232323"
+                                placeholder="Leave a comment"
+                                :toolbars="toolbars"
+                                codeStyle="railscasts"
+                                :externalLink="$markdown.externalLink"
+                            ></mavon-editor>
+                            <p class="comment-submit">
+                                <Button type="success">Comment</Button>
+                            </p>
                         </section>
                     </article>
                 </TabPane>
@@ -204,7 +221,36 @@ export default {
             last_data: new Date().getTime(),
             loading: false,
             executeModal: false,
-            previewModal: false
+            previewModal: false,
+            comment: {
+                content: '',
+                reply: '',
+                snippet: ''
+            },
+            toolbars: {
+                bold: true, // 粗体
+                italic: true, // 斜体
+                header: true, // 标题
+                underline: true, // 下划线
+                strikethrough: true, // 中划线
+                mark: true, // 标记
+                superscript: true, // 上角标
+                subscript: true, // 下角标
+                quote: true, // 引用
+                ol: true, // 有序列表
+                ul: true, // 无序列表
+                link: true, // 链接
+                code: true, // code
+                table: true, // 表格
+                help: true, // 帮助
+                undo: true, // 上一步
+                redo: true, // 下一步
+                trash: true, // 清空
+                alignleft: true, // 左对齐
+                aligncenter: true, // 居中
+                alignright: true, // 右对齐
+                preview: true, // 预览
+            }
         };
     },
     methods: {
@@ -417,6 +463,7 @@ export default {
                     this.tab = 'code';
             }
             this.$util.title(title);
+            this.comment.snippet = this.snippet.id;
             this.getStars(this.snippet.id);
             this.getForks(this.snippet.id);
             this.getComments(this.snippet.id);
@@ -425,6 +472,10 @@ export default {
     computed: {
         id() {
             return this.$route.params.id
+        },
+        replyfloor() {
+            let comment = this.comments.find(c => c.id == this.comment.reply);
+            return comment ? comment.index : null;
         }
     },
     watch: {
@@ -641,6 +692,11 @@ export default {
         border-radius: 6px 6px 0 0;
         border: 1px solid #373c3e;
         border-bottom: 0;
+        .header-reply {
+            a {
+                border-bottom: 1px dashed #FFF;
+            }
+        }
         .triangle {
             position: absolute;
             left: -.3em;
@@ -670,11 +726,25 @@ export default {
         border: 1px solid #373c3e;
         border-top: 0;
     }
-    .comment-menu {
+    .comment-menu {        
         position: relative;
         i {
             cursor: pointer;
         }
+    }
+}
+.comment-textarea {
+    padding: 1em;
+    .comment-reply {
+        padding: 0 1em 1em;
+        font-style: italic;
+        a {
+            border-bottom: 1px dashed #FFF;
+        }
+    }
+    .comment-submit {
+        text-align: right;
+        margin-top:1em;
     }
 }
 @media (max-width: 480px) {
@@ -749,6 +819,49 @@ export default {
         background: #24292e;
         box-shadow: 0 0 1px #333333;
         padding: .5em 1em;
+    }
+}
+.comment-textarea {
+    .v-note-wrapper {
+        background: #232323;
+    }
+    .content-input-wrapper, .auto-textarea-wrapper, textarea {
+        background-color: transparent!important;
+        color: #e3e5e8
+    }
+    .v-note-wrapper .v-note-op {
+        border-bottom-color: #373c3e;
+    }
+    .auto-textarea-wrapper .auto-textarea-input {
+        color: inherit;
+    }
+    .add-image-link-wrapper {
+        div.add-image-link {
+            background: #131516;
+            border-radius: 6px;
+            width: 80%;
+            left: 0;
+            right: 0;
+            margin: auto;
+            padding: 1em;
+            .op-btn {
+                margin-top: 1em;
+                &.op-btn.cancel:hover {
+                    color: #e3e5e8;
+                }
+            }
+            .input-wrapper {
+                border-color: #373c3e;
+                width: 90%;
+                margin: 1em auto;
+            }
+            input {
+                background: transparent;
+            }
+            i {
+                color: #373c3e;
+            }
+        }
     }
 }
 </style>

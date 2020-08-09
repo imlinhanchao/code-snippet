@@ -45,6 +45,7 @@
     "http-proxy-middleware": "^1.0.4",
     "iview": "^3.1.5",
     "less": "^3.11.3",
+    "mavon-editor": "^2.9.0",
     "parcel-bundler": "^1.10.3",
     "require-context": "^1.1.0",
     "vue": "^2.6.11",
