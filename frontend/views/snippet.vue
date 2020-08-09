@@ -109,6 +109,10 @@
                             v-html="$markdown.markdownIt.render(c.content)">
                             </section>
                         </section>
+                        <section class="comment-more" title="More Comment" v-if="comments.length < snippet.comments" @click="getComments(snippet.id)">
+                            <Icon v-if="!loading" custom="fa fa-ellipsis-h"></Icon>
+                            <i v-if="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                        </section>
                         <section class="comment-textarea" v-show="$root.isLogin">
                             <p class="comment-reply" v-if="replyfloor !== null">
                                 Reply <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
@@ -123,7 +127,7 @@
                                 :externalLink="$markdown.externalLink"
                             ></mavon-editor>
                             <p class="comment-submit">
-                                <Button type="success">Comment</Button>
+                                <Button type="success" @click="OnComment">Comment</Button>
                             </p>
                         </section>
                     </article>
@@ -303,6 +307,23 @@ export default {
         OnPage(type, page) {
             this.$router.push(`/s/${this.snippet.id}/${type}/${page}`);
         },
+        async OnComment() {
+            try {
+                let rsp = await this.$store.dispatch('comment/create', this.comment);
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                let comment = rsp.data;
+                comment.index = this.comments.length;
+                if(comment.reply) comment.floor = this.comments.find(r => r.id == c.reply).index;
+                comment.user = this.$root.loginUser;
+                comment.create_time = parseInt(comment.create_time)
+                this.comments.push(comment);
+                this.comment.reply = '';
+                this.comment.content = '';
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
+        },
         getLabel(title, count, { custom, type }) {
             return (h) => {
                 return h('div', [
@@ -381,6 +402,7 @@ export default {
                     return this.$Message.error(rsp.msg);
                 }
 
+                this.snippet.comments = rsp.data.total;
                 let comments = rsp.data.data;
 
                 let username = rsp.data.data.map(d => d.username);
@@ -731,6 +753,16 @@ export default {
         i {
             cursor: pointer;
         }
+    }
+}
+.comment-more {
+    text-align: center;
+    padding: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 1em;
+    &:hover {
+        background: #24292e94;
     }
 }
 .comment-textarea {
