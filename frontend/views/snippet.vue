@@ -32,11 +32,11 @@
                                 <Icon custom="fa fa-star-o" v-if="!snippet.stared"></Icon>
                                 <Icon custom="fa fa-star" v-if="snippet.stared"></Icon> 
                                 <span> Star</span>
-                            </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars}}</router-link>
+                            </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars || 0}}</router-link>
                         </li>
                         <li><Button class="action-btn count-btn" @click="OnFork">
                             <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
-                        </Button><router-link :to="`/s/${id}/forks`" class="count">{{snippet.forks}}</router-link>
+                        </Button><router-link :to="`/s/${id}/forks`" class="count">{{snippet.forks || 0}}</router-link>
                         </li>
                     </ul>
                 </section>
@@ -89,6 +89,25 @@
                             <Anchor show-ink :bounds="10" :scroll-offset="65">
                                 <AnchorLink v-for="(f, i) in snippet.codes" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
                             </Anchor>
+                        </section>
+                    </article>
+                    <article id="comment">
+                        <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
+                            <section class="comment-header">
+                                <div>
+                                    <i class="fa fa-caret-left triangle"></i>
+                                    <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
+                                    <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
+                                    <span>commented on <Time :time="c.create_time"></Time></span>
+                                    <span v-if="c.reply">
+                                        Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
+                                    </span>
+                                </div>
+                                <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
+                            </section>
+                            <section class="comment-content">
+                                {{c.content}}
+                            </section>
                         </section>
                     </article>
                 </TabPane>
@@ -174,12 +193,15 @@ export default {
             },
             stars: [],
             forks: [],
+            comments: [],
             menu: false,
             tab: 'code',
             page: {
                 star: 1,
-                fork: 1
+                fork: 1,
+                comment: 1,
             },
+            last_data: new Date().getTime(),
             loading: false,
             executeModal: false,
             previewModal: false
@@ -298,7 +320,48 @@ export default {
                 console.error(error.message);
                 this.$root.message($m.ERROR, error.message);
             }
-        },        
+        },
+        async getComments(id) {
+            try {
+                this.loading = true;
+                let rsp = await this.$store.dispatch('comment/query', {
+                    query: { snippet: [ id ] }, 
+                    index: (this.page.comment - 1) * 10, count: 10,
+                    order: [['create_time', 'ASC']]
+                });
+                
+                if (rsp.state != 0) {
+                    this.loading = false;
+                    return this.$Message.error(rsp.msg);
+                }
+
+                let comments = rsp.data.data;
+
+                let username = rsp.data.data.map(d => d.username);
+                rsp = await this.$store.dispatch('account/query', {
+                    username
+                });
+                this.loading = false;
+
+                if (rsp && rsp.state == 0) {
+                    let users = rsp.data.data;
+                    comments.forEach((c, i) => {
+                        c.user = users.find(u => u.username == c.username);
+                        c.index = i;
+                        if (c.reply) c.floor = comments.slice(0, i).find(r => r.id == c.reply).index;
+                        this.comments.push(c)
+                    });
+                    this.page.comment++;
+                    return true;
+                } else {
+                    this.$Message.error(rsp.msg);
+                    return false;
+                }  
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
+        },    
         async getForks(id) {
             try {
                 this.loading = true;
@@ -356,6 +419,7 @@ export default {
             this.$util.title(title);
             this.getStars(this.snippet.id);
             this.getForks(this.snippet.id);
+            this.getComments(this.snippet.id);
         }
     },
     computed: {
@@ -562,6 +626,56 @@ export default {
         background: #FFF;
     }
 
+}
+.comment {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5em;
+    margin: 1em;
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        background: #1a1c1e;
+        padding: .5em 1em;
+        border-radius: 6px 6px 0 0;
+        border: 1px solid #373c3e;
+        border-bottom: 0;
+        .triangle {
+            position: absolute;
+            left: -.3em;
+            top: 10px;
+            color: #1a1c1e;
+            font-size: 2em;
+            text-shadow: -1px 0px 1px #373c3e;
+        }
+        img {
+            width: 3em;
+            height: 3em;
+            display: inline-block;
+            border: 1px solid #FFF;
+            vertical-align: top;
+            border-radius: 50%;
+            background: #FFF;
+            margin: 5px;
+            position: absolute;
+            left: -5em;
+            top: 0;
+        }
+    }
+    .comment-content {
+        padding: 1em;
+        background: #232323;
+        border-radius: 0 0 6px 6px;
+        border: 1px solid #373c3e;
+        border-top: 0;
+    }
+    .comment-menu {
+        position: relative;
+        i {
+            cursor: pointer;
+        }
+    }
 }
 @media (max-width: 480px) {
     .header {

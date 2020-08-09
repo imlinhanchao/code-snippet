@@ -4,8 +4,9 @@
  */
 import account from './account';
 import snippet from './snippet';
+import comment from './comment';
 import fav from './fav';
 
 export default {
-    account, snippet, fav
+    account, snippet, comment, fav
 };

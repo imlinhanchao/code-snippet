@@ -88,7 +88,8 @@ class App {
 
         // 生成排序，默认以创建时间降序
         data.order = data.order || [];
-        data.order.push(['create_time', 'DESC']);
+        if (!data.order.find(o => o == 'create_time' || o[0] == 'create_time'))
+            data.order.push(['create_time', 'DESC']);
         q.order = App.order(data.order, keys);
 
         let datalist = [], total = 0;
