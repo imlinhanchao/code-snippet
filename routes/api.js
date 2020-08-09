@@ -9,6 +9,7 @@ router.use(require('./access'));
 router.use('/lib', require('./lib'));
 router.use('/account', loader(modules.account));
 router.use('/snippet', loader(modules.snippet));
+router.use('/comment', loader(modules.comment));
 router.use('/fav', loader(modules.fav));
 
 router.get('/', function (req, res) {

@@ -9,6 +9,14 @@ let orm = {
         type: db.TEXT,
         comment: '评论内容'
     },
+    snippet: {
+        type: db.ID,
+        comment: '所属片段 ID'
+    },
+    reply: {
+        type: db.ID,
+        comment: '回复的评论 ID'
+    }
 };
 let table_name = prefix + 'comment';
 module.exports = db.defineModel(table_name, orm, {
