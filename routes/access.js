@@ -15,7 +15,8 @@ router.all('/:interface/:fn*', function (req, res, next) {
         account: ['login', 'query', 'exist', 'create', 'exists', 'avatar'],
         lib: ['captcha'],
         snippet: ['query', 'get', 'execute'],
-        fav: ['query', 'get']
+        fav: ['query', 'get'],
+        comment: ['query', 'get']
     };
 
     let account = new Account(req.session);
