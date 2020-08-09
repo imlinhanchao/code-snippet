@@ -5,7 +5,7 @@
         target="_blank" title="Preview">
             <Icon custom="fa fa-chrome"></Icon>
         </a>
-        <a type="button" title="Copy Code to Clipboard"
+        <a title="Copy Code to Clipboard"
             v-clipboard:copy="code.content"
             v-clipboard:success="onCopy"
             v-clipboard:error="onError">
