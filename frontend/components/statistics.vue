@@ -14,7 +14,7 @@
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}/comment`" class="count">
-                    <Icon type="md-chatboxes" ></Icon> <span> 0 </span> <span class="text">comments</span>
+                    <Icon type="md-chatboxes" ></Icon> <span> {{snippet.comments}} </span> <span class="text">comments</span>
                 </router-link>
             </li>
             <li>

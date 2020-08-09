@@ -4,6 +4,7 @@ const App = require('./app');
 const Account = require('./account');
 const Code = require('./code');
 const Fav = require('./fav');
+const Comment = require('./comment');
 const Glot = require('./glot');
 const Snippet = model.snippet;
 
@@ -21,6 +22,7 @@ class Module extends App {
         this.account = new Account(session);
         this.code = new Code(session);
         this.fav = new Fav(session);
+        this.comment = new Comment(session);
         this.saftKey = ['id', 'create_time', 'update_time'].concat(Snippet.keys());
     }
 
@@ -152,12 +154,7 @@ class Module extends App {
             info.fork = await this.get(info.fork_from, true);
         }
 
-        let forks = await super.count({ fork_from: [info.id] }, Snippet, {
-            fork_from: App.ops.in,
-        }, 'fork_from');
-        info.forks = forks.length > 0 ? forks[0].dataValues.count : 0;
-
-        let extendKeys = ['codes', 'stars', 'stared', 'fork', 'forks'];
+        let extendKeys = ['codes', 'stared', 'fork'];
         if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
 
         return this.okquery(App.filter(info, this.saftKey.concat(extendKeys)));
@@ -183,7 +180,7 @@ class Module extends App {
             queryData.data = queryData.data.filter(q => (!q.private 
                 || (this.account.islogin && q.username == this.account.user.username)))
 
-            data.fields = data.fields || ['codes', 'stars', 'fork', 'forks'].concat(this.saftKey)
+            data.fields = data.fields || ['codes', 'stars', 'fork', 'forks', 'comments'].concat(this.saftKey)
             var ids = queryData.data.map(b => b.id);
             if (data.fields.indexOf('codes') >= 0) {
                 let codes = await this.code.getAll(ids, true);
@@ -199,6 +196,14 @@ class Module extends App {
                     let star = stars.filter(s => s.snippet == d.id)
                     d.stars = star.length;
                     d.stared = this.account.islogin && d.stars > 0 && star.find(s => s.username == this.account.user.username) != undefined;
+                });
+            }
+
+            if (data.fields.indexOf('comments') >= 0) {
+                let comments = await this.comment.count({snippet: ids}, true);
+                queryData.data.forEach(d => {
+                    let comment = comments.find(c => c.snippet == d.id)
+                    d.comments = comment ? comment.count : 0;
                 });
             }
 
