@@ -30,7 +30,10 @@
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
-                        <Button slot="append" title="Try execute" @click="OnRun"><Icon custom="fa fa-rocket" /></Button>
+                        <Button slot="append" @click="OnRun">
+                            <Icon custom="fa fa-rocket" v-if="snippet.language != 'HTML'" title="Try execute"></Icon>
+                            <Icon custom="fa fa-chrome" v-if="snippet.language == 'HTML'" title="Try Preview"></Icon>
+                        </Button>
                     </Input>
                 </section>
             </article>
@@ -47,7 +50,7 @@
                             :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
                             </Poptip></span>
                         </Input>
-                        <Button class="command" v-if="isExecute(f)" :class="{ iscmd: f.execute }" 
+                        <Button class="command" v-if="isExecute(f) && !isPreview(f)" :class="{ iscmd: f.execute }" 
                             @click="OnExecuteFile(f)" title="Execute configuration">
                             <Icon custom="fa fa-terminal"></Icon>
                         </Button>
@@ -91,6 +94,7 @@
         </section>
         <Execute v-if="executeModal" v-model="executeModal" :snippet="snippet" :codes="files" :auto="autoexec" :edit="true" @change="snippet.input = arguments[0]"></Execute>
         <Execute v-if="executeCode" v-model="executeCode" :snippet="code" :codes="[code]" :auto="false" :edit="true" @change="code.input = arguments[0]"></Execute>
+        <Preview v-if="previewModal" v-model="previewModal" :snippet="snippet" :code="snippet.command"></Preview>
     </section>
 </template>
 
@@ -110,6 +114,7 @@ export default {
     components: {
         codemirror: () => import('vue-codemirror/src/codemirror'),
         Execute: () => import('./execute'),
+        Preview: () => import('./preview')
     },
     async mounted() {
         if (this.id) {
@@ -137,6 +142,7 @@ export default {
         return {
             executeModal: false,
             executeCode: false,
+            previewModal: false,
             snippet: {
                 title: '',
                 description: '',
@@ -188,7 +194,7 @@ export default {
         },
         canExecute() {
             let exts = this.langs.map(l => l.ext)
-            return this.files.find(f => exts.indexOf(this.getExt(f)) >= 0) != null;
+            return this.files.find(f => exts.indexOf(this.getExt(f)) >= 0);
         },
         langs() {
             return this.$store.getters['snippet/langs'];
@@ -322,6 +328,7 @@ export default {
             }
         },
         OnRun() {
+            if (this.snippet.language == 'HTML') return this.previewModal = true;
             this.executeModal = true;
         },
         OnRunCode(f) {
@@ -331,6 +338,9 @@ export default {
         isExecute(f) {
             let exts = this.langs.map(l => l.ext);
             return exts.indexOf(this.getExt(f)) >= 0;
+        },
+        isPreview(f) {
+            return this.getExt(f) == 'html';
         },
         OnExecuteFile(f) {
             f.execute = !f.execute;

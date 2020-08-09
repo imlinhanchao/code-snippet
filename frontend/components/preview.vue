@@ -123,6 +123,7 @@ export default {
     }
     h1 {
         font-size: .8em;
+        padding: 2px 0;
         font-weight: normal;
         vertical-align: top;
         text-overflow: ellipsis;

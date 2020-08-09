@@ -56,9 +56,13 @@
                         <Icon custom="fa fa-lock " title="Private"></Icon>
                         Private
                     </span>
-                    <span class="tag isexecute" v-if="snippet.execute" style="cursor:pointer" @click="executeModal = true">
+                    <span class="tag isexecute" v-if="snippet.execute && snippet.language != 'HTML'" style="cursor:pointer" @click="executeModal = true">
                         <Icon custom="fa fa-terminal " title="Execute"></Icon>
                         Execute
+                    </span>
+                    <span class="tag isexecute" v-if="snippet.execute && snippet.language == 'HTML'" style="cursor:pointer" @click="previewModal = true">
+                        <Icon custom="fa fa-chrome " title="Preview"></Icon>
+                        Preview
                     </span>
                 </section>
             </aside>
@@ -131,6 +135,7 @@
             </Tabs>
         </article>
         <Execute v-model="executeModal" :snippet="snippet" :codes="snippet.codes" :auto="snippet.command == ''"></Execute>
+        <Preview v-if="previewModal" v-model="previewModal" :snippet="snippet" :code="snippet.command"></Preview>
   </Layout>
 </template>
 <script>
@@ -138,7 +143,8 @@ export default {
     name: "snippet",
     components: {
         Action: () => import('../components/action'), 
-        Execute: () => import('../components/execute')
+        Execute: () => import('../components/execute'),
+        Preview: () => import('../components/preview')
     },
     async mounted() {
         if(!this.id) {
@@ -176,6 +182,7 @@ export default {
             },
             loading: false,
             executeModal: false,
+            previewModal: false
         };
     },
     methods: {
