@@ -37,7 +37,7 @@ Vue.use(VueRouter);
 Vue.use(VueHljs);
 Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
-Vue.use(iView, locale);
+Vue.use(iView, { locale });
 
 // Router config
 const RouterConfig = {
