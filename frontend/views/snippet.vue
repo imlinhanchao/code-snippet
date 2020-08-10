@@ -98,10 +98,12 @@
                                     <i class="fa fa-caret-left triangle"></i>
                                     <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
                                     <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
-                                    <span>commented on <Time :time="c.create_time"></Time></span>
-                                    <span class="header-reply" v-if="c.reply">
-                                        Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
-                                    </span>
+                                    <span class="comment-time">
+                                        <span class="header-reply" v-if="c.reply">
+                                            Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
+                                        </span>
+                                        <span v-if="!c.reply">commented</span> 
+                                        on <Time :time="c.create_time"></Time></span>
                                 </div>
                                 <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
                             </section>
@@ -680,6 +682,9 @@ export default {
                 border-bottom: 1px dashed #FFF;
             }
         }
+        .comment-time {
+            color: #515a6e;
+        }
         .triangle {
             position: absolute;
             left: -.3em;
@@ -782,6 +787,21 @@ export default {
     .stars, .forks {
         .ivu-col {
             width: 100%;
+        }
+    }
+    .comment {
+        padding-left: 0;
+        .comment-header {
+            padding: 0.5em 1em .5em .5em;
+            font-size: .8em;
+            .triangle {
+                display: none;
+            }
+            img {
+                position: static;
+                width: 1.2em;
+                height: 1.2em;
+            }
         }
     }
 }

@@ -106,6 +106,7 @@ export default {
 .comment-textarea {
     .v-note-wrapper {
         background: #232323;
+        min-height: 200px;
     }
     .content-input-wrapper, .auto-textarea-wrapper, textarea {
         background-color: transparent!important;
@@ -142,6 +143,15 @@ export default {
             }
             i {
                 color: #373c3e;
+            }
+        }
+    }
+}
+@media (max-width: 480px) {
+    .comment-textarea {
+        .v-note-wrapper .v-note-op .v-left-item {
+            >:nth-child(n + 8), >:nth-child(4) {
+                display: none;
             }
         }
     }
