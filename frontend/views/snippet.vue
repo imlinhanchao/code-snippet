@@ -904,6 +904,11 @@ export default {
                 height: 1.2em;
             }
         }
+        .comment-area {
+            img, .triangle {
+                display: none;
+            }
+        }
     }
 }
 </style>
