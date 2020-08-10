@@ -22,7 +22,7 @@
         <Footer class="layout-footer">
             <p>&copy; {{new Date().getFullYear()}} <a href ="https://github.com/imlinhanchao/code-snippet" target="_black" >Code-Snippet</a> Open Source. <br>All rights reserved. </p>
         </Footer>
-        <BackTop></BackTop>
+        <BackTop style="left: 0;bottom: auto;right: 0;top: 30px;width: 3em;margin: auto;"></BackTop>
     </Layout>
 </template>
 <script>
