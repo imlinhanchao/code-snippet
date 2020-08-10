@@ -227,6 +227,27 @@ ul.ivu-page {
     pre {
         padding: 0;
     }
+
+    table {
+        thead tr{
+            border-top: 3px solid #c6c1ba;
+            border-bottom: 3px solid #c6c1ba;
+            background: #181a1b;
+        }
+        td, th {
+            border: 0;
+        }
+        tbody{
+            border-bottom: 3px solid #c6c1ba;
+            tr {
+                border-bottom: 1px solid #c6c1ba;
+                background: #232323;
+                &:nth-child(2n) {
+                    background: #24292e;
+                }
+            }
+        }
+    }
 }
 
 .hljs {
