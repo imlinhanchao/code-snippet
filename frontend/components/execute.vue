@@ -48,7 +48,7 @@ export default {
             },
             executed: false,
             input: '',
-            tab: 'input'
+            tab: 'output'
         }
     },
     props: {
@@ -82,6 +82,9 @@ export default {
         this.defaultInput = this.edit;
     },
     watch: {
+        'snippet.input'(val) {
+            this.input = val;
+        },
         value(val) {
             if (this.executeModal != val) this.executeModal = val;
         },
