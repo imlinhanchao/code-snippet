@@ -149,15 +149,10 @@ new Vue({
     },
     mounted() {
         this.$markdown.externalLink = {
-            markdown_css() {
-                return false;
-            },
-            hljs_js() {
-                return 'https://cdn.bootcdn.net/ajax/libs/highlight.js/10.1.2/highlight.min.js';
-            },
-            hljs_lang(lang) {
-                return 'https://cdn.bootcdn.net/ajax/libs/highlight.js/10.1.2/languages/' + lang + '.min.js';
-            },
+            markdown_css: false,
+            hljs_js: false,
+            hljs_css: false,
+            hljs_lang: false,
             katex_css() {
                 return 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.11.1/katex.min.css';
             },

@@ -388,6 +388,7 @@ export default {
                         this.comments.push(c)
                     });
                     this.page.comment++;
+
                     return true;
                 } else {
                     this.$Message.error(rsp.msg);

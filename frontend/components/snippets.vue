@@ -161,12 +161,12 @@ export default {
                 font-size: .8em;
                 padding: 0;
                 overflow: auto;
-                max-height: 19em;
             }
             border-bottom-left-radius: 6px;
             border-bottom-right-radius: 6px;
             border: 1px solid #515a6e;
             overflow: hidden;
+            max-height: 16em;
         }
     }
 }
