@@ -88,7 +88,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .comment-textarea {
-    padding: 1em;
+    padding: 1em 0;
     .comment-reply {
         padding: 0 1em 1em;
         font-style: italic;

@@ -84,39 +84,39 @@
                                     <pre v-hljs="c.content"><code></code></pre>
                                 </section>
                             </section>
+                            <article id="comment">
+                                <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
+                                    <section class="comment-header">
+                                        <div>
+                                            <i class="fa fa-caret-left triangle"></i>
+                                            <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
+                                            <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
+                                            <span class="comment-time">
+                                                <span class="header-reply" v-if="c.reply">
+                                                    Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
+                                                </span>
+                                                <span v-if="!c.reply">commented</span> 
+                                                on <Time :time="c.create_time"></Time></span>
+                                        </div>
+                                        <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
+                                    </section>
+                                    <section class="comment-content markdown-body" 
+                                    v-html="$markdown.markdownIt.render(c.content)">
+                                    </section>
+                                </section>
+                                <section class="comment-more" title="More Comment" v-if="comments.length < snippet.comments" @click="getComments(snippet.id)">
+                                    <Icon v-if="!loading" custom="fa fa-ellipsis-h"></Icon>
+                                    <i v-if="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                                </section>
+                                <Comment :comment="comment" v-if="$root.isLogin" :floor="getReplyFloor(comment.reply)"
+                                    :autofocus="$win.location.hash=='#comment'" @ok="OnComment"></Comment>
+                            </article>
                         </section>
                         <section class="code-anchor" v-if="snippet.codes.length > 1">
                             <Anchor show-ink :bounds="10" :scroll-offset="65">
                                 <AnchorLink v-for="(f, i) in snippet.codes" v-bind:key="i" :href="`#code${i}`" :title="f.filename || `# ${i}`" />
                             </Anchor>
                         </section>
-                    </article>
-                    <article id="comment">
-                        <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
-                            <section class="comment-header">
-                                <div>
-                                    <i class="fa fa-caret-left triangle"></i>
-                                    <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
-                                    <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
-                                    <span class="comment-time">
-                                        <span class="header-reply" v-if="c.reply">
-                                            Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
-                                        </span>
-                                        <span v-if="!c.reply">commented</span> 
-                                        on <Time :time="c.create_time"></Time></span>
-                                </div>
-                                <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
-                            </section>
-                            <section class="comment-content markdown-body" 
-                            v-html="$markdown.markdownIt.render(c.content)">
-                            </section>
-                        </section>
-                        <section class="comment-more" title="More Comment" v-if="comments.length < snippet.comments" @click="getComments(snippet.id)">
-                            <Icon v-if="!loading" custom="fa fa-ellipsis-h"></Icon>
-                            <i v-if="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-                        </section>
-                        <Comment :comment="comment" v-if="$root.isLogin" :floor="getReplyFloor(comment.reply)"
-                            :autofocus="$win.location.hash=='#comment'" @ok="OnComment"></Comment>
                     </article>
                 </TabPane>
                 <TabPane :label="getLabel('Stars', stars.length, { type: 'md-star-outline' })" name="star">
@@ -667,7 +667,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding-left: 5em;
-    margin: 1em;
+    margin: 1em 0;
     .comment-header {
         display: flex;
         justify-content: space-between;
