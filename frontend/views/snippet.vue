@@ -86,7 +86,7 @@
                             </section>
                             <article id="comment">
                                 <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
-                                    <section class="comment-header">
+                                    <section v-if="!c.edit" class="comment-header">
                                         <div>
                                             <i class="fa fa-caret-left triangle"></i>
                                             <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${c.username}`" />
@@ -96,7 +96,7 @@
                                                     reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
                                                 </span>
                                                 <span v-if="!c.reply">commented</span> 
-                                                on <Time :time="c.create_time"></Time></span>
+                                                on <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
                                         </div>
                                         <div class="comment-menu">
                                             <a href="javascript:void(0)" @click="c.menu = !c.menu" @blur="
@@ -110,7 +110,7 @@
                                                 <li><a href="javascript:void(0)" @mousedown="OnReply(c.id)">Reply Only</a></li>
                                                 <li v-if="c.username == $root.loginUser.username" class="hr"></li>
                                                 <li v-if="c.username == $root.loginUser.username">
-                                                    <a href="javascript:void(0)">Edit</a>
+                                                    <a href="javascript:void(0)" @mousedown="c.edit=true">Edit</a>
                                                 </li>
                                                 <li v-if="c.username == $root.loginUser.username">
                                                     <Poptip 
@@ -125,8 +125,17 @@
                                             </ul>
                                         </div>
                                     </section>
-                                    <section class="comment-content markdown-body" 
-                                    v-html="$markdown.markdownIt.render(c.content)">
+                                    <section v-if="!c.edit" class="comment-content markdown-body"> 
+                                        <section v-html="$markdown.markdownIt.render(c.content)"></section>
+                                        <section v-if="c.create_time != c.update_time" style="text-align: right; color:#515a6e">
+                                            Update on <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time></span>
+                                        </section>
+                                    </section>
+                                    <section class="comment-area" v-if="c.edit && c.username == $root.loginUser.username">
+                                        <i class="fa fa-caret-left triangle"></i>
+                                        <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${c.username}`" />
+                                        <Comment :comment="c" :floor="replyfloor"
+                                            :autofocus="true" @ok="OnEditComment(c, ...arguments)"></Comment>
                                     </section>
                                 </section>
                                 <section class="comment-more" title="More Comment" v-if="comments.length < snippet.comments" @click="getComments(snippet.id)">
@@ -306,6 +315,10 @@ export default {
             this.comment.reply = '';
             this.comment.content = '';
         },
+        OnEditComment(c, comment) {
+            c.edit = false;
+            c.content = comment.content;
+        },
         OnQuote(content) {
             this.comment.content += (this.comment.content === '' ? '' : '\n') + `${content.split('\n').map(c => `> ${c}`).join('\n')}\n\n`;
             this.$refs.commentarea.$el.scrollIntoView();
@@ -313,7 +326,6 @@ export default {
         OnReply(id) {
             this.comment.reply = id;
             this.$refs.commentarea.$el.scrollIntoView();
-
         },
         getReplyFloor(reply) {
             let comment = this.comments.find(c => c.id == reply);
@@ -413,6 +425,7 @@ export default {
                         c.user = users.find(u => u.username == c.username);
                         c.index = i;
                         c.menu = false;
+                        c.edit = false;
                         if (c.reply) c.floor = this.comments.find(r => r.id == c.reply).index;
                         let index = ids.indexOf(c.id);
                         if (index >= 0) this.comments.splice(index, 1);
@@ -716,7 +729,7 @@ export default {
         border-bottom: 0;
         .header-reply {
             a {
-                border-bottom: 1px dashed #FFF;
+                border-bottom: 1px dashed #515a6e;
             }
         }
         .comment-time {
@@ -742,6 +755,29 @@ export default {
             position: absolute;
             left: -5em;
             top: 0;
+        }
+    }
+    .comment-area {
+        position: relative;
+        .triangle {
+            position: absolute;
+            left: -.3em;
+            top: 1.3em;
+            color: #1a1c1e;
+            font-size: 2em;
+        }
+        img {
+            width: 3em;
+            height: 3em;
+            display: inline-block;
+            border: 1px solid #FFF;
+            vertical-align: top;
+            border-radius: 50%;
+            background: #FFF;
+            margin: 5px;
+            position: absolute;
+            left: -5em;
+            top: 2em;
         }
     }
     .comment-content {
