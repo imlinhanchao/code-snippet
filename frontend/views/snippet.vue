@@ -125,6 +125,7 @@
                                 :toolbars="toolbars"
                                 codeStyle="railscasts"
                                 :externalLink="$markdown.externalLink"
+                                :autofocus="location.hash=='#comment'"
                             ></mavon-editor>
                             <p class="comment-submit">
                                 <Button type="success" @click="OnComment">Comment</Button>
