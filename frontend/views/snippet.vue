@@ -99,10 +99,30 @@
                                                 on <Time :time="c.create_time"></Time></span>
                                         </div>
                                         <div class="comment-menu">
-                                            <Icon custom="fa fa-ellipsis-v" @click="c.menu = !c.menu"></Icon>
-                                            <div v-if="c.menu">
-
-                                            </div>
+                                            <a href="javascript:void(0)" @click="c.menu = !c.menu" @blur="
+                                                $win.setTimeout(()=>c.menu=false, 50);
+                                            ">
+                                                <Icon custom="fa fa-ellipsis-v"></Icon>
+                                            </a>
+                                            <i v-if="c.menu" class="fa fa-caret-up triangle"></i>
+                                            <ul v-if="c.menu" class="menu-list">
+                                                <li><a href="javascript:void(0)" @mousedown="OnQuote(c.content)">Quote Reply</a></li>
+                                                <li><a href="javascript:void(0)" @mousedown="OnReply(c.id)">Reply Only</a></li>
+                                                <li v-if="c.username == $root.loginUser.username" class="hr"></li>
+                                                <li v-if="c.username == $root.loginUser.username">
+                                                    <a href="javascript:void(0)">Edit</a>
+                                                </li>
+                                                <li v-if="c.username == $root.loginUser.username">
+                                                    <Poptip 
+                                                        confirm
+                                                        title="Are you sure want to delete this code ?"
+                                                        @on-ok="OnRemove(i)">
+                                                        <a href="javascript:void(0)" style="color: #d0434a">Delete</a>
+                                                    </Poptip>
+                                                </li>
+                                                <li class="hr"></li>
+                                                <li><a href="javascript:void(0)">Report Content</a></li>
+                                            </ul>
                                         </div>
                                     </section>
                                     <section class="comment-content markdown-body" 
@@ -113,7 +133,8 @@
                                     <Icon v-if="!loading" custom="fa fa-ellipsis-h"></Icon>
                                     <i v-if="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
                                 </section>
-                                <Comment :comment="comment" v-if="$root.isLogin" :floor="getReplyFloor(comment.reply)"
+                                <Comment ref="commentarea" :comment="comment" v-if="$root.isLogin" 
+                                    :floor="replyfloor" @noreply="comment.reply = ''"
                                     :autofocus="$win.location.hash=='#comment'" @ok="OnComment"></Comment>
                             </article>
                         </section>
@@ -278,12 +299,21 @@ export default {
         },
         OnComment(comment) {
             comment.index = this.comments.length;
-            if(comment.reply) comment.floor = this.comments.find(r => r.id == c.reply).index;
+            if(comment.reply) comment.floor = this.comments.find(r => r.id == comment.reply).index;
             comment.user = this.$root.loginUser;
             comment.create_time = parseInt(comment.create_time)
             this.comments.push(comment);
             this.comment.reply = '';
             this.comment.content = '';
+        },
+        OnQuote(content) {
+            this.comment.content += (this.comment.content === '' ? '' : '\n') + `${content.split('\n').map(c => `> ${c}`).join('\n')}\n\n`;
+            this.$refs.commentarea.$el.scrollIntoView();
+        },
+        OnReply(id) {
+            this.comment.reply = id;
+            this.$refs.commentarea.$el.scrollIntoView();
+
         },
         getReplyFloor(reply) {
             let comment = this.comments.find(c => c.id == reply);
@@ -382,7 +412,8 @@ export default {
                     comments.forEach((c, i) => {
                         c.user = users.find(u => u.username == c.username);
                         c.index = i;
-                        if (c.reply) c.floor = comments.slice(0, i).find(r => r.id == c.reply).index;
+                        c.menu = false;
+                        if (c.reply) c.floor = this.comments.find(r => r.id == c.reply).index;
                         let index = ids.indexOf(c.id);
                         if (index >= 0) this.comments.splice(index, 1);
                         this.comments.push(c)
@@ -673,7 +704,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding-left: 5em;
-    margin: 1em 0;
+    margin: 2em 0 1em;
     .comment-header {
         display: flex;
         justify-content: space-between;
@@ -724,6 +755,34 @@ export default {
         position: relative;
         i {
             cursor: pointer;
+        }
+        .triangle {
+            position: absolute;
+            cursor: default;
+            top: 22px;
+            left: -8px;
+            color: #1a1c1e;
+            text-shadow: 0 -2px 1px #373c3e;
+            z-index: 11;
+        }
+        .menu-list {
+            position: absolute;
+            list-style: none;
+            right: -28px;
+            background: #1a1c1e;
+            border: 1px solid #373c3e;
+            z-index: 10;
+            border-radius: 6px;
+            top: 42px;
+            padding: .3em 0; 
+            li {
+                padding: .3em .6em; 
+                white-space: nowrap;
+                &.hr {
+                    border-bottom: 1px solid #373c3e;
+                    padding: 0;
+                }
+            }
         }
     }
 }

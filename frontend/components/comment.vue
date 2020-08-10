@@ -1,7 +1,10 @@
 <template>
     <section class="comment-textarea">
-        <p class="comment-reply" v-if="floor > 0">
-            Reply <a :href="`#comment${floor}`">#{{floor+1}}</a>
+        <p class="comment-reply" v-if="replyfloor >= 0">
+            Reply <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
+            <a href="javascript:void(0)" style="border:0" @click="$emit('noreply')">
+                <Icon custom="fa fa-times"></Icon>
+            </a>
         </p>
         <mavon-editor ref="md" v-model="comment.content"
             language="en" :subfield="false"
@@ -69,7 +72,9 @@ export default {
         }
     },
     computed: {
-        
+        replyfloor() {
+            return this.floor;
+        }
     },
     methods: {
         async OnComment() {
