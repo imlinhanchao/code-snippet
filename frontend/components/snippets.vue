@@ -3,7 +3,7 @@
     <section v-for="(s, i) in snippets" v-bind:key="i" :id="`snippet${i}`">
         <header>
             <div class="info">
-                <img v-if="userIcon" :src="s.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${s.username}`" />
+                <img v-if="userIcon" :src="s.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${s.username}`" />
                 <h1>
                     <FileIcon v-if="fileIcon" class="icon" :filename="s.codes[0].filename"></FileIcon>
                     <router-link :to="`/u/${s.username}`">{{s.username}}</router-link> <span> / </span>

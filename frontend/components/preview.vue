@@ -4,7 +4,7 @@
             <article slot="header">
                 <section class="header">
                     <section class="info">
-                        <img :src="snippet.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${snippet.username}`" />
+                        <img :src="snippet.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${snippet.username}`" />
                         <h1>
                             <router-link :to="`/u/${snippet.username}`">{{snippet.username}}</router-link> <span> / </span>
                             <router-link :to="`/s/${snippet.id}`" :title="code">{{code}}</router-link>

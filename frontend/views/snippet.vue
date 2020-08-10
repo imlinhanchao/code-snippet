@@ -89,16 +89,21 @@
                                     <section class="comment-header">
                                         <div>
                                             <i class="fa fa-caret-left triangle"></i>
-                                            <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/img/user.png') : `/api/account/avatar/${c.username}`" />
+                                            <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${c.username}`" />
                                             <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
                                             <span class="comment-time">
                                                 <span class="header-reply" v-if="c.reply">
-                                                    Reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
+                                                    reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
                                                 </span>
                                                 <span v-if="!c.reply">commented</span> 
                                                 on <Time :time="c.create_time"></Time></span>
                                         </div>
-                                        <div class="comment-menu"><Icon custom="fa fa-ellipsis-v"></Icon></div>
+                                        <div class="comment-menu">
+                                            <Icon custom="fa fa-ellipsis-v" @click="c.menu = !c.menu"></Icon>
+                                            <div v-if="c.menu">
+
+                                            </div>
+                                        </div>
                                     </section>
                                     <section class="comment-content markdown-body" 
                                     v-html="$markdown.markdownIt.render(c.content)">
@@ -127,7 +132,7 @@
                             <article class="star-info">
                                 <section>
                                     <img :src="s.username == $root.loginUser.username ? 
-                                        $root.fileUrl($root.loginUser.avatar, '/img/user.png') : 
+                                        $root.fileUrl($root.loginUser.avatar, '/res/user.png') : 
                                         `/api/account/avatar/${s.username}`" />
                                 </section>
                                 <section class="info">
@@ -147,7 +152,7 @@
                             <article class="fork-info">
                                 <section>
                                     <img :src="s.username == $root.loginUser.username ? 
-                                        $root.fileUrl($root.loginUser.avatar, '/img/user.png') : 
+                                        $root.fileUrl($root.loginUser.avatar, '/res/user.png') : 
                                         `/api/account/avatar/${s.username}`" />
                                 </section>
                                 <section class="info">

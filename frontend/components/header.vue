@@ -16,7 +16,7 @@
         </article>
         <section class="layout-info" v-if="$root.isLogin">
             <span class="avatar">
-                <img :src="$root.fileUrl($root.loginUser.avatar, '/img/user.png')" />
+                <img :src="$root.fileUrl($root.loginUser.avatar, '/res/user.png')" />
                 <ul class="sub-menu">
                     <li><router-link :to="`/u/${$root.loginUser.username}`">My Codes</router-link></li>
                     <li><router-link :to="`/u/${$root.loginUser.username}/star`">My Star</router-link></li>

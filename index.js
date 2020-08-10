@@ -43,7 +43,7 @@ app.use(
     })
 );
 app.use(
-    '/img',
+    '/res',
     createProxyMiddleware({
         target: `http://localhost:${config.base.port}`
     })

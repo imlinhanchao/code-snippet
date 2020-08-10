@@ -4,7 +4,7 @@
       <section class="section">
           <div class="avatar-box">
             <div class="avatar">
-            <img :src="$root.fileUrl(info.avatar, '/img/user.png')" />
+            <img :src="$root.fileUrl(info.avatar, '/res/user.png')" />
             <Upload
                 v-if="isCurrentUser"
                 class="avatar-upload"
@@ -311,7 +311,7 @@ export default {
                 this.info.avatar.indexOf("http") == 0
                 ? this.info.avatar
                 : this.$config.file.fileurl + this.info.avatar;
-            return this.info.avatar ? img : "/img/user.png";
+            return this.info.avatar ? img : "/res/user.png";
         },
         uploadInterface() {
             return "/api/lib/upload";

@@ -260,7 +260,7 @@ class Module extends App {
             attributes: ['avatar']
         });
 
-        let avatar = path.join(process.cwd(), '/public/img/user.png');
+        let avatar = path.join(process.cwd(), '/public/res/user.png');
 
         if (data && data.avatar)
             avatar = path.join(process.cwd(), config.file.upload, data.avatar);
