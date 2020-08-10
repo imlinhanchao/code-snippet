@@ -20,7 +20,7 @@
             <router-view />
         </Content>
         <Footer class="layout-footer">
-            <p>&copy; {{new Date().getFullYear()}} <a href ="https://github.com/imlinhanchao/code-snippet" target="_black" >Code-Snippet</a> Open Source. All rights reserved. </p>
+            <p>&copy; {{new Date().getFullYear()}} <a href ="https://github.com/imlinhanchao/code-snippet" target="_black" >Code-Snippet</a> Open Source. <br>All rights reserved. </p>
         </Footer>
         <BackTop></BackTop>
     </Layout>
