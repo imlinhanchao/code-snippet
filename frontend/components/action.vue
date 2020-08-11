@@ -5,11 +5,14 @@
         target="_blank" title="Preview">
             <Icon custom="fa fa-chrome"></Icon>
         </a>
-        <a title="Copy Code to Clipboard"
+        <a title="Copy Code to Clipboard" class="action-link" 
             v-clipboard:copy="code.content"
             v-clipboard:success="onCopy"
             v-clipboard:error="onError">
             <Icon custom="fa fa-files-o"></Icon>
+        </a>
+        <a title="Download" @click="OnSave"class="action-link" >
+            <Icon custom="fa fa-download"></Icon>
         </a>
         <Icon class="action-link execute" custom="fa fa-terminal" v-if="code.execute" title="Execute" @click="executeModal = true"></Icon>
         <Execute v-if="executeModal" v-model="executeModal" :snippet="code" :codes="[code]" :auto="false"></Execute>
@@ -18,6 +21,7 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver';
 export default {
     name: 'Action',
     components: {
@@ -46,6 +50,9 @@ export default {
         },
         onError(e) {
             this.$Message.error('Copy Failed:' + e.message);
+        },
+        OnSave() {
+            saveAs(this.code.content, this.code.filename);
         }
     }
 }
@@ -58,7 +65,7 @@ export default {
 }
 .action-link {
     display: inline-block;
-    padding: 0 .5em;
+    padding: 0 5px;
 }
 .execute {
     cursor: pointer;
