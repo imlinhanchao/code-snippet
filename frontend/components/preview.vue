@@ -11,8 +11,14 @@
                         </h1>
                         <span class="tags">
                             <Icon custom="fa fa-lock isprivate" v-if="snippet.private" title="Private"></Icon>
-                            <Tooltip content="Right click to copy link" placement="right">
+                            <Tooltip content="Right click to copy link" placement="bottom">
                                 <a target="_blank" :href="`${$config.base.preview_url}/view/${snippet.id}/${code}`"><Icon custom="fa fa-link"></Icon></a>
+                            </Tooltip>
+                            <Tooltip content="Reload Web" placement="bottom">
+                                <a @click="OnReload"><Icon custom="fa fa-refresh"></Icon></a>
+                            </Tooltip>
+                            <Tooltip content="Download Web" placement="bottom">
+                                <a @click="OnDownload"><Icon custom="fa fa-download"></Icon></a>
                             </Tooltip>
                         </span>
                     </section>
@@ -29,6 +35,9 @@
 </template>
 
 <script>
+import JsZip from 'jszip';
+import { saveAs } from 'file-saver';
+
 export default {
     name: 'Preview',
     components: {
@@ -88,6 +97,21 @@ export default {
     methods: {
         OnChange (val) {
             this.$emit("input", val);
+        },
+        OnReload() {
+            let iframe = this.$refs.iframe;
+            this.loading = false;
+            iframe.src = iframe.src;
+        },
+        OnDownload() {
+            let jszip = new JsZip();
+            this.snippet.codes.forEach(c => {
+                jszip.file(c.filename, c.content);
+            })
+            let filename = this.code.replace(/.html$/, '');
+            jszip.generateAsync({ type: 'blob' }).then((content) => {
+                saveAs(content, `${filename}.zip`);
+            });
         }
     }
 }
