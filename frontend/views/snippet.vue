@@ -99,9 +99,7 @@
                                                 on <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
                                         </div>
                                         <div class="comment-menu">
-                                            <a href="javascript:void(0)" @click="c.menu = !c.menu" @blur="
-                                                $win.setTimeout(()=>c.menu=false, 50);
-                                            ">
+                                            <a href="javascript:void(0)" @click="c.menu = !c.menu">
                                                 <Icon custom="fa fa-ellipsis-v"></Icon>
                                             </a>
                                             <i v-if="c.menu" class="fa fa-caret-up triangle"></i>
@@ -116,7 +114,7 @@
                                                     <Poptip 
                                                         confirm
                                                         title="Are you sure want to delete this code ?"
-                                                        @on-ok="OnRemove(i)">
+                                                        @on-ok="OnDelete(c)">
                                                         <a href="javascript:void(0)" style="color: #d0434a">Delete</a>
                                                     </Poptip>
                                                 </li>
@@ -326,6 +324,17 @@ export default {
         OnReply(id) {
             this.comment.reply = id;
             this.$refs.commentarea.$el.scrollIntoView();
+        },
+        async OnDelete(comment) {
+            try {
+                let rsp = await this.$store.dispatch('comment/del', comment.id);
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                let index = this.comments.map(c => c.id).indexOf(comment.id);
+                this.comments.splice(index, 1);
+            } catch (error) {
+                console.error(error.message);
+                this.$root.message($m.ERROR, error.message);
+            }
         },
         getReplyFloor(reply) {
             let comment = this.comments.find(c => c.id == reply);
