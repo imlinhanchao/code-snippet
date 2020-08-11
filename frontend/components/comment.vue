@@ -2,7 +2,7 @@
     <section class="comment-textarea">
         <p class="comment-reply" v-if="replyfloor >= 0">
             Reply <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
-            <a v-if="!c.id" href="javascript:void(0)" style="border:0" @click="$emit('noreply')">
+            <a v-if="!comment.id" href="javascript:void(0)" style="border:0" @click="$emit('noreply')">
                 <Icon custom="fa fa-times"></Icon>
             </a>
         </p>

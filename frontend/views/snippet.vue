@@ -99,16 +99,16 @@
                                                 on <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
                                         </div>
                                         <div class="comment-menu">
-                                            <a href="javascript:void(0)" @click="c.menu = !c.menu">
+                                            <a href="javascript:void(0)" @click="menus = menus == c.id ? '': c.id">
                                                 <Icon custom="fa fa-ellipsis-v"></Icon>
                                             </a>
-                                            <i v-if="c.menu" class="fa fa-caret-up triangle"></i>
-                                            <ul v-if="c.menu" class="menu-list">
-                                                <li><a href="javascript:void(0)" @mousedown="OnQuote(c.content)">Quote Reply</a></li>
-                                                <li><a href="javascript:void(0)" @mousedown="OnReply(c.id)">Reply Only</a></li>
+                                            <i v-if="menus == c.id" class="fa fa-caret-up triangle"></i>
+                                            <ul v-if="menus == c.id" class="menu-list">
+                                                <li><a href="javascript:void(0)" @click="OnQuote(c.content)">Quote Reply</a></li>
+                                                <li><a href="javascript:void(0)" @click="OnReply(c.id)">Reply Only</a></li>
                                                 <li v-if="c.username == $root.loginUser.username" class="hr"></li>
                                                 <li v-if="c.username == $root.loginUser.username">
-                                                    <a href="javascript:void(0)" @mousedown="c.edit=true">Edit</a>
+                                                    <a href="javascript:void(0)" @click="OnEdit(c)">Edit</a>
                                                 </li>
                                                 <li v-if="c.username == $root.loginUser.username">
                                                     <Poptip 
@@ -251,7 +251,8 @@ export default {
                 content: '',
                 reply: '',
                 snippet: ''
-            }
+            },
+            menus: ''
         };
     },
     methods: {
@@ -320,13 +321,20 @@ export default {
         OnQuote(content) {
             this.comment.content += (this.comment.content === '' ? '' : '\n') + `${content.split('\n').map(c => `> ${c}`).join('\n')}\n\n`;
             this.$refs.commentarea.$el.scrollIntoView();
+            this.menus = '';
         },
         OnReply(id) {
             this.comment.reply = id;
             this.$refs.commentarea.$el.scrollIntoView();
+            this.menus = ''
+        },
+        OnEdit(c) {
+            c.edit = true;
+            this.menus = '';
         },
         async OnDelete(comment) {
             try {
+                this.menus = '';
                 let rsp = await this.$store.dispatch('comment/del', comment.id);
                 if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
                 let index = this.comments.map(c => c.id).indexOf(comment.id);
