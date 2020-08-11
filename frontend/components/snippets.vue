@@ -38,10 +38,10 @@
 <script>
 export default {
     components: {
+        CodeRender: () => import('./coderender'),
         Statistics: () => import('./statistics'), 
         FileIcon: () => import('./fileicon'), 
         Action: () => import('./action'), 
-        CodeRender: () => import('./coderender'),
         Execute: () => import('./execute'),
     },
     props: {

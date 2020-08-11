@@ -23,7 +23,7 @@
                             confirm
                             title="Are you sure you want to delete this snippet?"
                             @on-ok="OnRemove">
-                                <Button class="action-btn remove-btn" @click="OnRemove">
+                                <Button class="action-btn remove-btn">
                                     <Icon custom="fa fa-trash-o" ></Icon> <span> Delete</span>
                                 </Button>
                             </Poptip>
@@ -112,7 +112,7 @@
                                                 <li v-if="c.username == $root.loginUser.username">
                                                     <Poptip 
                                                         confirm
-                                                        title="Are you sure want to delete this code ?"
+                                                        title="Are you sure want to delete this comment ?"
                                                         @on-ok="OnDelete(c)">
                                                         <a href="javascript:void(0)" style="color: #d0434a">Delete</a>
                                                     </Poptip>
@@ -672,34 +672,6 @@ export default {
 }
 .code {
     margin: 1em 0;
-    .code-header {
-        background: #1a1c1e;
-        padding: .5em;
-        border: 1px solid #373c3e;
-        border-bottom: 0;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
-        display: flex;
-        justify-content: space-between;
-        .filename {
-            flex: 1;
-            width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
-    .code-content {
-        pre {
-            margin: 0;
-        }
-        code {
-            font-size: .8em;
-        }
-        border-bottom-left-radius: 6px;
-        border-bottom-right-radius: 6px;
-        border: 1px solid #373c3e;
-        overflow: hidden;
-    }
 }
 .codes {
     display: flex;
