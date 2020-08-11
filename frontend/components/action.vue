@@ -5,13 +5,18 @@
         target="_blank" title="Preview">
             <Icon custom="fa fa-chrome"></Icon>
         </a>
+        <a v-if="render" :class="{ ischeck: source }"
+            title="View Source" @click="OnSource" 
+            class="action-link" >
+            <Icon custom="fa fa-code"></Icon>
+        </a>
         <a title="Copy Code to Clipboard" class="action-link" 
             v-clipboard:copy="code.content"
             v-clipboard:success="onCopy"
             v-clipboard:error="onError">
             <Icon custom="fa fa-files-o"></Icon>
         </a>
-        <a title="Download" @click="OnSave"class="action-link" >
+        <a title="Download" @click="OnSave" class="action-link" >
             <Icon custom="fa fa-download"></Icon>
         </a>
         <Icon class="action-link execute" custom="fa fa-terminal" v-if="code.execute" title="Execute" @click="executeModal = true"></Icon>
@@ -34,12 +39,17 @@ export default {
         },
         code: {
             required: true
+        },
+        render: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
             executeModal: false,
-            previewModal: false
+            previewModal: false,
+            source: false
         }
     },
     computed: {
@@ -53,6 +63,10 @@ export default {
         },
         OnSave() {
             saveAs(this.code.content, this.code.filename);
+        },
+        OnSource() {
+            this.source = !this.source;
+            this.$emit('source', this.source);
         }
     }
 }
@@ -72,5 +86,10 @@ export default {
     &:hover {
         color: #2d8cf0;
     }
+}
+.ischeck {
+    color: #19be6b;
+    font-weight: bold;
+    text-shadow: 0 0 2px #e3deb9;
 }
 </style>

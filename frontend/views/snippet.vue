@@ -80,15 +80,9 @@
                     </section>
                     <article class="codes">
                         <section class="code-list">
-                            <section :id="`code${i}`" v-for="(c, i) in snippet.codes" v-bind:key="i" class="code">
-                                <section class="code-header">
-                                    <section class="filename">{{c.filename}}</section>
-                                    <Action :snippet="snippet" :code="c"></Action>
-                                </section>
-                                <section class="code-content">
-                                    <pre v-hljs="c.content"><code></code></pre>
-                                </section>
-                            </section>
+                            <CodeRender :id="`code${i}`" v-for="(c, i) in snippet.codes" 
+                                :code="c" :snippet="snippet" v-bind:key="i" class="code">
+                            </CodeRender>
                             <article id="comment">
                                 <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
                                     <section v-if="!c.edit" class="comment-header">
@@ -209,10 +203,10 @@ import { saveAs } from 'file-saver';
 export default {
     name: "snippet",
     components: {
-        Action: () => import('../components/action'), 
         Execute: () => import('../components/execute'),
         Preview: () => import('../components/preview'),
-        Comment: () => import('../components/comment')
+        Comment: () => import('../components/comment'),
+        CodeRender: () => import('../components/coderender'),
     },
     async mounted() {
         if(!this.id) {
@@ -393,6 +387,7 @@ export default {
         async getSnippet(id) {
             let rsp = await this.$store.dispatch('snippet/get', this.id);
             if (rsp && rsp.state == 0) {
+                rsp.data.codes.forEach(c => c.source = false);
                 this.snippet = Object.assign(this.snippet, rsp.data);
                 return true;
             } else {
@@ -608,6 +603,9 @@ export default {
                 border-radius: 15px;
                 text-shadow: none;
                 margin: 0 .2em;
+                &:hover {
+                    background: #373c3e;
+                }
             }
         }
     }

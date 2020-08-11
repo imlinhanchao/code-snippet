@@ -126,7 +126,7 @@ export default {
                 this.autoexec = this.snippet.command === '';
                 if (this.autoexec) {
                     let info = this.getExcuteInfo();
-                    this.snippet.command = info.command;
+                    if (info) this.snippet.command = info.command;
                 }
                 if (this.snippet.username != this.$root.loginUser.username) {
                     this.$router.push(`/s/${this.snippet.id}`);

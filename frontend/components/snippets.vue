@@ -22,20 +22,13 @@
             <p>{{s.description}}</p>
         </section>
         <section>
-            <section class="code">
-                <section class="code-header">
-                    <section class="filename">{{s.codes[0].filename}}</section>
-                    <Action :snippet="s" :code="s.codes[0]"></Action>
-                </section>
-                <section class="code-content">
-                    <pre v-hljs="s.codes[0].content"><code></code></pre>
-                </section>
+            <CodeRender :code="s.codes[0]" :snippet="s" class="code" :max-height="200">
                 <router-link :to="`/s/${s.id}`">
                     <p v-if="s.codes.length > 1" title="more" class="more">
                         <Icon type="ios-more"></Icon>
                     </p>
                 </router-link>
-            </section>
+            </CodeRender>
         </section>
     </section>
     <Execute v-model="executeModal" :snippet="snippet" :codes="snippet.codes" :auto="snippet.command == ''"></Execute>
@@ -48,7 +41,8 @@ export default {
         Statistics: () => import('./statistics'), 
         FileIcon: () => import('./fileicon'), 
         Action: () => import('./action'), 
-        Execute: () => import('./execute')
+        CodeRender: () => import('./coderender'),
+        Execute: () => import('./execute'),
     },
     props: {
         snippets: {
@@ -137,42 +131,11 @@ export default {
     }
     .code {
         margin: .5em 0 2em;
-        .code-header {
-            background: #1a1c1e;
-            padding: .5em;
-            border: 1px solid #515a6e;
-            border-bottom: 0;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            .filename {
-                flex: 1;
-                width: 0;
-                overflow: hidden;
-                text-overflow: ellipsis;
+        .more {
+            text-align:center;
+            &:hover {
+                background: #1a1c1e;
             }
-        }
-        .code-content {
-            pre {
-                margin: 0;
-            }
-            code {
-                font-size: .8em;
-                padding: 0;
-                overflow: auto;
-            }
-            border-bottom-left-radius: 6px;
-            border-bottom-right-radius: 6px;
-            border: 1px solid #515a6e;
-            overflow: hidden;
-            max-height: 16em;
-        }
-    }
-    .more {
-        text-align:center;
-        &:hover {
-            background: #1a1c1e;
         }
     }
 }
