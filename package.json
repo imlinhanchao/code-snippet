@@ -31,6 +31,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
+    "org": "^0.2.0",
     "sequelize": "^6.3.0",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.4.0",

@@ -6,13 +6,15 @@
         </section>
         <section class="code-content" :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
             <pre v-if="!isRender || source" v-hljs="code.content"><code></code></pre>
-            <section class="markdown markdown-body" v-if="isMarkdown && !source" v-html="$markdown.markdownIt.render(code.content)"></section>
+            <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.markdownIt.render(code.content)"></section>
+            <section class="render org-mode markdown-body" v-if="isOrg" v-html="renderOrg(code.content)"></section>
         </section>
         <slot></slot>
     </section>
 </template>
 
 <script>
+import org from 'org';
 export default {
     name: 'CodeRender',
     components: {
@@ -41,11 +43,33 @@ export default {
         isMarkdown() {
             return this.ext == 'md' || this.ext == 'markdown';
         },
+        isOrg() {
+            return this.ext == 'org';
+        },
         ext() {
             return this.$root.getCodeExt(this.code.filename);
         },
         isRender() {
-            return this.isMarkdown;
+            return this.isMarkdown || this.isOrg;
+        }
+    },
+    methods: {
+        renderOrg(content) {
+            let parser = new org.Parser();
+            var orgDocument = parser.parse(content);
+            var orgHTMLDocument = orgDocument.convert(org.ConverterHTML, {
+                headerOffset: 1,
+                exportFromLineNumber: false,
+                suppressSubScriptHandling: false,
+                suppressAutoLink: false
+            });
+            console.dir(orgHTMLDocument);
+
+            let ele = document.createElement('div');
+            ele.innerHTML = orgHTMLDocument.contentHTML;
+            ele.querySelectorAll('pre code').forEach(block => hljs.highlightBlock(block));
+
+            return ele.innerHTML;
         }
     }
 }
@@ -79,7 +103,7 @@ export default {
     code {
         font-size: .8em;
     }
-    .markdown {
+    .render {
         padding: 1em 2em;
         background: #1b1b1b;
         color: #989796;
