@@ -31,7 +31,7 @@
                     <pre v-hljs="s.codes[0].content"><code></code></pre>
                 </section>
                 <router-link :to="`/s/${s.id}`">
-                    <p v-if="s.codes.length > 1" title="more" style="text-align:center">
+                    <p v-if="s.codes.length > 1" title="more" class="more">
                         <Icon type="ios-more"></Icon>
                     </p>
                 </router-link>
@@ -167,6 +167,12 @@ export default {
             border: 1px solid #515a6e;
             overflow: hidden;
             max-height: 16em;
+        }
+    }
+    .more {
+        text-align:center;
+        &:hover {
+            background: #1a1c1e;
         }
     }
 }
