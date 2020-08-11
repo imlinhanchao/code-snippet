@@ -1,6 +1,7 @@
 <template>
   <div class="statistics">
         <Icon class="statistics-menu" custom="fa fa-ellipsis-v" @click="menu = !menu"></Icon>
+        <i class="fa fa-caret-up triangle" v-if="menu"></i>
         <ul class="statistics-list" :class="{'statistics-list-hide': !menu}">
             <li>
                 <router-link :to="`/s/${snippet.id}`" class="count">
@@ -82,18 +83,28 @@ export default {
 }
 @media (max-width: 480px) {
     .statistics {
+        position: relative;
         .statistics-menu {
             display: inline-block;
         }
-        position: relative;
+        .triangle {
+            position: absolute;
+            top: 29px;
+            right: -4px;
+            color: #181a1b;
+            text-shadow: 0 -1px 0px #3a404d;
+            font-size: 1.5em;
+            z-index: 110;
+        }
         .statistics-list {
             position: absolute;
             flex-direction: column;
-            right: .0;
-            background: #24292e;
-            box-shadow: 0px 0px 1px #f0f0f0;
-            top: 50%;
+            right: -15px;
+            background: #181a1b;
+            border: 1px solid #515a6e;
+            top: 41px;
             color: #f0f0f0;
+            border-radius: 3px;
             li {
                 display: flex;
                 flex-direction: row;

@@ -11,6 +11,7 @@
                 </h1>
                 <section class="actions">
                     <Icon class="action-menu" custom="fa fa-ellipsis-v" @click="menu = !menu"></Icon>
+                    <i class="fa fa-caret-up triangle" v-if="menu"></i>
                     <ul class="action-list" :class="{ 'action-menu-hide': !menu }">
                         <li v-if="snippet.username == $root.loginUser.username">
                             <Button class="action-btn" @click="$router.push(`/edit/${snippet.id}`)">
@@ -878,17 +879,27 @@ export default {
         }
         .header-section {
             .actions {
+                position: relative;
                 .action-menu {
                     display: inline-block;
                 }
+                .triangle {
+                    position: absolute;
+                    top: 29px;
+                    right: -4px;
+                    color: #181a1b;
+                    text-shadow: 0 -1px 0px #3a404d;
+                    font-size: 1.5em;
+                    z-index: 110;
+                }
                 .action-list {
                     flex-direction: column;
-                    border: 1px solid #e0e0e0;
+                    border: 1px solid #515a6e;
                     border-radius: 4px;
                     background-color: #181a1b;
                     position: absolute;
-                    right: .5em;
-                    top: 55%;
+                    right: -.7em;
+                    top: 45px;
                     z-index: 100;
                     li {
                         width: 6em;
@@ -940,6 +951,15 @@ export default {
                 width: 1.2em;
                 height: 1.2em;
             }
+            .comment-menu {        
+                .triangle {
+                    display: inline;
+                }
+                .menu-list {
+                    top: 38px;
+                }
+            }
+
         }
         .comment-area {
             img, .triangle {
