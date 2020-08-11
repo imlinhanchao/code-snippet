@@ -64,6 +64,10 @@
                         <Icon custom="fa fa-chrome " title="Preview"></Icon>
                         Preview
                     </span>
+                    <span class="tag" style="cursor:pointer" @click="OnDownload">
+                        <Icon custom="fa fa-download " title="Preview"></Icon>
+                        Download
+                    </span>
                 </section>
             </aside>
         </header>
@@ -199,6 +203,8 @@
   </Layout>
 </template>
 <script>
+import JsZip from 'jszip';
+import { saveAs } from 'file-saver';
 export default {
     name: "snippet",
     components: {
@@ -342,6 +348,20 @@ export default {
             } catch (error) {
                 console.error(error.message);
                 this.$root.message($m.ERROR, error.message);
+            }
+        },
+        OnDownload() {
+            if (this.snippet.codes.length > 1) {
+                let jszip = new JsZip();
+                this.snippet.codes.forEach(c => {
+                    jszip.file(c.filename, c.content);
+                })
+                jszip.generateAsync({ type: 'blob' }).then((content) => {
+                    saveAs(content, `${this.snippet.id}.zip`);
+                });
+            } else {
+                let code = this.snippet.codes[0];
+                saveAs(code.content, code.filename);
             }
         },
         getReplyFloor(reply) {
