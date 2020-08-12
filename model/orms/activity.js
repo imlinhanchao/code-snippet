@@ -7,11 +7,7 @@ let orm = {
     },
     type: {
         type: db.INTEGER,
-        comment: '类型'
-    },
-    times: {
-        type: db.INTEGER,
-        comment: '执行次数'
+        comment: '类型: 0-create, 1-star, 2-fork, 3-comment'
     },
     private: {
         type: db.BOOLEAN,
