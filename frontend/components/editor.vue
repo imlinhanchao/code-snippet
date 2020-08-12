@@ -283,7 +283,8 @@ export default {
                     }
                 }
 
-                if(Array.from(new Set(this.files.filter(f => !f.remove).map(f => f.filename))).length != this.files.length) {
+                if(Array.from(new Set(this.files.filter(f => !f.remove).map(f => f.filename))).length 
+                    != this.files.filter(f => !f.remove).length) {
                     throw new Error('There are duplicate filenames!');
                 }
     
