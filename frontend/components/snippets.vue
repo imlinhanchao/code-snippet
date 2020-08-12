@@ -36,9 +36,10 @@
 </template>
 
 <script>
+import CodeRender from './coderender'
 export default {
     components: {
-        CodeRender: () => import('./coderender'),
+        CodeRender,
         Statistics: () => import('./statistics'), 
         FileIcon: () => import('./fileicon'), 
         Action: () => import('./action'), 

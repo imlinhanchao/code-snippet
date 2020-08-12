@@ -200,13 +200,14 @@
 <script>
 import JsZip from 'jszip';
 import { saveAs } from 'file-saver';
+import CodeRender from '../components/coderender'
 export default {
     name: "snippet",
     components: {
         Execute: () => import('../components/execute'),
         Preview: () => import('../components/preview'),
         Comment: () => import('../components/comment'),
-        CodeRender: () => import('../components/coderender'),
+        CodeRender,
     },
     async mounted() {
         if(!this.id) {

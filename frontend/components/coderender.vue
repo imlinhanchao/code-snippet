@@ -7,7 +7,10 @@
         <section class="code-content" :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
             <pre v-if="!isRender || source" v-hljs="code.content"><code></code></pre>
             <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.markdownIt.render(code.content)"></section>
-            <section class="render org-mode markdown-body" v-if="isOrg" v-html="renderOrg(code.content)"></section>
+            <section class="render org-mode markdown-body" v-if="isOrg && !source" v-html="renderOrg(code.content)"></section>
+            <section class="render ipynb" v-if="isIpynb && !source" v-html="renderIpynb(code.content)"></section>
+            <section class="render image" v-if="isImage && !source"><img :src="code.content" /></section>
+            <section class="render svg" v-if="isSvg && !source" v-html="code.content"></section>
         </section>
         <slot></slot>
     </section>
@@ -15,6 +18,8 @@
 
 <script>
 import org from 'org';
+import * as ipynb from 'ipynb2html'
+import { Document as Doc } from 'nodom'
 export default {
     name: 'CodeRender',
     components: {
@@ -46,11 +51,21 @@ export default {
         isOrg() {
             return this.ext == 'org';
         },
+        isIpynb() {
+            return this.ext == 'ipynb';
+        },
+        isImage() {
+            return ['jpg', 'bmp', 'png', 'jpeg', 'gif', 'svg'].indexOf(this.ext) >= 0 && 
+                !!this.code.content.match(/^data:image\/[\w+]+;base64,/);
+        },
+        isSvg() {
+            return this.ext == 'svg' && this.code.content.indexOf('<?xml') == 0;
+        },
         ext() {
             return this.$root.getCodeExt(this.code.filename);
         },
         isRender() {
-            return this.isMarkdown || this.isOrg;
+            return this.isMarkdown || this.isOrg || this.isIpynb || this.isImage || this.isSvg;
         }
     },
     methods: {
@@ -70,6 +85,10 @@ export default {
             ele.querySelectorAll('pre code').forEach(block => hljs.highlightBlock(block));
 
             return ele.innerHTML;
+        },
+        renderIpynb(content) {
+            const renderNotebook = ipynb.createRenderer(new Doc())
+            return renderNotebook(JSON.parse(content)).outerHTML;
         }
     }
 }
@@ -107,6 +126,20 @@ export default {
         padding: 1em 2em;
         background: #1b1b1b;
         color: #989796;
+        overflow: auto;
+        &.image {
+            text-align: center;
+            img {
+                max-height: 20em;
+            }
+        }
+    }
+}
+</style>
+<style lang="less">
+.render {
+    svg {
+        max-height: 20em;
     }
 }
 </style>

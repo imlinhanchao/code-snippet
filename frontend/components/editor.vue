@@ -492,7 +492,8 @@ export default {
     justify-content: space-between;
 }
 .layout-form {
-    width: 100%;
+    flex: 1;
+    width: 0;
     max-width: 980px;
     margin: auto;
     margin: 1em 0;
