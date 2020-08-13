@@ -29,6 +29,11 @@ let orm = {
         type: db.STRING(200),
         comment: '头像'
     },
+    verify: {
+        type: db.BOOLEAN,
+        default: 0,
+        comment: '邮箱是否验证'
+    },
     lastlogin: {
         type: db.INTEGER,
         comment: '最后登录时间'
