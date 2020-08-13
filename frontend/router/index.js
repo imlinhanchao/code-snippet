@@ -18,6 +18,14 @@ const routers = [{
             component: () => import('../views/home')
         },
         {
+            path: 'setting',
+            meta: {
+                title: 'Setting',
+                login: true
+            },
+            component: () => import('../views/setting')
+        },
+        {
             path: 'u/:user',
             meta: {
                 title: 'User',
