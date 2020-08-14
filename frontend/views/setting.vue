@@ -1,34 +1,52 @@
 <template>
   <Layout class="layout">
-        <section class="section">
+        <section class="profile">
             <div class="avatar-box">
                 <div class="avatar">
                 <img :src="avatar" />
                 <section class="avatar-upload" >
-                    <input @change="handleUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
+                    <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
                     <Button class="upload-btn" type="text" @click="$refs.upload.click()">
                     <Icon type="ios-cloud-upload" size="30"></Icon>
                     </Button>
-                </Upload>
+                </section>
                 </div>
             </div>
-            <div class="info">
-            <p class="nickname">
-                <Input v-model="info.nickname"></Input>
-            </p>
-            <p class="username">{{info.username}}</p>
-            <p class="motto">
-                <Input :rows="3" type="textarea" v-model="info.motto"></Input>
-            </p>
-            </div>
+            <Form ref="formProfile" :model="info" class="info">
+                <h1>Profile</h1>
+                <FormItem prop="nickname" label="Nick Name">
+                    <Input v-model="info.nickname"></Input>
+                </FormItem>
+                <FormItem prop="company" label="Company">
+                    <Input v-model="info.company"></Input>
+                </FormItem>
+                <FormItem prop="location" label="Location">
+                    <Input v-model="info.location"></Input>
+                </FormItem>
+                <FormItem prop="url" label="URL">
+                    <Input v-model="info.url"></Input>
+                </FormItem>
+                <FormItem prop="motto" label="Motto">
+                    <Input v-model="info.motto" :rows="3" type="textarea"></Input>
+                </FormItem>
+                <FormItem style="text-align: right">
+                    <Alert show-icon><span style="color: #2d8cf0;">All non-empty information will be displayed on your personal page.</span></Alert>
+                    <Button type="success" @click="OnSubmit('formProfile')">Save</Button>
+                </FormItem>
+            </Form>
         </section>
-        <vue-cropper v-if="editAvatar"
-            ref="cropper"
-            :src="avatar"
-            alt="Source Image"
-            :aspect-ratio="1"
-        >
-        </vue-cropper>
+        <Modal v-model="avatarModal" title="Crop Your Avatar" @on-ok="SaveAvatar" :loading="loading">
+            <section class="avatar-cropper">
+                <vue-cropper v-if="avatarModal"
+                    ref="cropper"
+                    :src="editavatar"
+                    alt="Source Image"
+                    :aspect-ratio="1"
+                    :max-height="500"
+                >
+                </vue-cropper>
+            </section>
+        </Modal>
   </Layout>
 </template>
 <script>
@@ -52,7 +70,7 @@ export default {
                 lastLogin: 0
             },
             loading: false,
-            editAvatar: false
+            avatarModal: false
         };
     },
     methods: {
@@ -72,22 +90,11 @@ export default {
                 this.$router.push('');
             }
         },
-        handleUpload() {
-            let reader = new FileReader();
-            let file = this.$refs.upload.files[0];
-            reader.onload = () => {
-                this.info.avatar = reader.result;
-                this.editAvatar = true
-            }
-            if (file)  reader.readAsDataURL(file)
-        },
-        async submitForm(info, name) {
+        async OnSubmit() {
             try {
-                info.id = this.info.id;
-                info.username = this.info.username;
-                let rsp = await this.$store.dispatch("account/set", info);
+                let rsp = await this.$store.dispatch("account/set", this.info);
                 if (rsp && rsp.state == 0) {
-                    this.$root.message($m.SUCCESS, `Update ${name} Success!`);
+                    this.$root.message($m.SUCCESS, `Save Success!`);
                     this.info = rsp.data;
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
@@ -96,6 +103,23 @@ export default {
                 this.$root.message($m.ERROR, err.message);
             }
         },
+        PreUpload() {
+            let reader = new FileReader();
+            let file = this.$refs.upload.files[0];
+            reader.onload = () => {
+                this.editavatar = reader.result;
+                this.editAvatar = true;
+                this.avatarModal = true
+            }
+            if (file)  reader.readAsDataURL(file)
+        },
+        async SaveAvatar() {
+            try {
+                this.loading = true;
+            } catch (error) {
+                
+            }
+        }
     },
     computed: {
         avatar() {
@@ -114,18 +138,20 @@ export default {
 <style scoped lang="less">
 .layout {
     display: flex;
-    max-width: 1280px;
+    max-width: 980px;
     margin: auto;
     flex-direction: row;
 }
-.section {
+.profile {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    margin: auto;
+    flex-direction: row-reverse;
+    margin: 1em auto;
     position: relative;
     .avatar-box {
-        width: 100%;
+        padding: 1.5em;
+        width: 40%;
+        max-width: 500px;
     }
     .avatar {
         flex: auto;
@@ -195,7 +221,14 @@ export default {
         }
     }
 }
+.avatar-cropper {
+    max-height: 70vh;
+    overflow: auto;
+}
 </style>
 
 <style lang="less">
+.cropper-view-box, .cropper-face {
+    border-radius: 50%;
+}
 </style>

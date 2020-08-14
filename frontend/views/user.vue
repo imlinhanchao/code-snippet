@@ -1,106 +1,167 @@
 <template>
-  <Layout class="layout">
-    <Content class="profile" v-if="info.id">
-      <section class="section">
-          <div class="avatar-box">
-            <div class="avatar">
-            <img :src="$root.fileUrl(info.avatar, '/res/user.png')" />
-            <Upload
-                v-if="isCurrentUser"
-                class="avatar-upload"
-                :show-upload-list="false"
-                :action="$root.uploadInterface"
-                :on-success="handleSuccess"
-                :max-size="$root.maxSize"
-                :format="['jpg','jpeg','png', 'gif']"
-                :on-format-error="$root.fileFormatError"
-                :on-exceeded-size="$root.fileMaxSize"
-                type="drag"
-                accept="image/*"
-            >
-                <Button class="upload-btn" type="text">
-                <Icon type="ios-cloud-upload" size="30"></Icon>
-                </Button>
-            </Upload>
+    <Layout class="layout">
+        <Content class="profile" v-if="info.id">
+        <section class="section">
+            <div class="avatar-box">
+                <div class="avatar">
+                <img :src="$root.fileUrl(info.avatar, '/res/user.png')" />
+                <Upload
+                    v-if="isCurrentUser"
+                    class="avatar-upload"
+                    :show-upload-list="false"
+                    :action="$root.uploadInterface"
+                    :on-success="handleSuccess"
+                    :max-size="$root.maxSize"
+                    :format="['jpg','jpeg','png', 'gif']"
+                    :on-format-error="$root.fileFormatError"
+                    :on-exceeded-size="$root.fileMaxSize"
+                    type="drag"
+                    accept="image/*"
+                >
+                    <Button class="upload-btn" type="text">
+                    <Icon type="ios-cloud-upload" size="30"></Icon>
+                    </Button>
+                </Upload>
+                </div>
             </div>
-          </div>
-        <div class="info">
-          <p class="nickname">
-            <Input
-              v-model="temp.nickname"
-              v-if="edit.nickname"
-              @on-keyup.enter="submitForm({
-                            nickname: temp.nickname
-                        }, 'Nicknamee');edit.nickname=false;"
-              @on-keyup.esc="edit.nickname=false;"></Input>
-            <span v-show="!edit.nickname">{{info.nickname}}</span>
-            <Icon
-              @click="edit.nickname=true;temp.nickname=info.nickname"
-              v-if="isCurrentUser && !edit.nickname"
-              custom="fa fa-pencil"
-              size="15"
-              class="edit-text"
-            ></Icon>
-          </p>
-          <p class="username">{{info.username}}</p>
-          <p class="motto">
-            <Input :rows="3" type="textarea"
-              v-model="temp.motto"
-              v-if="edit.motto"
-              @on-keyup.enter="submitForm({
-                            motto: temp.motto
-                        }, 'Motto');edit.motto=false;"
-              @on-keyup.esc="edit.motto=false;"
-            ></Input>
-            <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
-            <Icon
-              @click="edit.motto=true;temp.motto=info.motto||''"
-              v-if="isCurrentUser && !edit.motto"
-              custom="fa fa-pencil"
-              size="15"
-              class="edit-text"
-            />
-          </p>
-          <p class="lastlogin" v-if="info.lastlogin">
-            Last Login:
-            <Time :time="info.lastlogin"></Time>
-          </p>
-        </div>
-      </section>
-    </Content>
-    <Tabs :animated="false" class="user-tabs" v-model="tab" @on-click="OnTab" v-if="info.id">
-        <TabPane label="Snippets" icon="md-code" name="snippet">
-            <article class="snippet" >
-                <section class="none" v-if="snippets.length == 0 && !loading">
-                    <span>Here is a wasteland of code.</span>
-                </section>
-                <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
-                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-                <Page v-show="!loading && total.snippet > 5" :total="total.snippet" :current="page.snippet" size="small" @on-change="OnPage('snippet', ...arguments)" :page-size="5"/>
-            </article>
-        </TabPane>
-        <TabPane label="Stars" icon="md-star-outline" name="star">
-            <article class="snippet" >
-                <section class="none" v-if="stars.length == 0 && !loading">
-                    <span>{{info.nickname}} doesn’t have any starred snippets yet.</span>
-                </section>
-                <Snippets :snippets="stars" :file-icon="true" :user-icon="false"></Snippets>
-                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-                <Page v-show="!loading && total.star > 5" :total="total.star" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
-            </article>
-        </TabPane>
-        <TabPane label="Forks" icon="md-git-branch" name="fork">
-            <article class="snippet" >
-                <section class="none" v-if="forks.length == 0 && !loading">
-                    <span>{{info.nickname}} doesn’t have any forked snippets yet.</span>
-                </section>
-                <Snippets :snippets="forks" :file-icon="true" :user-icon="false"></Snippets>
-                <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-                <Page v-show="!loading && total.fork > 5" :total="total.fork" :current="page.fork" size="small" @on-change="OnPage('fork', ...arguments)" :page-size="5"/>
-            </article>
-        </TabPane>
-    </Tabs>
-  </Layout>
+            <div class="info">
+                <p class="nickname">
+                    <Input
+                        v-model="temp.nickname"
+                        v-if="edit.nickname"
+                        @on-keyup.enter="submitForm({
+                                        nickname: temp.nickname
+                                    }, 'Nicknamee');edit.nickname=false;"
+                        @on-keyup.esc="edit.nickname=false;"></Input>
+                    <span v-show="!edit.nickname">{{info.nickname || info.username}}</span>
+                    <Icon
+                        @click="edit.nickname=true;temp.nickname=info.nickname"
+                        v-if="isCurrentUser && !edit.nickname"
+                        custom="fa fa-pencil"
+                        size="15"
+                        class="edit-text"
+                    ></Icon>
+                </p>
+                <p class="username">{{info.username}}</p>
+                <p class="other motto">
+                    <Input :rows="3" type="textarea"
+                        v-model="temp.motto"
+                        v-if="edit.motto"
+                        @on-keyup.enter="submitForm({
+                                        motto: temp.motto
+                                    }, 'Motto');edit.motto=false;"
+                        @on-keyup.esc="edit.motto=false;"
+                    ></Input>
+                    <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
+                    <Icon
+                        @click="edit.motto=true;temp.motto=info.motto||''"
+                        v-if="isCurrentUser && !edit.motto"
+                        custom="fa fa-pencil"
+                        size="15"
+                        class="edit-text"
+                    />
+                </p>
+                <p class="lastlogin" v-if="info.lastlogin">
+                    Last Login:
+                    <Time :time="info.lastlogin"></Time>
+                </p>
+                <p class="action">
+                    <Button long v-if="!isCurrentUser">Follow</Button>
+                    <Button long v-if="isCurrentUser" @click="$router.push('/setting')">Edit Profile</Button>
+                </p>
+                <p class="other" v-if="info.url">
+                    <Input :rows="3" type="textarea"
+                        v-model="temp.company"
+                        v-if="edit.company"
+                        @on-keyup.enter="submitForm({
+                                        motto: temp.company
+                                    }, 'Motto');edit.company=false;"
+                        @on-keyup.esc="edit.company=false;"
+                    ></Input>
+                    <i class="fa fa-building" aria-hidden="true"></i> 
+                    <span v-if="!edit.company">{{info.company}}</span>
+                    <Icon
+                        @click="edit.company=true;temp.company=info.company||''"
+                        v-if="isCurrentUser && !edit.company"
+                        custom="fa fa-pencil"
+                        size="15"
+                        class="edit-text"
+                    />
+                </p> 
+                <p class="other" v-if="info.location">
+                    <Input :rows="3" type="textarea"
+                        v-model="temp.location"
+                        v-if="edit.location"
+                        @on-keyup.enter="submitForm({
+                                        motto: temp.location
+                                    }, 'Motto');edit.location=false;"
+                        @on-keyup.esc="edit.location=false;"
+                    ></Input>
+                    <i class="fa fa-map-marker" aria-hidden="true"></i> 
+                    <span v-if="!edit.location">{{info.location}}</span>
+                    <Icon
+                        @click="edit.location=true;temp.location=info.location||''"
+                        v-if="isCurrentUser && !edit.location"
+                        custom="fa fa-pencil"
+                        size="15"
+                        class="edit-text"
+                    />
+                </p>
+                <p class="other" v-if="info.url">
+                    <Input :rows="3" type="textarea"
+                        v-model="temp.url"
+                        v-if="edit.url"
+                        @on-keyup.enter="submitForm({
+                                        motto: temp.url
+                                    }, 'Motto');edit.url=false;"
+                        @on-keyup.esc="edit.url=false;"
+                    ></Input>
+                    <i class="fa fa-link" aria-hidden="true"></i> 
+                    <span v-if="!edit.url"><a target="_blank" :href="info.url">{{info.url}}</a></span>
+                    <Icon
+                        @click="edit.url=true;temp.url=info.url||''"
+                        v-if="isCurrentUser && !edit.url"
+                        custom="fa fa-pencil"
+                        size="15"
+                        class="edit-text"
+                    />
+                </p>                
+            </div>
+        </section>
+        </Content>
+        <Tabs :animated="false" class="user-tabs" v-model="tab" @on-click="OnTab" v-if="info.id">
+            <TabPane label="Snippets" icon="md-code" name="snippet">
+                <article class="snippet" >
+                    <section class="none" v-if="snippets.length == 0 && !loading">
+                        <span>Here is a wasteland of code.</span>
+                    </section>
+                    <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
+                    <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                    <Page v-show="!loading && total.snippet > 5" :total="total.snippet" :current="page.snippet" size="small" @on-change="OnPage('snippet', ...arguments)" :page-size="5"/>
+                </article>
+            </TabPane>
+            <TabPane label="Stars" icon="md-star-outline" name="star">
+                <article class="snippet" >
+                    <section class="none" v-if="stars.length == 0 && !loading">
+                        <span>{{info.nickname}} doesn’t have any starred snippets yet.</span>
+                    </section>
+                    <Snippets :snippets="stars" :file-icon="true" :user-icon="false"></Snippets>
+                    <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                    <Page v-show="!loading && total.star > 5" :total="total.star" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
+                </article>
+            </TabPane>
+            <TabPane label="Forks" icon="md-git-branch" name="fork">
+                <article class="snippet" >
+                    <section class="none" v-if="forks.length == 0 && !loading">
+                        <span>{{info.nickname}} doesn’t have any forked snippets yet.</span>
+                    </section>
+                    <Snippets :snippets="forks" :file-icon="true" :user-icon="false"></Snippets>
+                    <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
+                    <Page v-show="!loading && total.fork > 5" :total="total.fork" :current="page.fork" size="small" @on-change="OnPage('fork', ...arguments)" :page-size="5"/>
+                </article>
+            </TabPane>
+        </Tabs>
+    </Layout>
 </template>
 <script>
 export default {
@@ -109,25 +170,34 @@ export default {
         Snippets: () => import('../components/snippets')
     },
     mounted() {
-        this.init();
+        this.Init();
     },
     data() {
         return {
             info: {
-                id: "",
-                username: "",
-                nickname: "",
-                avatar: "",
-                motto: "",
+                id: '',
+                username: '',
+                nickname: '',
+                avatar: '',
+                motto: '',
+                company: '',
+                location: '',
+                url: '',
                 lastLogin: 0
             },
             edit: {
                 nickname: false,
-                motto: false
+                motto: false,
+                company: false,
+                location: false,
+                url: false,
             },
             temp: {
-                nickname: "",
-                motto: ""
+                nickname: '',
+                motto: '',
+                company: '',
+                location: '',
+                url: '',
             },
             snippets: [],
             stars: [],
@@ -147,7 +217,7 @@ export default {
         };
     },
     methods: {
-        async init() {
+        async Init() {
             if (this.$route.params.user == '') {
                 this.$root.message($m.ERROR, 'Username couldn\'t be empty.');
                 this.$router.push("/");
@@ -320,7 +390,7 @@ export default {
     watch: {
         $route(to, from) {
             console.log(to)
-            this.init();
+            this.Init();
         }
     }
 };
@@ -398,6 +468,9 @@ export default {
         .info {
             flex: 1;
             padding-left: 2em;
+            .action {
+                margin: .8em 0;
+            }
             .nickname {
                 font-size: 2em;
                 font-weight: bold;
@@ -410,10 +483,17 @@ export default {
                 font-size: .8em;
             }
             .motto {
-                font-size: 1em;
-                margin: 1em 0;
+                font-weight: bold;
             }
-            .edit-text {
+            .other {
+                font-size: 1em;
+                margin: .5em 0;
+                .fa {
+                    display: inline-block;
+                    width: 1.2em;
+                }
+            }
+            i.fa.edit-text {
                 display: none;
             }
             p:hover {

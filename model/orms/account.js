@@ -17,9 +17,20 @@ let orm = {
         type: db.STRING(100),
         comment: '邮箱'
     },
-    phone: {
+    company: {
+        type: db.STRING(50),
+        comment: '公司',
+        default: ''
+    },
+    location: {
         type: db.STRING(20),
-        comment: '手机'
+        comment: '所在地',
+        default: ''
+    },
+    url: {
+        type: db.STRING(260),
+        comment: '个人主页',
+        default: ''
     },
     motto: {
         type: db.STRING(200),
