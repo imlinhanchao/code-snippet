@@ -33,8 +33,8 @@ app.use(robots({ UserAgent: '*', Disallow: '/' }));
 app.use(favicon(path.join(__dirname, 'frontend', 'assets', 'favicon.ico')));
 app.use(partials());
 app.use(logger('dev'));
-app.use(bodyParser.json({ limit: '2m' }));
-app.use(bodyParser.urlencoded({ limit: '2m', extended: true }));
+app.use(bodyParser.json({ limit: '2048kb' }));
+app.use(bodyParser.urlencoded({ limit: '2048kb', extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
