@@ -589,9 +589,11 @@ export default {
             flex-direction: row;
             justify-content: center;
             .avatar-box {
-                width: 30%;
+                width: 45%;
+                display: flex;
+                align-items: center;
             }
-            .motto {
+            .other {
                 display: none;
             }
             .info {
@@ -601,6 +603,7 @@ export default {
     }
     .user-tabs {
         width: 100%;
+        margin-top: 0;
     }
     .snippet {
         width: 100%;
