@@ -43,14 +43,14 @@
                 </section>
             </section>
             <aside>
-                <section>
+                <section class="snippet-info">
                     <p v-if="snippet.fork">
                         fork from 
                         <router-link :to="`/s/${snippet.fork.id}`" :title="`${snippet.fork.username} / ${snippet.fork.codes[0].filename}`">
                         {{snippet.fork.username}} / {{snippet.fork.codes[0].filename}}
-                        </router-link>
+                        </router-link> at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time>
                     </p>
-                    <p>Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
+                    <p v-if="!snippet.fork">Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
                 </section>
                 <section class="ext-info">
                     <span class="tag isprivate" v-if="snippet.private">
@@ -592,6 +592,9 @@ export default {
     aside {
         color: #999;
         font-size: .8em;
+        .snippet-info {
+            margin: 1em 0 0;
+        }
         .ext-info {
             padding: 1em 0 0;
             i {
