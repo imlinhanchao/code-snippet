@@ -104,26 +104,18 @@ class Module extends App {
                     throw this.error.existedmail;
                 }
             }  
-        
-            if (data.phone) {
-                let account = await Account.findOne({
-                    where: {
-                        phone: data.phone
-                    }
-                });
-                if (account) {
-                    throw this.error.existedphone;
-                }
-            }
             
             data.nickname = data.username;
             data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
             data.passwd = sha256.update(data.passwd + __salt).digest('hex');
             data.email = data.email || '';
-            data.phone = data.phone || '';
             data.motto = data.motto || '';
             data.avatar = data.avatar || '';
+            data.company = data.company || '';
+            data.location = data.location || '';
+            data.url = data.url || '';
+            data.verify = false;
             let account = await super.new(data, Account, 'username');
             if (onlyData) return account;
             return this.okcreate(App.filter(account, this.saftKey));
@@ -167,19 +159,9 @@ class Module extends App {
                 if (account) {
                     throw this.error.existedmail;
                 }
+                data.verify = false;
             }
         
-            // Phone 更新重复检查
-            if (data.phone && data.phone != account.phone) {
-                let account = await Account.findOne({
-                    where: {
-                        phone: data.phone
-                    }
-                });
-                if (account) {
-                    throw this.error.existedphone;
-                }
-            }
             return this.okupdate(await super.set(data, Account));
         } catch (err) {
             if (err.isdefine) throw (err);
