@@ -51,8 +51,8 @@
                 <FormItem label="Email">
                     <p style="clear: both; font-size:1.2em">
                         <span>{{info.email}}</span> 
-                        <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Actived' : 'Inactivated'}}</span>
-                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail">Resend Active Email</Button>
+                        <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Verified' : 'Inverified'}}</span>
+                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail">Resend verification email</Button>
                     </p>
                 </FormItem>
                 <FormItem prop="email" label="New Email">
@@ -64,6 +64,9 @@
             </Form>
             <Divider></Divider>
             <Form ref="formPasswd" :model="password" class="password">
+                <FormItem prop="value" label="Old Password">
+                    <Input type="password" v-model="password.old"></Input>
+                </FormItem>
                 <FormItem prop="value" label="New Password">
                     <Input type="password" v-model="password.value"></Input>
                 </FormItem>
@@ -105,6 +108,7 @@ export default {
             editAvatar: '',
             menu: 'security',
             password: {
+                old: '',
                 value: '',
                 confirm: ''
             },
@@ -209,15 +213,14 @@ export default {
         .tag {
             user-select: none;
             border-radius: 2em;
-            background: #bd2803;
             border: 1px solid #ed4014;
             padding: .1em .5em;
-            color: #FFF;
+            color: #ed4014;
             font-weight: bold;
             font-size: .8em;
             &.active {
-                background: #097e53;
                 border: 1px solid #19be6b;
+                color: #19be6b;
             }
         }
     }
