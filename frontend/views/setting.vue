@@ -1,16 +1,16 @@
 <template>
   <Layout class="layout">
-        <Menu active-name="1" class="setting-menu">
-            <MenuItem name="1">
+        <Menu :active-name="menu" class="setting-menu" @on-select="OnSelectMenu">
+            <MenuItem name="profile">
                 <Icon custom="fa fa-user" ></Icon>
                 Profile
             </MenuItem>
-            <MenuItem name="2">
+            <MenuItem name="security">
                 <Icon custom="fa fa-shield" ></Icon>
                 Security
             </MenuItem>
         </Menu>
-        <section class="profile">
+        <section v-show="menu == 'profile'" class="profile">
             <div class="avatar-box">
                 <div class="avatar">
                 <img :src="avatar" />
@@ -45,6 +45,36 @@
                 </FormItem>
             </Form>
         </section>
+        <section v-show="menu == 'security'" class="security">
+            <h1>Security</h1>
+            <Form ref="formEmail" class="email">
+                <FormItem label="Email">
+                    <p style="clear: both; font-size:1.2em">
+                        <span>{{info.email}}</span> 
+                        <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Actived' : 'Inactivated'}}</span>
+                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail">Resend Active Email</Button>
+                    </p>
+                </FormItem>
+                <FormItem prop="email" label="New Email">
+                    <Input v-model="email"></Input> 
+                </FormItem>
+                <FormItem style="text-align: right">
+                    <Button type="success" @click="OnUpdateEmail()">Update Email</Button>
+                </FormItem>
+            </Form>
+            <Divider></Divider>
+            <Form ref="formPasswd" :model="password" class="password">
+                <FormItem prop="value" label="New Password">
+                    <Input type="password" v-model="password.value"></Input>
+                </FormItem>
+                <FormItem label="Confirm Password">
+                    <Input type="password" prop="confirm" v-model="password.confirm"></Input> 
+                </FormItem>
+                <FormItem style="text-align: right">
+                    <Button type="info" @click="OnUpdatePasswd">Update Password</Button>
+                </FormItem>
+            </Form>
+        </section>
         <Cropper v-model="avatarModal" :src="editAvatar" @save="SaveAvatar" :file="file">
         </Cropper>
   </Layout>
@@ -72,14 +102,22 @@ export default {
             loading: false,
             avatarModal: false,
             file: {},
-            editAvatar: ''
+            editAvatar: '',
+            menu: 'security',
+            password: {
+                value: '',
+                confirm: ''
+            },
+            email: ''
         };
     },
     methods: {
         async Init() {
             let rsp = await this.$store.dispatch('account/checklogin');
-            if(this.$root.isLogin) await this.loadUser(this.$root.loginUser.username);
-            else this.$root.plsLogin();
+            if(!this.$root.isLogin) this.$root.plsLogin();
+            this.info = rsp.data;
+            let title = this.info.nickname;
+            this.$util.title(title + '\'s Setting');
         },
         async loadUser(username) {
             let rsp = await this.$store.dispatch("account/getInfo", username);
@@ -98,12 +136,26 @@ export default {
                 if (rsp && rsp.state == 0) {
                     this.$root.message($m.SUCCESS, `Save Success!`);
                     this.info = rsp.data;
+                    let title = this.info.nickname;
+                    this.$util.title(title + '\'s Setting');
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
                 }
             } catch (err) {
                 this.$root.message($m.ERROR, err.message);
             }
+        },
+        OnSelectMenu(name) {
+            this.menu = name;
+        },
+        OnSendEmail() {
+            
+        },
+        OnUpdateEmail() {
+            
+        },
+        OnUpdatePasswd() {
+            
         },
         PreUpload() {
             let reader = new FileReader();
@@ -145,6 +197,30 @@ export default {
     max-width: 980px;
     margin: auto;
     flex-direction: row;
+}
+.security {
+    width: 100%;
+    display: flex;
+    margin: 0 1em;
+    padding: .5em 0;
+    flex-direction: column;
+    flex: 1;
+    .email {
+        .tag {
+            user-select: none;
+            border-radius: 2em;
+            background: #bd2803;
+            border: 1px solid #ed4014;
+            padding: .1em .5em;
+            color: #FFF;
+            font-weight: bold;
+            font-size: .8em;
+            &.active {
+                background: #097e53;
+                border: 1px solid #19be6b;
+            }
+        }
+    }
 }
 .profile {
     width: 100%;
