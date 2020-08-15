@@ -231,6 +231,7 @@ export default {
     flex-direction: row-reverse;
     margin: 1em auto;
     position: relative;
+    flex: 1;
     .avatar-box {
         padding: 1.5em;
         width: 40%;
