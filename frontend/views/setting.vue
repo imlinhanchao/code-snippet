@@ -39,8 +39,8 @@
                 <FormItem prop="motto" label="Motto">
                     <Input v-model="info.motto" :rows="3" type="textarea"></Input>
                 </FormItem>
+                <Alert show-icon><span style="color: #2d8cf0;">All non-empty information will be displayed on your personal page.</span></Alert>
                 <FormItem style="text-align: right">
-                    <Alert show-icon><span style="color: #2d8cf0;">All non-empty information will be displayed on your personal page.</span></Alert>
                     <Button type="success" @click="OnSubmit('formProfile')">Save</Button>
                 </FormItem>
             </Form>
