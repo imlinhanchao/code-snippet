@@ -127,7 +127,7 @@ new Vue({
             return config.file.maxSize * 1024;
         },
         uploadInterface() {
-            return '/api/lib/upload';
+            return '/lib/upload';
         },
         loginUser() {
             return this.isLogin ? this.$store.getters['account/info'] : {};

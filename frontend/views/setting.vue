@@ -45,7 +45,7 @@
                 </FormItem>
             </Form>
         </section>
-        <Modal v-model="avatarModal" title="Crop Your Avatar" @on-ok="SaveAvatar" :loading="loading">
+        <Modal v-model="avatarModal" title="Crop Your Avatar" @on-ok="SaveAvatar" :loading="true">
             <section class="avatar-cropper">
                 <vue-cropper v-if="avatarModal"
                     ref="cropper"
@@ -80,7 +80,8 @@ export default {
                 lastLogin: 0
             },
             loading: false,
-            avatarModal: false
+            avatarModal: false,
+            file: null
         };
     },
     methods: {
@@ -116,6 +117,8 @@ export default {
         PreUpload() {
             let reader = new FileReader();
             let file = this.$refs.upload.files[0];
+            this.file = file;
+            console.dir(file)
             reader.onload = () => {
                 this.editavatar = reader.result;
                 this.editAvatar = true;
@@ -123,12 +126,32 @@ export default {
             }
             if (file)  reader.readAsDataURL(file)
         },
-        async SaveAvatar() {
-            try {
-                this.loading = true;
-            } catch (error) {
-                
-            }
+        SaveAvatar() {
+            this.$refs.cropper.getCroppedCanvas().toBlob(async (data)=> {
+                try {
+                    let param = new FormData();
+                    param.append('file', new File([data], this.file.name, { type: this.file.type }));
+                    let rsp = await this.$axios.post(this.$root.uploadInterface, param, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    rsp = rsp && rsp.data;
+                    if (rsp && rsp.state == 0) {
+                        this.avatarModal = false;
+                        this.$set(this.info, 'avatar', rsp.data[0]);
+                        await this.$store.dispatch("account/set", {
+                            id: this.info.id,
+                            username: this.info.username,
+                            avatar: this.info.avatar
+                        });
+                    } else {
+                        this.$Message.error($m.ERROR, rsp.msg);
+                    }
+                } catch (err) {
+                    this.$Message.error(err.message);
+                }
+            });
         }
     },
     computed: {
