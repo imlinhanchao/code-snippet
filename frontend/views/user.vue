@@ -31,7 +31,7 @@
                         v-if="edit.nickname"
                         @on-keyup.enter="submitForm({
                                         nickname: temp.nickname
-                                    }, 'Nicknamee');edit.nickname=false;"
+                                    }, 'Nickname');edit.nickname=false;"
                         @on-keyup.esc="edit.nickname=false;"></Input>
                     <span v-show="!edit.nickname">{{info.nickname || info.username}}</span>
                     <Icon
@@ -69,62 +69,62 @@
                     <Button long v-if="!isCurrentUser">Follow</Button>
                     <Button long v-if="isCurrentUser" @click="$router.push('/setting')">Edit Profile</Button>
                 </p>
-                <p class="other" v-if="info.url">
-                    <Input :rows="3" type="textarea"
+                <p class="other" v-if="info.company">
+                    <i class="fa fa-building" aria-hidden="true"></i> 
+                    <Input title="Press Enter to Submit, Esc to canel."
                         v-model="temp.company"
                         v-if="edit.company"
                         @on-keyup.enter="submitForm({
-                                        motto: temp.company
-                                    }, 'Motto');edit.company=false;"
+                                        company: temp.company
+                                    }, 'Company');edit.company=false;"
                         @on-keyup.esc="edit.company=false;"
                     ></Input>
-                    <i class="fa fa-building" aria-hidden="true"></i> 
-                    <span v-if="!edit.company">{{info.company}}</span>
+                    <span v-if="!edit.company">{{info.company}}
                     <Icon
                         @click="edit.company=true;temp.company=info.company||''"
                         v-if="isCurrentUser && !edit.company"
                         custom="fa fa-pencil"
                         size="15"
                         class="edit-text"
-                    />
+                    /></span>
                 </p> 
                 <p class="other" v-if="info.location">
-                    <Input :rows="3" type="textarea"
+                    <i class="fa fa-map-marker" aria-hidden="true"></i> 
+                    <Input title="Press Enter to Submit, Esc to canel."
                         v-model="temp.location"
                         v-if="edit.location"
                         @on-keyup.enter="submitForm({
-                                        motto: temp.location
-                                    }, 'Motto');edit.location=false;"
+                                        location: temp.location
+                                    }, 'Location');edit.location=false;"
                         @on-keyup.esc="edit.location=false;"
                     ></Input>
-                    <i class="fa fa-map-marker" aria-hidden="true"></i> 
-                    <span v-if="!edit.location">{{info.location}}</span>
+                    <span v-if="!edit.location">{{info.location}}
                     <Icon
                         @click="edit.location=true;temp.location=info.location||''"
                         v-if="isCurrentUser && !edit.location"
                         custom="fa fa-pencil"
                         size="15"
                         class="edit-text"
-                    />
+                    /></span>
                 </p>
-                <p class="other" v-if="info.url">
-                    <Input :rows="3" type="textarea"
+                <p class="other" v-if="info.url" style="word-break:break-all;align-items: baseline;">
+                    <i class="fa fa-link" aria-hidden="true"></i> 
+                    <Input title="Press Enter to Submit, Esc to canel."
                         v-model="temp.url"
                         v-if="edit.url"
                         @on-keyup.enter="submitForm({
-                                        motto: temp.url
-                                    }, 'Motto');edit.url=false;"
+                                        url: temp.url
+                                    }, 'URL');edit.url=false;"
                         @on-keyup.esc="edit.url=false;"
                     ></Input>
-                    <i class="fa fa-link" aria-hidden="true"></i> 
-                    <span v-if="!edit.url"><a target="_blank" :href="info.url">{{info.url}}</a></span>
+                    <span v-if="!edit.url"><a target="_blank" :href="info.url">{{info.url}}</a>
                     <Icon
                         @click="edit.url=true;temp.url=info.url||''"
                         v-if="isCurrentUser && !edit.url"
                         custom="fa fa-pencil"
                         size="15"
                         class="edit-text"
-                    />
+                    /></span>
                 </p>                
             </div>
         </section>
@@ -351,6 +351,8 @@ export default {
                 if (rsp && rsp.state == 0) {
                     this.$root.message($m.SUCCESS, `Update ${name} Success!`);
                     this.info = rsp.data;
+                    if (name == 'Nickname')
+                        this.$util.title(this.info.nickname + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
                 }
@@ -488,6 +490,9 @@ export default {
             .other {
                 font-size: 1em;
                 margin: .5em 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
                 .fa {
                     display: inline-block;
                     width: 1.2em;
