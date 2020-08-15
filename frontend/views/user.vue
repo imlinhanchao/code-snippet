@@ -4,24 +4,13 @@
         <section class="section">
             <div class="avatar-box">
                 <div class="avatar">
-                <img :src="$root.fileUrl(info.avatar, '/res/user.png')" />
-                <Upload
-                    v-if="isCurrentUser"
-                    class="avatar-upload"
-                    :show-upload-list="false"
-                    :action="$root.uploadInterface"
-                    :on-success="handleSuccess"
-                    :max-size="$root.maxSize"
-                    :format="['jpg','jpeg','png', 'gif']"
-                    :on-format-error="$root.fileFormatError"
-                    :on-exceeded-size="$root.fileMaxSize"
-                    type="drag"
-                    accept="image/*"
-                >
-                    <Button class="upload-btn" type="text">
+                <img :src="avatar" />
+                <section class="avatar-upload" >
+                    <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
+                    <Button class="upload-btn" type="text" @click="$refs.upload.click()">
                     <Icon type="ios-cloud-upload" size="30"></Icon>
                     </Button>
-                </Upload>
+                </section>
                 </div>
             </div>
             <div class="info">
@@ -161,13 +150,16 @@
                 </article>
             </TabPane>
         </Tabs>
+        <Cropper v-model="avatarModal" :src="editAvatar" @save="SaveAvatar" :file="file">
+        </Cropper>
     </Layout>
 </template>
 <script>
 export default {
     name: "user",
     components: {
-        Snippets: () => import('../components/snippets')
+        Snippets: () => import('../components/snippets'),
+        Cropper: () => import('../components/cropper')
     },
     mounted() {
         this.Init();
@@ -214,6 +206,9 @@ export default {
                 fork: 1,
             },
             tab: 'snippet',
+            avatarModal: false,
+            editAvatar: '',
+            file: {}
         };
     },
     methods: {
@@ -342,6 +337,25 @@ export default {
                     rsp.msg,
                     'Upload File Failed');
             }
+        },
+        PreUpload() {
+            let reader = new FileReader();
+            let file = this.$refs.upload.files[0];
+            this.file = file;
+            console.dir(file)
+            reader.onload = () => {
+                this.editAvatar = reader.result;
+                this.avatarModal = true
+            }
+            if (file)  reader.readAsDataURL(file)
+        },
+        async SaveAvatar(url) {
+            this.$set(this.info, 'avatar', url);
+            await this.$store.dispatch("account/set", {
+                id: this.info.id,
+                username: this.info.username,
+                avatar: this.info.avatar
+            });
         },
         async submitForm(info, name) {
             try {

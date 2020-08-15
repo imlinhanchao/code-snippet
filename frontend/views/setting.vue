@@ -45,26 +45,16 @@
                 </FormItem>
             </Form>
         </section>
-        <Modal v-model="avatarModal" title="Crop Your Avatar" @on-ok="SaveAvatar" :loading="true">
-            <section class="avatar-cropper">
-                <vue-cropper v-if="avatarModal"
-                    ref="cropper"
-                    :src="editavatar"
-                    alt="Source Image"
-                    :aspect-ratio="1"
-                    :max-height="500"
-                >
-                </vue-cropper>
-            </section>
-        </Modal>
+        <Cropper v-model="avatarModal" :src="editAvatar" @save="SaveAvatar" :file="file">
+        </Cropper>
   </Layout>
 </template>
 <script>
-import 'cropperjs/dist/cropper.css';
 export default {
     name: "setting",
     components: {
-        VueCropper: () => import('vue-cropperjs')
+        VueCropper: () => import('vue-cropperjs'),
+        Cropper: () => import('../components/cropper')
     },
     mounted() {
         this.Init();
@@ -81,7 +71,8 @@ export default {
             },
             loading: false,
             avatarModal: false,
-            file: null
+            file: {},
+            editAvatar: ''
         };
     },
     methods: {
@@ -120,37 +111,17 @@ export default {
             this.file = file;
             console.dir(file)
             reader.onload = () => {
-                this.editavatar = reader.result;
-                this.editAvatar = true;
+                this.editAvatar = reader.result;
                 this.avatarModal = true
             }
             if (file)  reader.readAsDataURL(file)
         },
-        SaveAvatar() {
-            this.$refs.cropper.getCroppedCanvas().toBlob(async (data)=> {
-                try {
-                    let param = new FormData();
-                    param.append('file', new File([data], this.file.name, { type: this.file.type }));
-                    let rsp = await this.$axios.post(this.$root.uploadInterface, param, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
-                    rsp = rsp && rsp.data;
-                    if (rsp && rsp.state == 0) {
-                        this.avatarModal = false;
-                        this.$set(this.info, 'avatar', rsp.data[0]);
-                        await this.$store.dispatch("account/set", {
-                            id: this.info.id,
-                            username: this.info.username,
-                            avatar: this.info.avatar
-                        });
-                    } else {
-                        this.$Message.error($m.ERROR, rsp.msg);
-                    }
-                } catch (err) {
-                    this.$Message.error(err.message);
-                }
+        async SaveAvatar(url) {
+            this.$set(this.info, 'avatar', url);
+            await this.$store.dispatch("account/set", {
+                id: this.info.id,
+                username: this.info.username,
+                avatar: this.info.avatar
             });
         }
     },
@@ -253,10 +224,6 @@ export default {
             }
         }
     }
-}
-.avatar-cropper {
-    max-height: 70vh;
-    overflow: auto;
 }
 .setting-menu {
     margin: 1em;
