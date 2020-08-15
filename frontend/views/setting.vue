@@ -1,5 +1,15 @@
 <template>
   <Layout class="layout">
+        <Menu active-name="1" class="setting-menu">
+            <MenuItem name="1">
+                <Icon custom="fa fa-user" ></Icon>
+                Profile
+            </MenuItem>
+            <MenuItem name="2">
+                <Icon custom="fa fa-shield" ></Icon>
+                Security
+            </MenuItem>
+        </Menu>
         <section class="profile">
             <div class="avatar-box">
                 <div class="avatar">
@@ -224,6 +234,77 @@ export default {
 .avatar-cropper {
     max-height: 70vh;
     overflow: auto;
+}
+.setting-menu {
+    margin: 1em;
+    background: transparent;
+    border-radius: 6px;
+    border: 1px solid #373c3e;
+    overflow: hidden;
+    &.ivu-menu {
+        &:after {
+            background: transparent;
+        }
+        .ivu-menu-item {
+            border-bottom: 1px solid #373c3e;
+            &:hover {
+                color: #2b85e4
+            }
+            &:after {
+                content: '';
+                display: block;
+                width: 2px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                background: #24292e;
+            }
+            &.ivu-menu-item-active{
+                background: #24292e;
+                color: #FFF;
+                :after {
+                    background: #dcdee2;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 600px) {
+    .layout {
+        flex-direction: column;
+        .setting-menu {
+            display: flex;
+            flex-direction: row;
+            width: auto!important;
+            border: 0;
+            border-bottom: 1px solid #373c3e;
+            padding: 0 1em;
+            border-radius: 0;
+            .ivu-menu-item {
+                border-radius: 6px 6px 0 0;
+                border: 1px solid #373c3e;
+                border-bottom: 0;
+                overflow: hidden;
+                margin-left: -1px;
+                &:after {
+                    display: none;
+                }
+            }
+        }
+        .profile {
+            width: auto;
+            margin: 0 1em;
+            flex-direction: column;
+            .avatar-box {
+                width: 100%;
+                padding: 1em;
+            }
+            .info {
+                padding: 0 1em;
+            }
+        }
+    }
 }
 </style>
 
