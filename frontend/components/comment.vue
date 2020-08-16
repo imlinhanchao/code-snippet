@@ -117,6 +117,7 @@ export default {
 }
 .editor {
     position: relative;
+    z-index: 0;
     .mask {
         position: absolute;
         top: 0;
