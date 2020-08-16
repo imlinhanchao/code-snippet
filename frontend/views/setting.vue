@@ -247,7 +247,9 @@ export default {
         },
         async validateEmail (rule, value, callback) {
             if (this.email === '') {
-                callback(new Error('Please enter your email'));
+                callback(new Error('Please enter your email.'));
+            } else if (this.email == this.info.email) {
+                callback(new Error('Same as the original mail.'));
             } else if (null == this.email.match(/^[^@]*?@[^@]*?$/)) {
                 callback(new Error('This is not a valid email.'));
             } else {
