@@ -43,6 +43,7 @@ async function main() {
 
     config.base['name'] = await rl.inputData('Website Name', config.base['name']);
     config.base['glot'] = await rl.inputData('Glot Token', config.base['glot']);
+    config.base['cnzz'] = await rl.inputData('CNZZ Site Id', config.base['cnzz']);
     
     config.file['maxSize'] = await rl.inputData('Max Size File Upload(MB)', config.file['maxSize']);
     

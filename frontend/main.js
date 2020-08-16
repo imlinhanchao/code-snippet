@@ -20,6 +20,7 @@ import locale from 'iview/dist/locale/en-US';
 import VueClipboard from 'vue-clipboard2';
 import 'mavon-editor/dist/markdown/github-markdown.min.css'
 import mavonEditor from 'mavon-editor'
+import uweb from 'vue-uweb'
 import './theme/index.less';
  
 VueClipboard.config.autoSetContainer = true // add this line
@@ -44,6 +45,7 @@ Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
 Vue.use(iView, { locale });
 Vue.use(mavonEditor)
+Vue.use(uweb, config.base.cnzz);
 
 // Router config
 const RouterConfig = {

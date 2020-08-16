@@ -60,6 +60,7 @@
     "vue-infinite-scroll": "^2.0.2",
     "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.5.20",
+    "vue-uweb": "^0.2.2",
     "vuex": "^3.5.1"
   }
 }
