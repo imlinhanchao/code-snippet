@@ -113,7 +113,7 @@
                 </Input>
             </FormItem>
             <div class="login-footer">
-                <Button type="success" style="width: 100%;" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
+                <Button type="success" long @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
             </div>
         </Form>
         </article>
@@ -147,6 +147,8 @@ export default {
             if (!this.isRegister) return;
             if (value === '') {
                 callback(new Error('Please enter your email'));
+            } else if (null == value.match(/^[^@]*?@[^@]*?$/)) {
+                callback(new Error('This is not a valid email.'));
             } else {
                 try {
                     let rsp = await this.$store.dispatch('account/exist', {
@@ -161,10 +163,10 @@ export default {
                             callback();
                         }
                     } else {
-                        this.$root.message($m.ERROR, rsp.msg);
+                        this.$Message.error(rsp.msg);
                     }  
                 } catch (err) {
-                    this.$root.message($m.ERROR, err.message);
+                    this.$Message.error(err.message);
                 }
                 callback();
             }
@@ -182,6 +184,9 @@ export default {
                 passwd: [{ validator: validatePasswd, trigger: 'blur' }],
                 email: [{ validator: validateEmail, trigger: 'blur' }],
                 captcha: [{ }]
+            },
+            update: {
+                email: ''
             },
             login_loading: false,
             isRegister: false,

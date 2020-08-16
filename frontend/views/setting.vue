@@ -47,7 +47,7 @@
         </section>
         <section v-show="menu == 'security'" class="security">
             <h1>Security</h1>
-            <Form ref="formEmail" class="email">
+            <Form ref="formEmail" class="email" >
                 <FormItem label="Email">
                     <p style="clear: both; font-size:1.2em">
                         <span>{{info.email}}</span> 
@@ -55,22 +55,22 @@
                         <Button style="float:right" v-if="!info.verify" @click="OnSendEmail">Resend verification email</Button>
                     </p>
                 </FormItem>
-                <FormItem prop="email" label="New Email">
-                    <Input v-model="email"></Input> 
-                </FormItem>
-                <FormItem style="text-align: right">
-                    <Button type="success" @click="OnUpdateEmail()">Update Email</Button>
+                <FormItem prop="email" label="New Email" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
+                    <section class="email-update">
+                        <Input v-model="email"></Input> 
+                        <Button type="success" @click="OnUpdateEmail()">Update Email</Button>
+                    </section>
                 </FormItem>
             </Form>
             <Divider></Divider>
-            <Form ref="formPasswd" :model="password" class="password">
-                <FormItem prop="value" label="Old Password">
+            <Form ref="formPasswd" :model="password" class="password" :rules="ruleValidate">
+                <FormItem prop="old" label="Old Password">
                     <Input type="password" v-model="password.old"></Input>
                 </FormItem>
                 <FormItem prop="value" label="New Password">
                     <Input type="password" v-model="password.value"></Input>
                 </FormItem>
-                <FormItem label="Confirm Password">
+                <FormItem prop="confirm" label="Confirm Password">
                     <Input type="password" prop="confirm" v-model="password.confirm"></Input> 
                 </FormItem>
                 <FormItem style="text-align: right">
@@ -93,6 +93,33 @@ export default {
         this.Init();
     },
     data() {
+        const validatePasswd = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter your password'));
+            } else if (value.length < 6) {
+                callback(new Error('Your password was too short'));
+            } else {
+                callback();
+            }
+        }
+        const validateNewPasswd = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter your new password'));
+            } else if (value.length < 6) {
+                callback(new Error('Your new password was too short'));
+            } else {
+                callback();
+            }
+        }
+        const validatePassCheck = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter your password again'));
+            } else if (value !== this.passowrd.confirm) {
+                callback(new Error('The two input passwords do not match!'));
+            } else {
+                callback();
+            }
+        }
         return {
             info: {
                 id: "",
@@ -112,7 +139,12 @@ export default {
                 value: '',
                 confirm: ''
             },
-            email: ''
+            email: '',
+            ruleValidate: {
+                old: [{ validator: validatePasswd, trigger: 'blur' }],
+                value: [{ validator: validateNewPasswd, trigger: 'blur' }],
+                confirm: [{ validator: validatePassCheck, trigger: 'blur' }],
+            },
         };
     },
     methods: {
@@ -156,7 +188,9 @@ export default {
             
         },
         OnUpdateEmail() {
-            
+            this.$refs.formEmail.validate(async valid => {
+                if (!valid) return;
+            })
         },
         OnUpdatePasswd() {
             
@@ -179,6 +213,33 @@ export default {
                 username: this.info.username,
                 avatar: this.info.avatar
             });
+        },
+        async validateEmail (rule, value, callback) {
+            if (this.email === '') {
+                callback(new Error('Please enter your email'));
+            } else if (null == this.email.match(/^[^@]*?@[^@]*?$/)) {
+                callback(new Error('This is not a valid email.'));
+            } else {
+                try {
+                    let rsp = await this.$store.dispatch('account/exist', {
+                        other: {
+                            email: this.email
+                        }
+                    })
+                    if (rsp && rsp.state == 0) {
+                        if (rsp.data) {
+                            callback(new Error('The email was register.'));
+                        } else {
+                            callback();
+                        }
+                    } else {
+                        this.$Message.error(rsp.msg);
+                    }  
+                } catch (err) {
+                    this.$Message.error(err.message);
+                }
+                callback();
+            }
         }
     },
     computed: {
@@ -222,6 +283,17 @@ export default {
                 border: 1px solid #19be6b;
                 color: #19be6b;
             }
+        }
+    }
+    .email-update {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .ivu-btn {
+            margin-left: 1em;
+        }
+        .ivu-input-wrapper {
+            max-width: 25em;
         }
     }
 }
