@@ -58,7 +58,7 @@
                 <FormItem prop="email" label="New Email" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
                     <section class="email-update">
                         <Input v-model="email"></Input> 
-                        <Button type="success" @click="OnUpdateEmail()">Update Email</Button>
+                        <Button type="success" @click="OnUpdateEmail" :loading="loading_email">Update Email</Button>
                     </section>
                 </FormItem>
             </Form>
@@ -130,6 +130,7 @@ export default {
                 lastLogin: 0
             },
             loading: false,
+            loading_email: false,
             avatarModal: false,
             file: {},
             editAvatar: '',
@@ -202,7 +203,29 @@ export default {
                 this.$root.message($m.ERROR, err.message);
             }
         },
-        OnUpdateEmail() {
+        async OnUpdateEmail() {
+            try {
+                this.loading_email = true;
+                let rsp = await this.$store.dispatch('account/set', {
+                    id: this.info.id,
+                    username: this.info.username,
+                    email: this.email
+                });
+                if (rsp && rsp.state == 0) {
+                    this.info.email = this.email;
+                    this.info.verify = false;
+                    this.email = '';
+                    await this.$store.dispatch('account/sendverify', this.info);
+                    this.$root.message($m.SUCCESS, 'Update Email Success. Please login to your email to verify.');
+                    this.loading_email = false;
+                } else {
+                    this.loading_email = false;
+                    this.$root.message($m.ERROR, rsp.msg);
+                }
+            } catch (err) {
+                this.loading = false;
+                this.$root.message($m.ERROR, err.message);
+            }
         },
         OnUpdatePasswd() {
             this.$refs.formPasswd.validate(async valid => {
