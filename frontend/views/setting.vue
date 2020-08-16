@@ -114,7 +114,7 @@ export default {
         const validatePassCheck = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('Please enter your password again'));
-            } else if (value !== this.passowrd.confirm) {
+            } else if (value !== this.password.value) {
                 callback(new Error('The two input passwords do not match!'));
             } else {
                 callback();
@@ -188,12 +188,28 @@ export default {
             
         },
         OnUpdateEmail() {
-            this.$refs.formEmail.validate(async valid => {
-                if (!valid) return;
-            })
         },
         OnUpdatePasswd() {
-            
+            this.$refs.formPasswd.validate(async valid => {
+                if (!valid) return;
+                try {
+                    let rsp = await this.$store.dispatch("account/set", {
+                        id: this.info.id,
+                        username: this.info.username,
+                        passwd: this.password.value,
+                        oldpasswd: this.password.old
+                    });
+                    if (rsp && rsp.state == 0) {
+                        this.$root.message($m.SUCCESS, `Your password was update!`);
+                        this.info = rsp.data;
+                        this.password = { old: '', value: '', confirm: '' };
+                    } else {
+                        this.$root.message($m.ERROR, rsp.msg);
+                    }
+                } catch (err) {
+                    this.$root.message($m.ERROR, err.message);
+                }
+            })
         },
         PreUpload() {
             let reader = new FileReader();

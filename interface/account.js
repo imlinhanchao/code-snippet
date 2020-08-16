@@ -132,21 +132,23 @@ class Module extends App {
             throw (this.error.param);
         }
 
-        data = App.filter(data, Account.keys().concat(['id']));
+        data = App.filter(data, Account.keys().concat(['id', 'oldpasswd']));
 
         try {
-            let account = await this.info(true);
+            let account = await this.info(true, Account.keys());
             if (account.username != data.username) {
                 throw this.error.limited;
             }
             // 用户名不可更改
             data.username = undefined;
-            if (account.passwd) {
+            if (data.passwd) {
                 let sha256 = crypto.createHash('sha256');
                 let passwd = sha256.update(data.oldpasswd + __salt).digest('hex');
                 if (account.passwd != passwd) {
                     throw this.error.verify;
                 }
+                sha256 = crypto.createHash('sha256');
+                data.passwd = sha256.update(data.passwd + __salt).digest('hex');
             }
       
             // Mail 更新重复检查
