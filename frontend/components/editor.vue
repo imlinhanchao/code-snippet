@@ -510,6 +510,9 @@ export default {
 }
 
 @media (max-width: 480px) {
+    .layout-form {
+        width: 100%;
+    }
     .snippet-form {
         flex-direction: column-reverse;
         .snippet-anchor {
