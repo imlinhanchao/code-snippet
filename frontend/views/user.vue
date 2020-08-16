@@ -55,7 +55,9 @@
                     <Time :time="info.lastlogin"></Time>
                 </p>
                 <p class="action">
-                    <Button long v-if="!isCurrentUser">Follow</Button>
+                    <Tooltip content="Developing..." style="width: 100%">
+                        <Button long v-if="!isCurrentUser">Follow</Button>
+                    </Tooltip>
                     <Button long v-if="isCurrentUser" @click="$router.push('/setting')">Edit Profile</Button>
                 </p>
                 <p class="other" v-if="info.company">

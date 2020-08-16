@@ -27,7 +27,7 @@
                 </ul>
             </span>
             <span class="menu">
-                <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
+                <Tooltip content="Developing..."><Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button></Tooltip>
                 <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
             </span>
         </section>
