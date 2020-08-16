@@ -6,19 +6,24 @@
                 <Icon custom="fa fa-times"></Icon>
             </a>
         </p>
-        <mavon-editor ref="md" v-model="comment.content"
-            language="en" :subfield="false"
-            toolbarsBackground="#1a1c1e"
-            previewBackground="#232323"
-            placeholder="Leave a comment"
-            :toolbars="toolbars"
-            codeStyle="railscasts"
-            :externalLink="$markdown.externalLink"
-            :autofocus="autofocus"
-        ></mavon-editor>
+        <section class="editor">
+            <mavon-editor ref="md" v-model="comment.content"
+                language="en" :subfield="false"
+                toolbarsBackground="#1a1c1e"
+                previewBackground="#232323"
+                :placeholder="disabled ? ' ' : 'Leave a comment'"
+                :toolbars="toolbars"
+                codeStyle="railscasts"
+                :externalLink="$markdown.externalLink"
+                :autofocus="autofocus"
+            ></mavon-editor>
+            <section class="mask" v-if="disabled">
+                <p>You can only comment until the email was <router-link to="/setting/security">verified</router-link>.</p>
+            </section>
+        </section>
         <p class="comment-submit">
             <Button v-if="cancelable" @click="$emit('cancel')">Cancel</Button>
-            <Button type="success" @click="OnComment">Comment</Button>
+            <Button type="success" @click="OnComment" :disabled="disabled || this.comment.content.trim() == ''">Comment</Button>
         </p>
     </section>
 </template>
@@ -40,6 +45,10 @@ export default {
             default: -1
         },
         cancelable: {
+            type: Boolean,
+            default: false
+        },
+        disabled: {
             type: Boolean,
             default: false
         }
@@ -104,6 +113,31 @@ export default {
     .comment-submit {
         text-align: right;
         margin-top:1em;
+    }
+}
+.editor {
+    position: relative;
+    .mask {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        z-index: 9999;
+        background: #aaa2;
+        color: #9b9793;
+        border-radius: 6px;
+        p {
+            height: 0;
+            width: 100%;
+            a {
+                color: #2db7f5;
+                border-bottom: 1px dashed #2db7f5;
+            }
+        }
     }
 }
 </style>

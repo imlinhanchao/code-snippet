@@ -131,7 +131,7 @@
                                     <section class="comment-area" v-if="c.edit && c.username == $root.loginUser.username">
                                         <i class="fa fa-caret-left triangle"></i>
                                         <img :src="c.username == $root.loginUser.username ? $root.fileUrl($root.loginUser.avatar, '/res/user.png') : `/api/account/avatar/${c.username}`" />
-                                        <Comment :comment="c" :floor="replyfloor"
+                                        <Comment :comment="c" :floor="replyfloor" :disabled="!$root.loginUser.verify"
                                             :autofocus="true" @ok="OnEditComment(c, ...arguments)"></Comment>
                                     </section>
                                 </section>
@@ -140,7 +140,7 @@
                                     <i v-if="loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
                                 </section>
                                 <Comment ref="commentarea" :comment="comment" v-if="$root.isLogin" 
-                                    :floor="replyfloor" @noreply="comment.reply = ''"
+                                    :floor="replyfloor" @noreply="comment.reply = ''" :disabled="!$root.loginUser.verify"
                                     :autofocus="$win.location.hash=='#comment'" @ok="OnComment"></Comment>
                             </article>
                         </section>

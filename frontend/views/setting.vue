@@ -149,11 +149,11 @@ export default {
     },
     methods: {
         async Init() {
-            let rsp = await this.$store.dispatch('account/checklogin');
-            if(!this.$root.isLogin) this.$root.plsLogin();
             let menu = this.$route.params.menu;
             if(['profile', 'security'].indexOf(menu) < 0) menu = 'profile';
             this.menu = menu;
+            let rsp = await this.$store.dispatch('account/checklogin');
+            if(!this.$root.isLogin) this.$root.plsLogin();
             this.info = rsp.data;
             let title = this.info.nickname;
             this.$util.title(title + '\'s Setting');
