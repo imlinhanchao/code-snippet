@@ -177,6 +177,11 @@ class Module extends App {
                     throw this.error.existedmail;
                 }
                 data.verify = false;
+                Token.destroy({
+                    where: {
+                        username: data.username
+                    }
+                })
             }
         
             return this.okupdate(await super.set(data, Account));
