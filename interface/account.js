@@ -27,6 +27,7 @@ let __error__ = Object.assign({
 	existedmail: App.error.existed('邮箱'),
 	existedphone: App.error.existed('电话'),
 	notexisted: App.error.existed('帐号', false),
+	notverify: App.error.existed('验证已失效', false, true),
 	usertooshort: App.error.reg('用户名太短！'),
 	passtooshort: App.error.reg('密码太短！'),
 }, App.error);
@@ -38,6 +39,7 @@ class Module extends App {
             { fun: App.ok, name: 'oklogout', msg: '登出成功' },
             { fun: App.ok, name: 'okget', msg: '获取成功' },
             { fun: App.ok, name: 'oksend', msg: '发送成功' },
+            { fun: App.ok, name: 'okverify', msg: '验证成功' },
         ]);
         this.session = session;
         this.name = '用户';
@@ -289,7 +291,7 @@ class Module extends App {
         }
     }
 
-    async verify(data, onlyData = false) {
+    async sendverify(data, onlyData = false) {
         const keys = ['username', 'email'];
 
         if (!App.haskeys(data, keys)) {
@@ -322,6 +324,45 @@ class Module extends App {
             });
 
             return this.oksend(info);
+        } catch (err) {
+            throw (err);
+        }
+
+    }
+    async verify(data, onlyData = false) {
+        const keys = ['username', 'token'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+
+        try {
+            let token = await Token.findOne({
+                where: {
+                    username: data.username,
+                    token: data.token
+                }
+            })
+
+            let yesterday = new Date();
+            yesterday = yesterday.setDate(yesterday.getDate() - 1) / 1000;
+            if (!token || token.create_time < yesterday) {
+                throw (this.error.notverify)
+            }
+
+            let account = await Account.findOne({
+                where: { username: data.username }
+            })
+            account.verify = true;
+            await account.save();
+
+            await Token.destroy({
+                where: {
+                    username: data.username
+                }
+            });
+
+            return this.okverify(data.username);
         } catch (err) {
             throw (err);
         }

@@ -50,6 +50,14 @@ const routers = [{
             component: () => import('../views/user')
         },
         {
+            path: ':username/verification/:token',
+            meta: {
+                title: 'Verify Email',
+                notitle: true
+            },
+            component: () => import('../views/verify')
+        },
+        {
             path: 'u/:user/:type',
             meta: {
                 title: 'User',

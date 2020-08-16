@@ -107,10 +107,21 @@ const actions = {
             throw error;
         }
     },
-    async verify({ state, commit }, { username, email }) {
+    async sendverify({ state, commit }, { username, email }) {
+        try {
+            let rsp = await axios.post('/account/sendverify',
+                { username, email });
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async verify({ state, commit }, { username, token }) {
         try {
             let rsp = await axios.post('/account/verify',
-                { username, email });
+                { username, token });
             rsp = rsp.data;
             return rsp;
         } catch (error) {

@@ -190,7 +190,7 @@ export default {
         async OnSendEmail() {
             try {
                 this.loading = true;
-                let rsp = await this.$store.dispatch('account/verify', this.info);
+                let rsp = await this.$store.dispatch('account/sendverify', this.info);
                 this.loading = false;
                 if (rsp && rsp.state == 0) {
                     this.$root.message($m.SUCCESS, 'Send Email Success');

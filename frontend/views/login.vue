@@ -249,7 +249,7 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.isRegister = false;
                         this.loginSubmit(form);
-                        await this.$store.dispatch('account/verify', this.rsp.data);
+                        await this.$store.dispatch('account/sendverify', this.rsp.data);
                     } else {
                         this.login_loading = false;
                         this.$root.message($m.ERROR, rsp.msg);
