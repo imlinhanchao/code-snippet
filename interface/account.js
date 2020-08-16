@@ -1,12 +1,24 @@
+const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const model = require('../model');
 const App = require('./app');
 const Account = model.account;
+const Token = model.token;
 const config = require('../config.json');
 
 const __salt = config.salt;
+const __tpl = {
+    verify: {
+        data: '',
+        path: path.join(__dirname, '..', 'frontend', 'assets', 'verify_mail.html')
+    },
+    forget: {
+        data: '',
+        path: ''
+    }
+};
 
 let __error__ = Object.assign({
 	verify: App.error.reg('帐号或密码错误！'),
@@ -25,6 +37,7 @@ class Module extends App {
             { fun: App.ok, name: 'oklogin', msg: '登录成功' },
             { fun: App.ok, name: 'oklogout', msg: '登出成功' },
             { fun: App.ok, name: 'okget', msg: '获取成功' },
+            { fun: App.ok, name: 'oksend', msg: '发送成功' },
         ]);
         this.session = session;
         this.name = '用户';
@@ -276,11 +289,63 @@ class Module extends App {
         }
     }
 
+    async verify(data, onlyData = false) {
+        const keys = ['username', 'email'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+        try {
+            let account = await this.info(true);
+            if (account.username != data.username) {
+                throw this.error.limited;
+            }
+
+            let sha256 = crypto.createHash('sha256');
+            let token = sha256.update(data.email + new Date().getTime() + __salt).digest('hex');
+
+            // clear history token
+            await Token.destroy({
+                where: {
+                    username: data.username
+                }
+            });
+            let tokened = await super.new({ username: data.username, token }, Token, 'username');
+
+            let transporter = nodemailer.createTransport(config.mail);
+
+            let info = await transporter.sendMail({
+                from: `"${config.base.name}" <${config.mail.auth.user}>`, // sender address
+                to: data.email,
+                subject: '[Code Snippet] Please verify your email address', // Subject line
+                html: this.__makemail({ ...account, token, domain: config.base.domain }, 'verify'), // html body
+            });
+
+            return this.oksend(info);
+        } catch (err) {
+            throw (err);
+        }
+    }
+
     get user() {
         if (!this.islogin) {
             throw (this.error.nologin);
         }
         return this.session.account_login;
+    }
+
+    __makemail(data, type) {
+        let tpl = '';
+        if (!__tpl[type].data) {
+            __tpl[type].data = fs.readFileSync(__tpl[type].path).toString();
+        }
+        tpl = __tpl[type].data;
+
+        Object.keys(data).forEach(k => {
+            let value = data[k];
+            tpl = tpl.replace(new RegExp(`{{${k}}}`, 'g'), value);
+        })
+        return tpl;
     }
 }
 

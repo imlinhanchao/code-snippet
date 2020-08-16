@@ -46,6 +46,8 @@ async function main() {
     
     config.file['maxSize'] = await rl.inputData('Max Size File Upload(MB)', config.file['maxSize']);
     
+    console.info('Config Database:');
+
     config.db['port'] = parseInt(await rl.inputData('Database Port', config.db['port']));
     config.db['database'] = await rl.inputData('Database Name', config.db['database']);
     config.db['prefix'] = await rl.inputData('Table Prefix', config.db['prefix']);
@@ -56,6 +58,11 @@ async function main() {
     dbConfig['user'] = await rl.inputData('Database User', 'root');
     dbConfig['password'] = await rl.inputData('Database Password', '');
 
+    console.info('Config Email:');
+    config.email['host'] = await rl.inputData('Email Server Host', config.email['host']);
+    config.email['port'] = parseInt(await rl.inputData('Email Server Port', config.email['port']));
+    config.email.auth['account'] = await rl.inputData('Mail Account', config.email.auth['account']);
+    config.email.auth['pass'] = await rl.inputData('Acount Password', config.email.auth['pass']);
 
     fs.writeFile(path.join(__dirname, '../config.json'),
         JSON.stringify(config, null, 4),
