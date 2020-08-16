@@ -226,7 +226,9 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
                         this.$emit('input', false);
-                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} !`, 'Hi !');
+                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} ! ${rsp.data.verify ? '' 
+                        : `<b style="color: #FF9800">Your mail was not verify yet. <a href="/setting/security">Resend verification email / Change your email</a></b>`}`, 'Hi !', 
+                        rsp.data.verify);
                         let path = localStorage.getItem('redirect') || '/';
                         this.$router.push(path);
                         localStorage.removeItem('redirect');
@@ -247,6 +249,7 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.isRegister = false;
                         this.loginSubmit(form);
+                        await this.$store.dispatch('account/verify', this.rsp.data);
                     } else {
                         this.login_loading = false;
                         this.$root.message($m.ERROR, rsp.msg);

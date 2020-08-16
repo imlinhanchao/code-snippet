@@ -91,12 +91,12 @@ new Vue({
     },
     render: h => h(App),
     methods: {
-        message(type, content, title='') {
+        message(type, content, title='', disappear=true) {
             this.msg.type = type;
             this.msg.content = content;
             this.msg._title = title;
-            if (type == $m.SUCCESS) {
-                setTimeout(() => this.msg.content = '', 2000);
+            if (type == $m.SUCCESS && disappear) {
+                setTimeout(() => this.msg.content = '', 5000);
             }
             window.scrollTo(0, 0);
         },

@@ -106,6 +106,17 @@ const actions = {
             console.error(error.message);
             throw error;
         }
+    },
+    async verify({ state, commit }, { username, email }) {
+        try {
+            let rsp = await axios.post('/account/verify',
+                { username, email });
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
     }
 };
 const getters = {

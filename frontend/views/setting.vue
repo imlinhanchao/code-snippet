@@ -52,7 +52,7 @@
                     <p style="clear: both; font-size:1.2em">
                         <span>{{info.email}}</span> 
                         <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Verified' : 'Inverified'}}</span>
-                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail">Resend verification email</Button>
+                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail" :loading="loading">Resend verification email</Button>
                     </p>
                 </FormItem>
                 <FormItem prop="email" label="New Email" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
@@ -133,7 +133,7 @@ export default {
             avatarModal: false,
             file: {},
             editAvatar: '',
-            menu: 'security',
+            menu: 'profile',
             password: {
                 old: '',
                 value: '',
@@ -151,6 +151,9 @@ export default {
         async Init() {
             let rsp = await this.$store.dispatch('account/checklogin');
             if(!this.$root.isLogin) this.$root.plsLogin();
+            let menu = this.$route.params.menu;
+            if(['profile', 'security'].indexOf(menu) < 0) menu = 'profile';
+            this.menu = menu;
             this.info = rsp.data;
             let title = this.info.nickname;
             this.$util.title(title + '\'s Setting');
@@ -184,8 +187,20 @@ export default {
         OnSelectMenu(name) {
             this.menu = name;
         },
-        OnSendEmail() {
-            
+        async OnSendEmail() {
+            try {
+                this.loading = true;
+                let rsp = await this.$store.dispatch('account/verify', this.info);
+                this.loading = false;
+                if (rsp && rsp.state == 0) {
+                    this.$root.message($m.SUCCESS, 'Send Email Success');
+                } else {
+                    this.$root.message($m.ERROR, rsp.msg);
+                }
+            } catch (err) {
+                this.loading = false;
+                this.$root.message($m.ERROR, err.message);
+            }
         },
         OnUpdateEmail() {
         },
