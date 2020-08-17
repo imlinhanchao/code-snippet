@@ -1,13 +1,11 @@
 <p align="center">
   <a href="https://code-snippet.cn">
-    <img width="200" src="https://code-snippet.cn/res/logo.png">
+    <img width="200" src="./public/res/logo.png">
   </a>
 </p>
 
 <h1 align="center">Code Snippet</h1>
 Snippet 代码分享网站。类似 Gist，但加入了多文件在线编译运行，Web 代码在线预览的功能。  
-
-![](./frontend/assets/preview.jpg)
 
 ## ✨ 功能
 - 😎分享发布代码片段。
@@ -65,3 +63,7 @@ pm2 start -n snippet npm -- start
 - pubilc - 静态资源  
 - routes - 服务路由  
 - script - 脚本 
+
+## 👀 界面
+
+![](./frontend/assets/preview.jpg)
