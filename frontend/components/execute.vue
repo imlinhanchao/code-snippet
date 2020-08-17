@@ -133,7 +133,7 @@ export default {
         async OnExecute() {
             try {
                 this.$uweb.trackPageview(
-                    this.$config.bash.domain + `/execute/${this.snippet.id}`, 
+                    this.$config.base.domain + `/execute/${this.snippet.id}`, 
                     this.$config.base.domain + location.path);
                 this.tab = 'output';
                 this.executed = false;
