@@ -70,6 +70,10 @@ export default {
         this.$refs['iframe'].onload = () => {
             this.loading = true;
         }
+        this.$uweb.trackPageview(
+            this.$config.bash.domain + `/preview/${this.snippet.id}`, 
+            this.$config.base.domain + location.path);
+
     },
     watch: {
         value(val) {

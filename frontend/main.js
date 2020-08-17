@@ -33,6 +33,7 @@ Vue.config.productionTip = isDebug;
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = '/api/';
 Vue.prototype.$win = window;
+Vue.prototype.$uweb = uweb;
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
