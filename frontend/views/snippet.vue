@@ -163,8 +163,21 @@
                                         `/api/account/avatar/${s.username}`" />
                                 </section>
                                 <section class="info">
-                                    <p class="nikename">{{s.nickname}}</p>
-                                    <p class="lastlogin">Last Login: <Time :time="s.lastlogin"></Time></p>
+                                    <p class="nikename"><router-link :to="`/u/${s.username}`">{{s.nickname}}</router-link></p>
+                                    <p class="lastlogin">
+                                        <span v-if="!s.location && !s.company">
+                                            <i class="fa fa-clock-o"></i>
+                                            Login at <Time :time="s.lastlogin"></Time>
+                                        </span>
+                                        <span v-if="!s.company && s.location">
+                                            <i class="fa fa-map-marker"></i>
+                                            {{s.location}}
+                                        </span>
+                                        <span v-if="s.company">
+                                            <i class="fa fa-building"></i>
+                                            {{s.company}}
+                                        </span>
+                                    </p>
                                 </section>
                             </article>
                         </Col>
@@ -183,7 +196,7 @@
                                         `/api/account/avatar/${s.username}`" />
                                 </section>
                                 <section class="info">
-                                    <p class="nikename">{{s.user.nickname}}</p>
+                                    <p class="nikename"><router-link :to="`/u/${s.username}`">{{s.user.nickname}}</router-link></p>
                                     <p class="source"><router-link :to="`/s/${s.id}`">{{s.codes[0].filename}}</router-link></p>
                                 </section>
                             </article>
