@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">Code Snippet</h1>
-Snippet 代码分享网站。类似 Gist，但加入了多文件在线编译运行，Web 代码在线预览的功能。  
+<p align="center">Snippet 代码分享网站。类似 Gist，但加入了多文件在线编译运行，Web 代码在线预览的功能。</p>
 
 ## ✨ 功能
 - 😎分享发布代码片段。
