@@ -57,7 +57,7 @@ const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     if(!to.meta.notitle) Util.title(to.meta.title);
-    uweb.trackPageview(to.path, from.path)
+    uweb.trackPageview(to.path, config.base.domain + from.path)
     next();
 });
 
