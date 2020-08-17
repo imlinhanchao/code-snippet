@@ -10,7 +10,26 @@
 </head>
 
 <body>
-    <div id="app"></div>
+    <div id="app">
+        
+    </div>
+    <div id="loading">
+
+    </div>
+    <style>
+        #loading {
+            background: #262626 no-repeat center center;
+            position: fixed;
+            top: 0; bottom: 0;
+            width: 100%;
+        }
+        body {
+            margin: 0;
+        }
+    </style>
+    <script>
+        document.getElementById('loading').style.backgroundImage = 'url(./res/loading.gif)';
+    </script>
     <script src="//cdn.bootcdn.net/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
     <script src="./main.js"></script>
 </body>

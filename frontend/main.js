@@ -152,6 +152,7 @@ new Vue({
         }
     },
     mounted() {
+        document.getElementById('loading').style.display = 'none';
         this.$markdown.externalLink = {
             markdown_css: false,
             hljs_js: false,
