@@ -325,6 +325,7 @@ export default {
             if(comment.reply) comment.floor = this.comments.find(r => r.id == comment.reply).index;
             comment.user = this.$root.loginUser;
             comment.create_time = parseInt(comment.create_time)
+            comment.update_time = parseInt(comment.update_time)
             this.comments.push(comment);
             this.comment.reply = '';
             this.comment.content = '';
