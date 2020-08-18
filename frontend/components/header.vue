@@ -19,8 +19,8 @@
                 <img :src="$root.fileUrl($root.loginUser.avatar, '/res/user.png')" />
                 <ul class="sub-menu">
                     <li><router-link :to="`/u/${$root.loginUser.username}`">My Codes</router-link></li>
-                    <li><router-link :to="`/u/${$root.loginUser.username}/star`">My Star</router-link></li>
-                    <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Fork</router-link></li>
+                    <li><router-link :to="`/u/${$root.loginUser.username}/star`">My Stars</router-link></li>
+                    <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Forks</router-link></li>
                     <li class="divider"></li>
                     <li><router-link to="/setting">Setting</router-link></li>
                     <li><router-link to="/login">Sign out</router-link></li>

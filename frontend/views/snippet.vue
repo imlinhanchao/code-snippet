@@ -97,7 +97,7 @@
                                                 <span v-if="!c.reply">commented</span> 
                                                 on <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
                                         </div>
-                                        <div class="comment-menu">
+                                        <div class="comment-menu" v-if="$root.isLogin">
                                             <a href="javascript:void(0)" @click="menus = menus == c.id ? '': c.id">
                                                 <Icon custom="fa fa-ellipsis-v"></Icon>
                                             </a>
@@ -588,7 +588,7 @@ export default {
         background: #FFF;
     }
     span {
-        font-size: .8em;
+        font-size: 12px;
         vertical-align: middle;
     }
 }

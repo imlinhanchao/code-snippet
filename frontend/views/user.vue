@@ -598,6 +598,9 @@ export default {
     position: relative;
     text-align: center;
 }
+ul.ivu-page {
+    text-align: right;
+}
 @media (max-width: 800px) {
     .layout {
         flex-direction: column;
