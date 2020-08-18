@@ -183,7 +183,7 @@ export default {
                 username: [{ validator: validateUser, trigger: 'blur' }],
                 passwd: [{ validator: validatePasswd, trigger: 'blur' }],
                 email: [{ validator: validateEmail, trigger: 'blur' }],
-                captcha: [{ }]
+                captcha: [{ required: true, message: 'The Captcha can not be empty.', trigger: 'blur' }]
             },
             update: {
                 email: ''
@@ -252,10 +252,10 @@ export default {
                         await this.$store.dispatch('account/sendverify', this.rsp.data);
                     } else {
                         this.login_loading = false;
-                        this.$root.message($m.ERROR, rsp.msg);
+                        this.$Message.error($m.ERROR, rsp.msg);
                     }
                 } catch (err) {
-                    this.$root.message($m.ERROR, err.message);
+                    this.$Message.error($m.ERROR, err.message);
                 }
             });
         },
