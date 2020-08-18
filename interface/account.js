@@ -184,7 +184,7 @@ class Module extends App {
                 })
             }
         
-            return this.okupdate(await super.set(data, Account));
+            return this.okupdate(App.filter(await super.set(data, Account), this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

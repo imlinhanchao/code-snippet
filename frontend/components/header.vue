@@ -23,7 +23,7 @@
                     <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Forks</router-link></li>
                     <li class="divider"></li>
                     <li><router-link to="/setting">Setting</router-link></li>
-                    <li><router-link to="/login">Sign out</router-link></li>
+                    <li><router-link to="/login">Logout</router-link></li>
                 </ul>
             </span>
             <span class="menu">
@@ -33,8 +33,8 @@
         </section>
         <section class="layout-info" v-if="!$root.isLogin">
             <span class="menu">
-                <router-link to="/login"><Button type="text" class="text-btn">Sign in</Button></router-link>
-                <router-link to="/register"><Button type="default" ghost class="text-btn">Sign up</Button></router-link>
+                <router-link to="/login"><Button type="text" class="text-btn">Login</Button></router-link>
+                <router-link to="/register"><Button type="default" ghost class="text-btn">Register</Button></router-link>
             </span>
         </section>
     </Header>
