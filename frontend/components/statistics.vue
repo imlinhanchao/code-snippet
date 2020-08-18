@@ -10,19 +10,19 @@
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}/forks`" class="count">
-                    <Icon custom="fa fa-code-fork" ></Icon> <span> {{snippet.forks}} </span> <span class="text">fork{{snippet.forks.length > 1 ? 's' : ''}}</span>
+                    <Icon custom="fa fa-code-fork" ></Icon> <span> {{snippet.forks}} </span> <span class="text">fork{{snippet.forks > 1 ? 's' : ''}}</span>
                 </router-link>
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}#comment`" class="count">
-                    <Icon type="md-chatboxes" ></Icon> <span> {{snippet.comments}} </span> <span class="text">comment{{snippet.comments.length > 1 ? 's' : ''}}</span>
+                    <Icon type="md-chatboxes" ></Icon> <span> {{snippet.comments}} </span> <span class="text">comment{{snippet.comments > 1 ? 's' : ''}}</span>
                 </router-link>
             </li>
             <li>
                 <router-link :to="`/s/${snippet.id}/star`" class="count">
                     <Icon custom="fa fa-star-o" v-if="!snippet.stared" ></Icon>
                     <Icon custom="fa fa-star" v-if="snippet.stared" ></Icon> 
-                    <span> {{snippet.stars}} </span> <span class="text">star{{snippet.stars.length > 1 ? 's' : ''}}</span>
+                    <span> {{snippet.stars}} </span> <span class="text">star{{snippet.stars > 1 ? 's' : ''}}</span>
                 </router-link>
             </li>
         </ul>
