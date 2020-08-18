@@ -233,10 +233,10 @@ export default {
                         this.$router.push(path);
                         localStorage.removeItem('redirect');
                     } else {
-                        this.$root.message($m.ERROR, rsp.msg);
+                        this.$Message.error(rsp.msg);
                     }
                 } catch (err) {
-                    this.$root.message($m.ERROR, err.message);
+                    this.$Message.error(err.message);
                 }
             });
         },
@@ -252,10 +252,10 @@ export default {
                         await this.$store.dispatch('account/sendverify', this.rsp.data);
                     } else {
                         this.login_loading = false;
-                        this.$Message.error($m.ERROR, rsp.msg);
+                        this.$Message.error(rsp.msg);
                     }
                 } catch (err) {
-                    this.$Message.error($m.ERROR, err.message);
+                    this.$Message.error(err.message);
                 }
             });
         },
