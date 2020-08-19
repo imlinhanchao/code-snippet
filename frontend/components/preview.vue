@@ -85,19 +85,6 @@ export default {
             }
         }
     },
-    computed: {
-        status() {
-            if (this.result.stderr) {
-                return 'error';
-            }
-            else if(!this.executed) {
-                return 'info'
-            }
-            else {
-                return 'success'
-            }
-        }
-    },
     methods: {
         OnChange (val) {
             this.$emit("input", val);
