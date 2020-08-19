@@ -17,7 +17,7 @@
             <Statistics :snippet="s"></Statistics>              
         </header>
         <section class="aside-info">
-            <p v-if="s.fork">fork from 
+            <p v-if="s.fork">Fork from 
                 <router-link :to="`/s/${s.fork.id}`" 
                     :title="`${s.fork.username} / ${s.fork.codes[0].filename}`">
                     {{s.fork.username}} / {{s.fork.codes[0].filename}} at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time>
