@@ -84,8 +84,7 @@
     "copied": "The code has been copied to your clipboard!",
     "copy_failed": "Copy Failed:",
     "reply": "Reply",
-    "verified_comment1": "You can only comment until the email was ",
-    "verified_comment2": ".",
+    "verified_comment": "You can only comment until the email was ",
     "cancel": "Cancel",
     "comment": "Comment",
     "cropper_title": "Crop Your Avatar",
@@ -145,10 +144,10 @@
             "notexisted": "Code was existed!"
         },
         "comment": {
-            "notexisted": "Comment was existed!"
+            "notexisted": "Comment was not existed!"
         },
         "snippet": {
-            "notexisted": "Snippet was existed!"
+            "notexisted": "Snippet was not existed!"
         },
         "fav": {
             "existed": "Snippet was star!"
