@@ -100,7 +100,7 @@
                 <Input ref="captcha"
                     type="text"
                     v-model="login.captcha"
-                    placeholder="Are you a robot ?"
+                    :placeholder="$t('are_you_robot')"
                     @on-keyup.enter="submit('loginForm')"
                 >
                     <Icon
@@ -127,18 +127,18 @@ export default {
     data() {
         const validatePasswd = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your password'));
+                callback(new Error(this.$t('empty_passwd')));
             } else if (value.length < 6) {
-                callback(new Error('Your password was too short'));
+                callback(new Error(this.$t('passwd_too_short')));
             } else {
                 callback();
             }
         };
         const validateUser = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your username'));
+                callback(new Error(this.$t('empty_username')));
             } else if (value.length < 5) {
-                callback(new Error('Your username was too short'));
+                callback(new Error(this.$t('username_too_short')));
             } else {
                 callback();
             }
@@ -146,9 +146,9 @@ export default {
         const validateEmail = async (rule, value, callback) => {
             if (!this.isRegister) return;
             if (value === '') {
-                callback(new Error('Please enter your email'));
+                callback(new Error(this.$t('empty_email')));
             } else if (null == value.match(/^[^@]*?@[^@]*?$/)) {
-                callback(new Error('This is not a valid email.'));
+                callback(new Error(this.$t('invaild_email')));
             } else {
                 try {
                     let rsp = await this.$store.dispatch('account/exist', {
@@ -158,7 +158,7 @@ export default {
                     })
                     if (rsp && rsp.state == 0) {
                         if (rsp.data) {
-                            callback(new Error('The email was register.'));
+                            callback(new Error(this.$t('exist_email')));
                         } else {
                             callback();
                         }

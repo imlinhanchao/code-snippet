@@ -1,7 +1,7 @@
 <template>
     <Layout class="layout">
         <header class="header">
-            <h1><Icon custom="fa fa-file-code-o" ></Icon> Explore Snippet </h1>
+            <h1><Icon custom="fa fa-file-code-o" ></Icon> {{$t('explore_snippet')}} </h1>
         </header>
         <Content class="snippet" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
             <Snippets :snippets="snippets" ></Snippets>

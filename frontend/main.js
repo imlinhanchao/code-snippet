@@ -22,6 +22,13 @@ import 'mavon-editor/dist/markdown/github-markdown.min.css'
 import mavonEditor from 'mavon-editor'
 import uweb from 'vue-uweb'
 import './theme/index.less';
+import VueI18n from 'vue-i18n';
+import ivuEn from 'iview/dist/locale/en-US';
+import ivuZhChs from 'iview/dist/locale/zh-CN';
+import ivuZhCht from 'iview/dist/locale/zh-TW';
+import en from '../i18n/en.json';
+import zhChs from '../i18n/zh-chs.json';
+import zhCht from '../i18n/zh-cht.json';
  
 VueClipboard.config.autoSetContainer = true // add this line
 const isDebug = process.env.NODE_ENV !== 'production';
@@ -47,6 +54,7 @@ Vue.use(VueClipboard)
 Vue.use(iView, { locale });
 Vue.use(mavonEditor)
 Vue.use(uweb, config.base.cnzz);
+Vue.use(VueI18n)
 
 // Router config
 const RouterConfig = {
@@ -76,10 +84,35 @@ window.$m = {
 
 if (location.hostname == config.base.preview_domain) location = config.base.domain + location.pathname;
 
+const messages = {
+    en: Object.assign(en, ivuEn),
+    zhChs: Object.assign(zhChs, ivuZhChs),
+    zhCht: Object.assign(zhCht, ivuZhCht)
+};
+
+function getLanguage() {
+    let lang = navigator.language || navigator.userLanguage;
+    if (lang.indexOf('zh') == 0) {
+        switch(lang.toLowerCase()) {
+            case 'zh-cn':
+            case 'zh-chs': return 'zhChs';
+            default: return 'zhCht';
+        }
+    }
+    return 'en';
+}
+
+// Create VueI18n instance with options
+const i18n = new VueI18n({
+    locale: getLanguage(),  // set locale
+    messages  // set locale messages
+});
+
 new Vue({
     el: '#app',
     router,
     store,
+    i18n,
     data: {
         msg: {
             type: 0,
@@ -89,7 +122,7 @@ new Vue({
                 return ['info', 'success', 'warning', 'error'][this.type]
             },
             get title() {
-                return this._title === '' ? ['Notice:', 'Success:', 'Warning:', 'Error:'][this.type] : this._title
+                return this._title === '' ? [i18n.t('msg_notice'), i18n.t('msg_success'), i18n.t('msg_warning'), i18n.t('msg_error')][this.type] : this._title
             },
         }
     },
