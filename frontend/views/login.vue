@@ -229,7 +229,7 @@ export default {
                         this.$root.message($m.SUCCESS, `${this.$util(
                             this.$t(first ? 'welcome_first' : 'welcome_back'),
                             { name: rsp.data.nickname }
-                        )} ${rsp.data.verify ? '' : this.$t('email_not_verify')}`, 'Hi !', 
+                        )} ${rsp.data.verify ? '' : this.$t('email_not_verify')}`, this.$t('hi'), 
                         rsp.data.verify);
                         let path = localStorage.getItem('redirect') || '/';
                         this.$router.push(path);

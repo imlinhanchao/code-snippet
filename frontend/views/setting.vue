@@ -3,11 +3,11 @@
         <Menu :active-name="menu" class="setting-menu" @on-select="OnSelectMenu">
             <MenuItem name="profile">
                 <Icon custom="fa fa-user" ></Icon>
-                Profile
+                {{$t('profile')}}
             </MenuItem>
             <MenuItem name="security">
                 <Icon custom="fa fa-shield" ></Icon>
-                Security
+                {{$t('security')}}
             </MenuItem>
         </Menu>
         <section v-show="menu == 'profile'" class="profile">
@@ -23,58 +23,58 @@
                 </div>
             </div>
             <Form ref="formProfile" :model="info" class="info">
-                <h1>Profile</h1>
-                <FormItem prop="nickname" label="Nick Name">
+                <h1>{{$t('profile')}}</h1>
+                <FormItem prop="nickname" :label="$t('nickname')">
                     <Input v-model="info.nickname"></Input>
                 </FormItem>
-                <FormItem prop="company" label="Company">
+                <FormItem prop="company" :label="$t('company')">
                     <Input v-model="info.company"></Input>
                 </FormItem>
-                <FormItem prop="location" label="Location">
+                <FormItem prop="location" :label="$t('location')">
                     <Input v-model="info.location"></Input>
                 </FormItem>
-                <FormItem prop="url" label="URL">
+                <FormItem prop="url" :label="$t('url')">
                     <Input v-model="info.url"></Input>
                 </FormItem>
-                <FormItem prop="motto" label="Motto">
+                <FormItem prop="motto" :label="$t('motto')">
                     <Input v-model="info.motto" :rows="3" type="textarea"></Input>
                 </FormItem>
-                <Alert show-icon><span style="color: #2d8cf0;">All non-empty information will be displayed on your personal page.</span></Alert>
+                <Alert show-icon><span style="color: #2d8cf0;">{{$t('profile_notice')}}</span></Alert>
                 <FormItem style="text-align: right">
-                    <Button type="success" @click="OnSubmit('formProfile')">Save</Button>
+                    <Button type="success" @click="OnSubmit('formProfile')">{{$t('save')}}</Button>
                 </FormItem>
             </Form>
         </section>
         <section v-show="menu == 'security'" class="security">
-            <h1>Security</h1>
+            <h1>{{$t('security')}}</h1>
             <Form ref="formEmail" class="email" >
                 <FormItem label="Email">
                     <p style="clear: both; font-size:1.2em">
                         <span>{{info.email}}</span> 
                         <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Verified' : 'Inverified'}}</span>
-                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail" :loading="loading">Resend verification email</Button>
+                        <Button style="float:right" v-if="!info.verify" @click="OnSendEmail" :loading="loading">{{$t('resend_email')}}</Button>
                     </p>
                 </FormItem>
                 <FormItem prop="email" label="New Email" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
                     <section class="email-update">
                         <Input v-model="email"></Input> 
-                        <Button type="success" @click="OnUpdateEmail" :loading="loading_email">Update Email</Button>
+                        <Button type="success" @click="OnUpdateEmail" :loading="loading_email">{{$t('update_email')}}</Button>
                     </section>
                 </FormItem>
             </Form>
             <Divider></Divider>
             <Form ref="formPasswd" :model="password" class="password" :rules="ruleValidate">
-                <FormItem prop="old" label="Old Password">
+                <FormItem prop="old" :label="$t('old_passwd')">
                     <Input type="password" v-model="password.old"></Input>
                 </FormItem>
-                <FormItem prop="value" label="New Password">
+                <FormItem prop="value" :label="$t('new_passwd')">
                     <Input type="password" v-model="password.value"></Input>
                 </FormItem>
-                <FormItem prop="confirm" label="Confirm Password">
+                <FormItem prop="confirm" :label="$t('confirm_passwd')">
                     <Input type="password" prop="confirm" v-model="password.confirm"></Input> 
                 </FormItem>
                 <FormItem style="text-align: right">
-                    <Button type="info" @click="OnUpdatePasswd">Update Password</Button>
+                    <Button type="info" @click="OnUpdatePasswd">{{$t('update_passwd')}}</Button>
                 </FormItem>
             </Form>
         </section>
@@ -95,27 +95,27 @@ export default {
     data() {
         const validatePasswd = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your password'));
+                callback(new Error(this.$t('empty_passed')));
             } else if (value.length < 6) {
-                callback(new Error('Your password was too short'));
+                callback(new Error(this.$t('passwd_too_short')));
             } else {
                 callback();
             }
         }
         const validateNewPasswd = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your new password'));
+                callback(new Error(this.$t('empty_newpassed')));
             } else if (value.length < 6) {
-                callback(new Error('Your new password was too short'));
+                callback(new Error(this.$t('newpasswd_too_short')));
             } else {
                 callback();
             }
         }
         const validatePassCheck = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your password again'));
+                callback(new Error(this.$t('empty_passwd_again')));
             } else if (value !== this.password.value) {
-                callback(new Error('The two input passwords do not match!'));
+                callback(new Error(this.$t('passwd_not_match')));
             } else {
                 callback();
             }
@@ -157,16 +157,16 @@ export default {
             if(!this.$root.isLogin) this.$root.plsLogin();
             this.info = rsp.data;
             let title = this.info.nickname;
-            this.$util.title(title + '\'s Setting');
+            this.$util.title(title + this.$t('setting_of'));
         },
         async loadUser(username) {
             let rsp = await this.$store.dispatch("account/getInfo", username);
             if (rsp.data.total) {
                 this.info = rsp.data.data[0];
                 let title = this.info.nickname;
-                this.$util.title(title + '\'s Setting');
+                this.$util.title(title + this.$t('setting_of'));
             } else {
-                this.$root.message($m.ERROR, 'Username was not exist.');
+                this.$root.message($m.ERROR, this.$t('not_exist_user'));
                 this.$router.push('');
             }
         },
@@ -174,10 +174,10 @@ export default {
             try {
                 let rsp = await this.$store.dispatch("account/set", this.info);
                 if (rsp && rsp.state == 0) {
-                    this.$root.message($m.SUCCESS, `Save Success!`);
+                    this.$root.message($m.SUCCESS, this.$t('save_success'));
                     this.info = rsp.data;
                     let title = this.info.nickname;
-                    this.$util.title(title + '\'s Setting');
+                    this.$util.title(title + this.$t('setting_of'));
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
                 }
@@ -194,7 +194,7 @@ export default {
                 let rsp = await this.$store.dispatch('account/sendverify', this.info);
                 this.loading = false;
                 if (rsp && rsp.state == 0) {
-                    this.$root.message($m.SUCCESS, 'Send Email Success');
+                    this.$root.message($m.SUCCESS, this.$t('send_email_success'));
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
                 }
@@ -216,7 +216,7 @@ export default {
                     this.info.verify = false;
                     this.email = '';
                     await this.$store.dispatch('account/sendverify', this.info);
-                    this.$root.message($m.SUCCESS, 'Update Email Success. Please login to your email to verify.');
+                    this.$root.message($m.SUCCESS, this.$t('update_email_success'));
                     this.loading_email = false;
                 } else {
                     this.loading_email = false;
@@ -238,7 +238,7 @@ export default {
                         oldpasswd: this.password.old
                     });
                     if (rsp && rsp.state == 0) {
-                        this.$root.message($m.SUCCESS, `Your password was update!`);
+                        this.$root.message($m.SUCCESS, this.$t('passwd_update'));
                         this.info = rsp.data;
                         this.password = { old: '', value: '', confirm: '' };
                     } else {
@@ -270,11 +270,11 @@ export default {
         },
         async validateEmail (rule, value, callback) {
             if (this.email === '') {
-                callback(new Error('Please enter your email.'));
+                callback(new Error(this.$t('empty_email')));
             } else if (this.email == this.info.email) {
-                callback(new Error('Same as the original mail.'));
+                callback(new Error(this.$t('same_email')));
             } else if (null == this.email.match(/^[^@]*?@[^@]*?$/)) {
-                callback(new Error('This is not a valid email.'));
+                callback(new Error(this.$t('invaild_email')));
             } else {
                 try {
                     let rsp = await this.$store.dispatch('account/exist', {
@@ -284,7 +284,7 @@ export default {
                     })
                     if (rsp && rsp.state == 0) {
                         if (rsp.data) {
-                            callback(new Error('The email was register.'));
+                            callback(new Error(this.$t('exist_email')));
                         } else {
                             callback();
                         }
