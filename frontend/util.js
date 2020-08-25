@@ -7,6 +7,11 @@ let util = {
     },
     open(url) {
         window.open(url);
+    },
+    format(tpl, data) {
+        Object.keys(data).forEach(k => {
+            tpl = tpl.replace(new RegExp(`{{${k}}}`, 'g'), data[k]);
+        })
     }
 };
 
