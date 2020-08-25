@@ -183,7 +183,7 @@ export default {
                 username: [{ validator: validateUser, trigger: 'blur' }],
                 passwd: [{ validator: validatePasswd, trigger: 'blur' }],
                 email: [{ validator: validateEmail, trigger: 'blur' }],
-                captcha: [{ required: true, message: 'The Captcha can not be empty.', trigger: 'blur' }]
+                captcha: [{ required: true, message: this.$t('empty_captcha'), trigger: 'blur' }]
             },
             update: {
                 email: ''
@@ -204,7 +204,7 @@ export default {
             return this.isRegister ? this.registerSubmit : this.loginSubmit
         },
         btnName() {
-            return this.isRegister ? 'Register' : 'Login'
+            return this.isRegister ? this.$t('register') : this.$t('login')
         }
     },
     watch: {
@@ -216,7 +216,7 @@ export default {
         }
     },
     methods: {
-        loginSubmit(form) {
+        loginSubmit(form, first=false) {
             this.$refs[form].validate(async valid => {
                 if (!valid) return;
                 try {
@@ -226,8 +226,10 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
                         this.$emit('input', false);
-                        this.$root.message($m.SUCCESS, `Welcome back ${rsp.data.nickname} ! ${rsp.data.verify ? '' 
-                        : `<b style="color: #FF9800">Your mail was not verify yet. <a href="/setting/security">Resend verification email / Change your email</a></b>`}`, 'Hi !', 
+                        this.$root.message($m.SUCCESS, `${this.$util(
+                            this.$t(first ? 'welcome_first' : 'welcome_back'),
+                            { name: rsp.data.nickname }
+                        )} ${rsp.data.verify ? '' : this.$t('email_not_verify')}`, 'Hi !', 
                         rsp.data.verify);
                         let path = localStorage.getItem('redirect') || '/';
                         this.$router.push(path);
