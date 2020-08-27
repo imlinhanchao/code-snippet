@@ -74,7 +74,7 @@
         </header>
         <article>
             <Tabs :animated="false" class="snippet-tabs" v-model="tab" @on-click="OnTab">
-                <TabPane :label="getLabel('Code', 0, { type: 'md-code' })" name="code">
+                <TabPane :label="getLabel($t('code'), 0, { type: 'md-code' })" name="code">
                     <section class="code-desc">
                         {{snippet.description}}
                     </section>
@@ -151,7 +151,7 @@
                         </section>
                     </article>
                 </TabPane>
-                <TabPane :label="getLabel('Stars', stars.length, { type: 'md-star-outline' })" name="star">
+                <TabPane :label="getLabel($t('star'), stars.length, { type: 'md-star-outline' })" name="star">
                     <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">{{$t('no_star')}}</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="stars">
@@ -184,7 +184,7 @@
                     </Row>
                     <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
-                <TabPane :label="getLabel('Forks', forks.length, { type: 'md-git-branch' })" name="fork">
+                <TabPane :label="getLabel($t('fork'), forks.length, { type: 'md-git-branch' })" name="fork">
                     <p v-if="forks.length == 0 && !loading" style="text-align:center;margin: 5em auto;">{{$t('no_fork')}}</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="forks">
