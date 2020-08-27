@@ -32,6 +32,8 @@
     "snippet_of": "'s Snippets",
     "star_of": "'s Stars",
     "fork_of": "'s Forks",
+    "verified": "Verified",
+    "inverified": "Inverified",
     "not_exist_user": "User was not exist.",
     "update_success": "Update Success",
     "save_success": "Save Success",
