@@ -2,12 +2,12 @@
     <Layout class="layout">
         <section class="loading" v-show="loading" >
             <p><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
-            <p>Watting to Verify...</p>
+            <p>{{$t('wait_verify')}}</p>
         </section>
         <section v-show="!loading" class="verified">
             <p><i class="fa fa-envelope" aria-hidden="true"></i> </p>
-            <p>Your email was verified. </p>
-            <p>You can start using all of Code Snippet's features. </p>
+            <p>{{$t('email_veified')}}</p>
+            <p>{{$t('verified_notice')}}</p>
         </section>
     </Layout>
 </template>
