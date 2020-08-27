@@ -1,7 +1,7 @@
 <template>
     <section class="comment-textarea">
         <p class="comment-reply" v-if="replyfloor >= 0">
-            Reply <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
+            {{$t('reply')}} <a :href="`#comment${replyfloor}`">#{{replyfloor+1}}</a>
             <a v-if="!comment.id" href="javascript:void(0)" style="border:0" @click="$emit('noreply')">
                 <Icon custom="fa fa-times"></Icon>
             </a>
@@ -11,19 +11,19 @@
                 language="en" :subfield="false"
                 toolbarsBackground="#1a1c1e"
                 previewBackground="#232323"
-                :placeholder="disabled ? ' ' : 'Leave a comment'"
+                :placeholder="disabled ? ' ' : $t('leave_comment')"
                 :toolbars="toolbars"
                 codeStyle="railscasts"
                 :externalLink="$markdown.externalLink"
                 :autofocus="autofocus"
             ></mavon-editor>
             <section class="mask" v-if="disabled">
-                <p>You can only comment until the email was <router-link to="/setting/security">verified</router-link>.</p>
+                <p>{{$t('verified_comment')}} <router-link to="/setting/security">{{$t('verified')}}</router-link>.</p>
             </section>
         </section>
         <p class="comment-submit">
             <Button v-if="cancelable" @click="$emit('cancel')">Cancel</Button>
-            <Button type="success" @click="OnComment" :disabled="disabled || this.comment.content.trim() == ''">Comment</Button>
+            <Button type="success" @click="OnComment" :disabled="disabled || this.comment.content.trim() == ''">{{$t('comment')}}</Button>
         </p>
     </section>
 </template>

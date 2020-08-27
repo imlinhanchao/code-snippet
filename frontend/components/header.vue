@@ -9,8 +9,8 @@
             </section>
             <nav class="layout-nav">
                 <ul>
-                    <li class="nav-home"><router-link to="/">Home</router-link></li>
-                    <li v-if="$root.isLogin" ><router-link to="/explore">Explore</router-link></li>
+                    <li class="nav-home"><router-link to="/">{{$t('home')}}</router-link></li>
+                    <li v-if="$root.isLogin" ><router-link to="/explore">{{$t('explore')}}</router-link></li>
                 </ul>
             </nav>
         </article>
@@ -18,23 +18,23 @@
             <span class="avatar">
                 <img :src="$root.fileUrl($root.loginUser.avatar, '/res/user.png')" />
                 <ul class="sub-menu">
-                    <li><router-link :to="`/u/${$root.loginUser.username}`">My Codes</router-link></li>
-                    <li><router-link :to="`/u/${$root.loginUser.username}/star`">My Stars</router-link></li>
-                    <li><router-link :to="`/u/${$root.loginUser.username}/fork`">My Forks</router-link></li>
+                    <li><router-link :to="`/u/${$root.loginUser.username}`">{{$t('my_code')}}</router-link></li>
+                    <li><router-link :to="`/u/${$root.loginUser.username}/star`">{{$t('my_star')}}</router-link></li>
+                    <li><router-link :to="`/u/${$root.loginUser.username}/fork`">{{$t('my_fork')}}</router-link></li>
                     <li class="divider"></li>
-                    <li><router-link to="/setting">Setting</router-link></li>
-                    <li><router-link to="/login">Logout</router-link></li>
+                    <li><router-link to="/setting">{{$t('setting')}}</router-link></li>
+                    <li><router-link to="/login">{{$t('logout')}}</router-link></li>
                 </ul>
             </span>
             <span class="menu">
-                <Tooltip content="Developing..."><Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button></Tooltip>
+                <Tooltip :content="$t('developing')"><Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button></Tooltip>
                 <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
             </span>
         </section>
         <section class="layout-info" v-if="!$root.isLogin">
             <span class="menu">
-                <router-link to="/login"><Button type="text" class="text-btn">Login</Button></router-link>
-                <router-link to="/register"><Button type="default" ghost class="text-btn">Register</Button></router-link>
+                <router-link to="/login"><Button type="text" class="text-btn">{{$t('login')}}</Button></router-link>
+                <router-link to="/register"><Button type="default" ghost class="text-btn">{{$t('register')}}</Button></router-link>
             </span>
         </section>
     </Header>
@@ -87,7 +87,7 @@ export default {
     li {
         vertical-align: middle;
         display: inline-block;
-        font-weight: lighter;
+        font-weight: thin;
         margin: 0 .5em;
         :hover {
             font-weight: bold;

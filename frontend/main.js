@@ -94,6 +94,7 @@ function getLanguage() {
     let lang = navigator.language || navigator.userLanguage;
     if (lang.indexOf('zh') == 0) {
         switch(lang.toLowerCase()) {
+            case 'zh':
             case 'zh-cn':
             case 'zh-chs': return 'zhChs';
             default: return 'zhCht';

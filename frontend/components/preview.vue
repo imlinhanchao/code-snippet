@@ -11,13 +11,13 @@
                         </h1>
                         <span class="tags">
                             <Icon custom="fa fa-lock isprivate" v-if="snippet.private" title="Private"></Icon>
-                            <Tooltip content="Right click to copy link" placement="bottom">
+                            <Tooltip :content="$t('right_copy_link')" placement="bottom">
                                 <a target="_blank" :href="`${$config.base.preview_url}/view/${snippet.id}/${code}`"><Icon custom="fa fa-link"></Icon></a>
                             </Tooltip>
-                            <Tooltip content="Reload Web" placement="bottom">
+                            <Tooltip :content="$t('reload')" placement="bottom">
                                 <a @click="OnReload"><Icon custom="fa fa-refresh"></Icon></a>
                             </Tooltip>
-                            <Tooltip content="Download Web" placement="bottom">
+                            <Tooltip :content="$t('Download')" placement="bottom">
                                 <a @click="OnDownload"><Icon custom="fa fa-download"></Icon></a>
                             </Tooltip>
                         </span>
