@@ -124,6 +124,8 @@
     "right_copy_link": "右鍵單擊複製鏈接",
     "reload": "重載",
     "fork_from": "復刻自 ",
+    "verified": "已驗證",
+    "inverified": "未驗證",
     "files": "文件",
     "forks": "复刻",
     "comments": "評論",
