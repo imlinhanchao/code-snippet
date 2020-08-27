@@ -48,14 +48,14 @@
         <section v-show="menu == 'security'" class="security">
             <h1>{{$t('security')}}</h1>
             <Form ref="formEmail" class="email" >
-                <FormItem label="Email">
+                <FormItem :label="$t('email')">
                     <p style="clear: both; font-size:1.2em">
                         <span>{{info.email}}</span> 
-                        <span class="tag" :class="{active: info.verify }">{{info.verify ? 'Verified' : 'Inverified'}}</span>
+                        <span class="tag" :class="{active: info.verify }">{{info.verify ? $t('verified') : $t('inverified')}}</span>
                         <Button style="float:right" v-if="!info.verify" @click="OnSendEmail" :loading="loading">{{$t('resend_email')}}</Button>
                     </p>
                 </FormItem>
-                <FormItem prop="email" label="New Email" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
+                <FormItem prop="email" :label="$t('new_email')" :rules="[{ validator: validateEmail, trigger: 'blur' }]">
                     <section class="email-update">
                         <Input v-model="email"></Input> 
                         <Button type="success" @click="OnUpdateEmail" :loading="loading_email">{{$t('update_email')}}</Button>
