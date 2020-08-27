@@ -12,6 +12,7 @@ let util = {
         Object.keys(data).forEach(k => {
             tpl = tpl.replace(new RegExp(`{{${k}}}`, 'g'), data[k]);
         })
+        return tpl;
     }
 };
 
