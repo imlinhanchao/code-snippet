@@ -226,7 +226,7 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.loginModel = false;
                         this.$emit('input', false);
-                        this.$root.message($m.SUCCESS, `${this.$util(
+                        this.$root.message($m.SUCCESS, `${this.$util.format(
                             this.$t(first ? 'welcome_first' : 'welcome_back'),
                             { name: rsp.data.nickname }
                         )} ${rsp.data.verify ? '' : this.$t('email_not_verify')}`, this.$t('hi'), 
