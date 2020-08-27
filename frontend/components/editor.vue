@@ -6,18 +6,18 @@
                     <section style="padding: 0 1em" class="isprivate" v-if="snippet.private && isUpdate"><Icon custom="fa fa-lock" title="Private"></Icon></section>
                     <Input class="description" :class="{ isprivate: snippet.private }" type="text" placeholder="Snippet description..." v-model="snippet.description"></Input>
                     <section class="setting">
-                        <span v-if="!isUpdate" class="private" :class="{ isprivate: snippet.private }" @click="snippet.private = !snippet.private" :title="snippet.private ? 'Private' : 'Public'">
+                        <span v-if="!isUpdate" class="private" :class="{ isprivate: snippet.private }" @click="snippet.private = !snippet.private" :title="snippet.private ? $t('private') : $t('public')">
                             <Icon custom="fa fa-lock" v-if="snippet.private"></Icon>
                             <Icon custom="fa fa-unlock-alt" v-if="!snippet.private"></Icon>
                         </span>
-                        <span class="command" v-if="canExecute" :class="{ iscmd: snippet.execute }" @click="OnExecute" title="Execute configuration">
+                        <span class="command" v-if="canExecute" :class="{ iscmd: snippet.execute }" @click="OnExecute" :title="$t('exec_cfg')">
                             <Icon custom="fa fa-terminal"></Icon>
                         </span>
                     </section>
                 </section>
                 <section v-if="snippet.execute && canExecute" style="margin: 1em 0">
-                    <Input :readonly="autoexec" class="command" type="text" placeholder="input the execute command" v-model="snippet.command">
-                        <Checkbox v-model="autoexec" slot="prepend" v-if="canAutoExec">Auto execute</Checkbox>
+                    <Input :readonly="autoexec" class="command" type="text" :placeholder="$t('command_plh')" v-model="snippet.command">
+                        <Checkbox v-model="autoexec" slot="prepend" v-if="canAutoExec">{{$t('auto_exec')}}</Checkbox>
                         <Dropdown trigger="click" slot="prepend" @on-click="selectLang">
                             <a href="javascript:void(0)">
                                 <img :src="langIcon" class="lang_img" v-if="snippet.language && langIcon" /> {{language}}
@@ -31,8 +31,8 @@
                             </DropdownMenu>
                         </Dropdown>
                         <Button slot="append" @click="OnRun">
-                            <Icon custom="fa fa-rocket" v-if="snippet.language != 'HTML'" title="Try execute"></Icon>
-                            <Icon custom="fa fa-chrome" v-if="snippet.language == 'HTML'" title="Try Preview"></Icon>
+                            <Icon custom="fa fa-rocket" v-if="snippet.language != 'HTML'" :title="$t('try_exec')"></Icon>
+                            <Icon custom="fa fa-chrome" v-if="snippet.language == 'HTML'" :title="$t('try_preview')"></Icon>
                         </Button>
                     </Input>
                 </section>
@@ -44,25 +44,25 @@
                             <span slot="append" class="editor-remove">
                             <Poptip 
                                 confirm
-                                title="Are you sure want to delete this code ?"
+                                :title="$t('del_code_confirm')"
                                 @on-ok="OnRemove(i)">
                                 <Button :style="{ color: files.length <= 1 ? '#535353': '#f0f0f0'}" 
                             :disabled="files.length <= 1"><Icon custom="fa fa-trash-o"></Icon></Button>
                             </Poptip></span>
                         </Input>
                         <Button class="command" v-if="isExecute(f) && !isPreview(f)" :class="{ iscmd: f.execute }" 
-                            @click="OnExecuteFile(f)" title="Execute configuration">
+                            @click="OnExecuteFile(f)" :title="$t('exec_cfg')">
                             <Icon custom="fa fa-terminal"></Icon>
                         </Button>
                     </section>
                     <section v-if="f.execute && isExecute(f)" style="padding: .5em 0">
-                        <Input class="command" type="text" placeholder="input the execute command" 
+                        <Input class="command" type="text" :placeholder="$t('command_plh')" 
                         v-model="f.command">
                             <span slot="prepend" >
                                 <img :src="getLanguage(f).icon" class="lang_img" v-if="getLanguage(f)" /> 
                                 {{getLanguage(f).language}}
                             </span>
-                            <Button slot="append" title="Try execute" @click="OnRunCode(f)"><Icon custom="fa fa-rocket" /></Button>
+                            <Button slot="append" :title="$t('try_exec')" @click="OnRunCode(f)"><Icon custom="fa fa-rocket" /></Button>
                         </Input>
                     </section>
                 </section>
@@ -73,17 +73,17 @@
             </article>
             <article class="submit">
                 <section>
-                    <Button @click="OnAddFile">Add File</Button>
+                    <Button @click="OnAddFile">{{$t('add_file')}}</Button>
                 </section>
                 <section>
                     <Button type="success" v-if="!isUpdate"
                         :disabled="!canSubmit" :loading="loading"
-                    @click="OnCreate">Create Snippet</Button>
+                    @click="OnCreate">{{$t('create_snippet')}}</Button>
                     <Button type="info"  v-if="isUpdate" :loading="loading"
                         :disabled="!canSubmit"
-                    @click="OnUpdate">Update Snippet</Button>
+                    @click="OnUpdate">{{$t('update_snippet')}}</Button>
                     <Button type="default"  v-if="isUpdate"
-                    @click="$router.push(`/s/${id}`)">Cancel</Button>
+                    @click="$router.push(`/s/${id}`)">{{$t('cancel')}}</Button>
                 </section>
             </article>
         </Form>
@@ -204,7 +204,7 @@ export default {
             return this.langs.filter(l => exts.indexOf(l.ext) >= 0)
         },
         language() {
-            return this.snippet.language || 'Select'
+            return this.snippet.language || this.$t('select')
         },
         langIcon() {
             let lang = this.langs.find(l => l.language == this.snippet.language)
@@ -276,16 +276,16 @@ export default {
                     if (f.remove) continue;
                     snippet.codes[i].order = order++;
                     if (f.filename ===  '') {
-                        throw new Error(`The filename of <a href="#code${i}">#${i}</a> is empty! `);
+                        throw new Error(this.$utils.format(this.$t('empty_filename'), { i }));
                     }
                     if (f.content ===  '') {
-                        throw new Error(`The content of <a href="#code${i}">#${i}</a> is empty! `);
+                        throw new Error(this.$utils.format(this.$t('empty_content'), { i }));
                     }
                 }
 
                 if(Array.from(new Set(this.files.filter(f => !f.remove).map(f => f.filename))).length 
                     != this.files.filter(f => !f.remove).length) {
-                    throw new Error('There are duplicate filenames!');
+                    throw new Error(this.$t('duplicate_filename'));
                 }
     
                 snippet.command = this.autoexec ? '' : snippet.command;
@@ -305,7 +305,7 @@ export default {
                     return;
                 }
                 this.$router.push(`/s/${rsp.data.id}`);
-                this.$root.message($m.SUCCESS, 'Create Success');
+                this.$root.message($m.SUCCESS, this.$t('create_success'));
             } catch (err) {
                 this.$root.message($m.ERROR, err.message);
                 this.loading = false;
@@ -322,7 +322,7 @@ export default {
                     return;
                 }
                 this.$router.push(`/s/${rsp.data.id}`);
-                this.$root.message($m.SUCCESS, 'Update Success');
+                this.$root.message($m.SUCCESS, this.$t('update_success'));
             } catch (err) {
                 this.$root.message($m.ERROR, err.message);
                 this.loading = false;

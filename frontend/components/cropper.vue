@@ -1,7 +1,7 @@
 <template>
     <section>
         <Modal v-model="avatarModal" @on-visible-change="$emit('input', avatarModal)" 
-            title="Crop Your Avatar" @on-ok="SaveAvatar" :loading="true">
+            :title="$t('cropper_title')" @on-ok="SaveAvatar" :loading="true">
             <section class="avatar-cropper">
                 <vue-cropper v-if="avatarModal"
                     ref="cropper"

@@ -17,13 +17,13 @@
             <Statistics :snippet="s"></Statistics>              
         </header>
         <section class="aside-info">
-            <p v-if="s.fork">Fork from 
+            <p v-if="s.fork">{{$t('fork_from')}}
                 <router-link :to="`/s/${s.fork.id}`" 
                     :title="`${s.fork.username} / ${s.fork.codes[0].filename}`">
-                    {{s.fork.username}} / {{s.fork.codes[0].filename}} at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time>
+                    {{s.fork.username}} / {{s.fork.codes[0].filename}} {{$t('at')}} <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time>
                 </router-link>
             </p>
-            <p v-if="!s.fork">Created at <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
+            <p v-if="!s.fork">{{$t('create_at')}} <Time :title="new Date(s.create_time * 1000).toLocaleString()" :time="s.create_time"></Time></p>
             <p>{{s.description}}</p>
         </section>
         <section>

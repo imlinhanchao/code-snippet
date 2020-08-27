@@ -6,7 +6,7 @@
                     <TabPane label="Input" name="input" icon="md-return-left">
                         <p><Input v-model="input" type="textarea" :rows="6" placeholder="Text entered here will be sent to stdin." >
                         </Input></p>
-                        <p v-if="edit"><Checkbox v-model="defaultInput">Save the Input as Example</Checkbox></p>
+                        <p v-if="edit"><Checkbox v-model="defaultInput">{{$t('save_input_example')}}</Checkbox></p>
                     </TabPane>
                     <TabPane label="Output" name="output" icon="ios-arrow-forward">
                         <section class="result">
@@ -26,8 +26,8 @@
                 </Tabs>
             </section>
             <section slot="footer" class="footer">
-                <Button type="error" @click="OnExecute" :loading="loading">Execute</Button>
-                <Button @click="executeModal = false">Cancel</Button>
+                <Button type="error" @click="OnExecute" :loading="loading">{{$t('execute')}}</Button>
+                <Button @click="executeModal = false">{{$t('cancel')}}</Button>
             </section>
         </Modal>
     </section>
@@ -113,13 +113,13 @@ export default {
         },
         tip() {
             if (this.executed) {
-                return this.result.stderr ? 'Compiler Error!' : 'Compiler Success';
+                return this.result.stderr ? this.$t('compiler_error') : this.$t('compiler_success');
             }
             else if (this.loading) {
-                return 'Compiling...';
+                return this.$t('compiling');
             }
             else {
-                return 'Press execute to compile.';
+                return this.$t('press_exec');
             }
         },
         langs() {
