@@ -15,16 +15,16 @@
                     <ul class="action-list" :class="{ 'action-menu-hide': !menu }">
                         <li v-if="snippet.username == $root.loginUser.username">
                             <Button class="action-btn" @click="$router.push(`/edit/${snippet.id}`)">
-                                <Icon custom="fa fa-pencil" ></Icon> <span> Edit</span>
+                                <Icon custom="fa fa-pencil" ></Icon> <span> {{$t('edit')}}</span>
                             </Button>
                         </li>
                         <li v-if="snippet.username == $root.loginUser.username">
                             <Poptip
                             confirm
-                            title="Are you sure you want to delete this snippet?"
+                            :title="$t('del_snippet_confirm')"
                             @on-ok="OnRemove">
                                 <Button class="action-btn remove-btn">
-                                    <Icon custom="fa fa-trash-o" ></Icon> <span> Delete</span>
+                                    <Icon custom="fa fa-trash-o" ></Icon> <span> {{$t('delete')}}</span>
                                 </Button>
                             </Poptip>
                         </li>
@@ -32,11 +32,11 @@
                             <Button class="action-btn count-btn" @click="OnStar">
                                 <Icon custom="fa fa-star-o" v-if="!snippet.stared"></Icon>
                                 <Icon custom="fa fa-star" v-if="snippet.stared"></Icon> 
-                                <span> Star</span>
+                                <span> {{$t('star')}}</span>
                             </Button><router-link :to="`/s/${id}/star`" class="count">{{snippet.stars || 0}}</router-link>
                         </li>
                         <li><Button class="action-btn count-btn" @click="OnFork">
-                            <Icon custom="fa fa-code-fork" ></Icon> <span> Fork</span>
+                            <Icon custom="fa fa-code-fork" ></Icon> <span> {{$t('fork')}}</span>
                         </Button><router-link :to="`/s/${id}/forks`" class="count">{{snippet.forks || 0}}</router-link>
                         </li>
                     </ul>
@@ -45,29 +45,29 @@
             <aside>
                 <section class="snippet-info">
                     <p v-if="snippet.fork">
-                        fork from 
+                        {{$t('fork_from')}} 
                         <router-link :to="`/s/${snippet.fork.id}`" :title="`${snippet.fork.username} / ${snippet.fork.codes[0].filename}`">
                         {{snippet.fork.username}} / {{snippet.fork.codes[0].filename}}
-                        </router-link> at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time>
+                        </router-link> {{$t('at')}} <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time>
                     </p>
-                    <p v-if="!snippet.fork">Created at <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
+                    <p v-if="!snippet.fork">{{$t('create_at')}} <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
                 </section>
                 <section class="ext-info">
                     <span class="tag isprivate" v-if="snippet.private">
                         <Icon custom="fa fa-lock " title="Private"></Icon>
-                        Private
+                        {{$t('private')}}
                     </span>
                     <span class="tag isexecute" v-if="snippet.execute && snippet.language != 'HTML'" style="cursor:pointer" @click="executeModal = true">
                         <Icon custom="fa fa-terminal " title="Execute"></Icon>
-                        Execute
+                        {{$t('execute')}}
                     </span>
                     <span class="tag isexecute" v-if="snippet.execute && snippet.language == 'HTML'" style="cursor:pointer" @click="previewModal = true">
                         <Icon custom="fa fa-chrome " title="Preview"></Icon>
-                        Preview
+                        {{$t('preview')}}
                     </span>
                     <span class="tag" style="cursor:pointer" @click="OnDownload">
                         <Icon custom="fa fa-download " title="Preview"></Icon>
-                        Download
+                        {{$t('download')}}
                     </span>
                 </section>
             </aside>
@@ -92,10 +92,10 @@
                                             <router-link :to="`/u/${c.username}`">{{c.user.nickname}}</router-link>
                                             <span class="comment-time">
                                                 <span class="header-reply" v-if="c.reply">
-                                                    reply <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
+                                                    {{$t('reply')}} <a :href="`#comment${c.floor}`">#{{c.floor+1}}</a>
                                                 </span>
-                                                <span v-if="!c.reply">commented</span> 
-                                                on <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
+                                                <span v-if="!c.reply">{{$t('commented')}}</span> 
+                                                {{$t('on')}} <Time :time="c.create_time" :title="new Date(c.create_time * 1000).toUTCString()"></Time></span>
                                         </div>
                                         <div class="comment-menu" v-if="$root.isLogin">
                                             <a href="javascript:void(0)" @click="menus = menus == c.id ? '': c.id">
@@ -103,29 +103,29 @@
                                             </a>
                                             <i v-if="menus == c.id" class="fa fa-caret-up triangle"></i>
                                             <ul v-if="menus == c.id" class="menu-list">
-                                                <li><a href="javascript:void(0)" @click="OnQuote(c.content)">Quote Reply</a></li>
-                                                <li><a href="javascript:void(0)" @click="OnReply(c.id)">Reply Only</a></li>
+                                                <li><a href="javascript:void(0)" @click="OnQuote(c.content)">{{$t('quote_reply')}}</a></li>
+                                                <li><a href="javascript:void(0)" @click="OnReply(c.id)">{{$t('reply_only')}}</a></li>
                                                 <li v-if="c.username == $root.loginUser.username" class="hr"></li>
                                                 <li v-if="c.username == $root.loginUser.username">
-                                                    <a href="javascript:void(0)" @click="OnEdit(c)">Edit</a>
+                                                    <a href="javascript:void(0)" @click="OnEdit(c)">{{$t('edit')}}</a>
                                                 </li>
                                                 <li v-if="c.username == $root.loginUser.username">
                                                     <Poptip 
                                                         confirm
                                                         title="Are you sure want to delete this comment ?"
                                                         @on-ok="OnDelete(c)">
-                                                        <a href="javascript:void(0)" style="color: #d0434a">Delete</a>
+                                                        <a href="javascript:void(0)" style="color: #d0434a">{{$t('delete')}}</a>
                                                     </Poptip>
                                                 </li>
                                                 <li class="hr"></li>
-                                                <li><a href="javascript:void(0)">Report Content</a></li>
+                                                <li><a href="javascript:void(0)">{{$t('report_content')}}</a></li>
                                             </ul>
                                         </div>
                                     </section>
                                     <section v-if="!c.edit" class="comment-content markdown-body"> 
                                         <section v-html="$markdown.markdownIt.render(c.content)"></section>
                                         <section v-if="c.create_time != c.update_time" style="text-align: right; color:#515a6e">
-                                            Update on <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time></span>
+                                            {{$t('update_on')}} <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time></span>
                                         </section>
                                     </section>
                                     <section class="comment-area" v-if="c.edit && c.username == $root.loginUser.username">
@@ -152,7 +152,7 @@
                     </article>
                 </TabPane>
                 <TabPane :label="getLabel('Stars', stars.length, { type: 'md-star-outline' })" name="star">
-                    <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody star yet.</p>
+                    <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">{{$t('no_star')}}</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="stars">
                         <Col span="8" v-for="(s, i) in stars" v-bind:key="i">
@@ -167,7 +167,7 @@
                                     <p class="lastlogin">
                                         <span v-if="!s.location && !s.company">
                                             <i class="fa fa-clock-o"></i>
-                                            Login at <Time :time="s.lastlogin"></Time>
+                                            {{$t('login_at')}}<Time :time="s.lastlogin"></Time>
                                         </span>
                                         <span v-if="!s.company && s.location">
                                             <i class="fa fa-map-marker"></i>
@@ -185,7 +185,7 @@
                     <Page v-show="!loading && snippet.stars > 12" :total="snippet.stars" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </TabPane>
                 <TabPane :label="getLabel('Forks', forks.length, { type: 'md-git-branch' })" name="fork">
-                    <p v-if="forks.length == 0 && !loading" style="text-align:center;margin: 5em auto;">Nobody fork yet.</p>
+                    <p v-if="forks.length == 0 && !loading" style="text-align:center;margin: 5em auto;">{{$t('no_fork')}}</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
                     <Row class="forks">
                         <Col span="8" v-for="(s, i) in forks" v-bind:key="i" style="min-width: 11em">
@@ -275,7 +275,7 @@ export default {
             try {
                 let rsp = await this.$store.dispatch('snippet/del', this.snippet.id);
                 if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
-                this.$root.message($m.SUCCESS, 'Remove Success!');
+                this.$root.message($m.SUCCESS, this.$t('remove_success'));
                 this.$router.push('/')
             } catch (error) {
                 console.error(error.message);
@@ -298,8 +298,8 @@ export default {
             let path = this.$route.path;
             switch(name) {
                 case 'code': path = `/s/${this.snippet.id}`; break;
-                case 'star': path = `/s/${this.snippet.id}/star`; title += ' - Star'; break;
-                case 'fork': path = `/s/${this.snippet.id}/fork`; title += ' - Fork'; break;
+                case 'star': path = `/s/${this.snippet.id}/star`; title += ' - ' + this.$t('star'); break;
+                case 'fork': path = `/s/${this.snippet.id}/fork`; title += ' - ' + this.$t('fork'); break;
             }
             if (path == this.$route.path) return;
             this.$router.push(path);
@@ -311,7 +311,7 @@ export default {
                 let rsp = await this.$store.dispatch('snippet/fork', this.snippet.id);
                 if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
                 this.$router.push(`/s/${rsp.data.id}`);
-                this.$root.message($m.SUCCESS, 'Fork Success');
+                this.$root.message($m.SUCCESS, this.$t('fork_success'));
             } catch (error) {
                 console.error(error.message);
                 this.$root.message($m.ERROR, error.message);
