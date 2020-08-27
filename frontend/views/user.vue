@@ -20,7 +20,7 @@
                         v-if="edit.nickname"
                         @on-keyup.enter="submitForm({
                                         nickname: temp.nickname
-                                    }, 'Nickname');edit.nickname=false;"
+                                    }, $t('nickname'));edit.nickname=false;"
                         @on-keyup.esc="edit.nickname=false;"></Input>
                     <span v-show="!edit.nickname">{{info.nickname || info.username}}</span>
                     <Icon
@@ -34,11 +34,11 @@
                 <p class="username">{{info.username}}</p>
                 <p class="other motto">
                     <Input :rows="3" type="textarea"
-                        v-model="temp.motto"
+                        v-model="temp.motto" :title="$t('enter_esc')"
                         v-if="edit.motto"
                         @on-keyup.enter="submitForm({
                                         motto: temp.motto
-                                    }, 'Motto');edit.motto=false;"
+                                    }, $t('motto'));edit.motto=false;"
                         @on-keyup.esc="edit.motto=false;"
                     ></Input>
                     <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
@@ -51,23 +51,23 @@
                     />
                 </p>
                 <p class="lastlogin" v-if="info.lastlogin">
-                    Last Login:
+                    {{$t('last_login')}}:
                     <Time :time="info.lastlogin"></Time>
                 </p>
                 <p class="action">
-                    <Tooltip content="Developing..." style="width: 100%">
-                        <Button long v-if="!isCurrentUser">Follow</Button>
+                    <Tooltip :content="$t('developing')" style="width: 100%">
+                        <Button long v-if="!isCurrentUser">{{$t('follow')}}</Button>
                     </Tooltip>
-                    <Button long v-if="isCurrentUser" @click="$router.push('/setting')">Edit Profile</Button>
+                    <Button long v-if="isCurrentUser" @click="$router.push('/setting')">{{$t('edit_profile')}}</Button>
                 </p>
                 <p class="other" v-if="info.company">
                     <i class="fa fa-building" aria-hidden="true"></i> 
-                    <Input title="Press Enter to Submit, Esc to canel."
+                    <Input :title="$t('enter_esc')"
                         v-model="temp.company"
                         v-if="edit.company"
                         @on-keyup.enter="submitForm({
                                         company: temp.company
-                                    }, 'Company');edit.company=false;"
+                                    }, $t('company'));edit.company=false;"
                         @on-keyup.esc="edit.company=false;"
                     ></Input>
                     <span v-if="!edit.company">{{info.company}}
@@ -81,12 +81,12 @@
                 </p> 
                 <p class="other" v-if="info.location">
                     <i class="fa fa-map-marker" aria-hidden="true"></i> 
-                    <Input title="Press Enter to Submit, Esc to canel."
+                    <Input :title="$t('enter_esc')"
                         v-model="temp.location"
                         v-if="edit.location"
                         @on-keyup.enter="submitForm({
                                         location: temp.location
-                                    }, 'Location');edit.location=false;"
+                                    }, $t('location'));edit.location=false;"
                         @on-keyup.esc="edit.location=false;"
                     ></Input>
                     <span v-if="!edit.location">{{info.location}}
@@ -100,12 +100,12 @@
                 </p>
                 <p class="other" v-if="info.url" style="word-break:break-all;align-items: baseline;">
                     <i class="fa fa-link" aria-hidden="true"></i> 
-                    <Input title="Press Enter to Submit, Esc to canel."
+                    <Input :title="$t('enter_esc')"
                         v-model="temp.url"
                         v-if="edit.url"
                         @on-keyup.enter="submitForm({
                                         url: temp.url
-                                    }, 'URL');edit.url=false;"
+                                    }, $t('url'));edit.url=false;"
                         @on-keyup.esc="edit.url=false;"
                     ></Input>
                     <span v-if="!edit.url"><a target="_blank" :href="info.url">{{info.url}}</a>
@@ -124,7 +124,7 @@
             <TabPane label="Snippets" icon="md-code" name="snippet">
                 <article class="snippet" >
                     <section class="none" v-if="snippets.length == 0 && !loading">
-                        <span>Here is a wasteland of code.</span>
+                        <span>{{$t('code_wasteland')}}</span>
                     </section>
                     <Snippets :snippets="snippets" :file-icon="true" :user-icon="false"></Snippets>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
@@ -134,7 +134,7 @@
             <TabPane label="Stars" icon="md-star-outline" name="star">
                 <article class="snippet" >
                     <section class="none" v-if="stars.length == 0 && !loading">
-                        <span>{{info.nickname}} doesn’t have any starred snippets yet.</span>
+                        <span>{{info.nickname}} {{$t('none_star')}}</span>
                     </section>
                     <Snippets :snippets="stars" :file-icon="true" :user-icon="false"></Snippets>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
@@ -144,7 +144,7 @@
             <TabPane label="Forks" icon="md-git-branch" name="fork">
                 <article class="snippet" >
                     <section class="none" v-if="forks.length == 0 && !loading">
-                        <span>{{info.nickname}} doesn’t have any forked snippets yet.</span>
+                        <span>{{info.nickname}} {{$t('none_fork')}}</span>
                     </section>
                     <Snippets :snippets="forks" :file-icon="true" :user-icon="false"></Snippets>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
@@ -244,11 +244,13 @@ export default {
                 this.info = rsp.data.data[0];
                 let title = this.info.nickname;
                 switch(this.$route.params.type) {
-                    case 'snippet': title = title + '\' Snippets';break;
-                    case 'star': title = title + '\' Stars';break;
-                    case 'fork': title = title + '\' Forks';break;
+                    case 'snippet': title = title + this.$t('snippet_of');break;
+                    case 'star': title = title + this.$t('star_of');break;
+                    case 'fork': title = title + this.$t('fork_of');break;
                 }
-                this.$util.title(title + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
+                this.$util.title(title + (this.$route.params.page ? ' - ' + this.$util.format(this.$t('pages'), {
+                    page: this.$route.params.page
+                }) : ''));
             } else {
                 this.$root.message($m.ERROR, 'Username was not exist.');
                 this.$router.push('');
@@ -324,22 +326,6 @@ export default {
                 this.$root.message($m.ERROR, error.message);
             }
         },
-        handleSuccess(res, file) {
-            let rsp = file.response;
-            if (rsp.state == 0) {
-                this.$set(this.info, "avatar", rsp.data[0]);
-                this.submitForm(
-                    {
-                        avatar: this.info.avatar
-                    },
-                    "Avatar"
-                );
-            } else {
-                this.$root.message($m.WARN,
-                    rsp.msg,
-                    'Upload File Failed');
-            }
-        },
         PreUpload() {
             let reader = new FileReader();
             let file = this.$refs.upload.files[0];
@@ -368,7 +354,9 @@ export default {
                     this.$root.message($m.SUCCESS, `Update ${name} Success!`);
                     this.info = rsp.data;
                     if (name == 'Nickname')
-                        this.$util.title(this.info.nickname + (this.$route.params.page ? ' - Page ' + this.$route.params.page : ''));
+                        this.$util.title(this.info.nickname + (this.$route.params.page ? ' - ' + this.$util.format(this.$t('pages'), {
+                            page: this.$route.params.page
+                        }) : ''));
                 } else {
                     this.$root.message($m.ERROR, rsp.msg);
                 }
