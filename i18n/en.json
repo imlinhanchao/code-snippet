@@ -28,6 +28,7 @@
     "newpasswd_too_short": "Your new password was too short",
     "empty_passwd_again": "Please enter your password again",
     "passwd_not_match": "The two input passwords do not match!",
+    "snippets": "Snippet",
     "setting_of": "'s Setting",
     "snippet_of": "'s Snippets",
     "star_of": "'s Stars",
@@ -137,6 +138,7 @@
     "stars": "star",
     "s": "s",
     "email_subject": "[Code Snippet] Please verify your email address",
+    "more": "More",
     "errors": {
         "account": {
             "verify": "Username or password incorrect!",

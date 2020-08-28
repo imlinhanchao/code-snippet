@@ -28,6 +28,7 @@
     "newpasswd_too_short": "您的新密碼太短",
     "empty_passwd_again": "請重新輸入你的密碼",
     "passwd_not_match": "兩次輸入密碼不匹配！",
+    "snippets": "代碼",
     "setting_of": "的設置",
     "snippet_of": "的代碼",
     "star_of": "的收藏",
@@ -135,6 +136,7 @@
     "forks": "复刻",
     "comments": "評論",
     "stars": "收藏",
+    "more": "更多",
     "s": "",
     "email_subject": "[Code Snippet] 請驗證您的郵箱地址",
     "errors": {

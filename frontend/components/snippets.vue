@@ -29,7 +29,7 @@
         <section>
             <CodeRender :code="s.codes[0]" :snippet="s" class="code" :max-height="200">
                 <router-link :to="`/s/${s.id}`">
-                    <p v-if="s.codes.length > 1" title="more" class="more">
+                    <p v-if="s.codes.length > 1" :title="$t('more')" class="more">
                         <Icon type="ios-more"></Icon>
                     </p>
                 </router-link>

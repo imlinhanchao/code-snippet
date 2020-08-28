@@ -121,7 +121,7 @@
         </section>
         </Content>
         <Tabs :animated="false" class="user-tabs" v-model="tab" @on-click="OnTab" v-if="info.id">
-            <TabPane label="Snippets" icon="md-code" name="snippet">
+            <TabPane :label="$t('snippets')" icon="md-code" name="snippet">
                 <article class="snippet" >
                     <section class="none" v-if="snippets.length == 0 && !loading">
                         <span>{{$t('code_wasteland')}}</span>
@@ -131,7 +131,7 @@
                     <Page v-show="!loading && total.snippet > 5" :total="total.snippet" :current="page.snippet" size="small" @on-change="OnPage('snippet', ...arguments)" :page-size="5"/>
                 </article>
             </TabPane>
-            <TabPane label="Stars" icon="md-star-outline" name="star">
+            <TabPane :label="$t('star')" icon="md-star-outline" name="star">
                 <article class="snippet" >
                     <section class="none" v-if="stars.length == 0 && !loading">
                         <span>{{info.nickname}} {{$t('none_star')}}</span>
@@ -141,7 +141,7 @@
                     <Page v-show="!loading && total.star > 5" :total="total.star" :current="page.star" size="small" @on-change="OnPage('star', ...arguments)" :page-size="5"/>
                 </article>
             </TabPane>
-            <TabPane label="Forks" icon="md-git-branch" name="fork">
+            <TabPane :label="$t('fork')" icon="md-git-branch" name="fork">
                 <article class="snippet" >
                     <section class="none" v-if="forks.length == 0 && !loading">
                         <span>{{info.nickname}} {{$t('none_fork')}}</span>

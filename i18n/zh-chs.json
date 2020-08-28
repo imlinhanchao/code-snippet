@@ -28,6 +28,7 @@
     "newpasswd_too_short": "您的新密码太短",
     "empty_passwd_again": "请重新输入你的密码",
     "passwd_not_match": "两个输入密码不匹配！",
+    "snippets": "代码",
     "setting_of": "的设置",
     "snippet_of": "的代码",
     "star_of": "的收藏",
@@ -136,6 +137,7 @@
     "comments": "评论",
     "stars": "收藏",
     "s": "",
+    "more": "更多",
     "email_subject": "[Code Snippet] 请验证您的邮箱地址",
     "errors": {
         "account": {
