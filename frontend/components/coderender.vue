@@ -18,8 +18,8 @@
 
 <script>
 import org from 'org';
-import * as ipynb from 'ipynb2html'
-import { Document as Doc } from 'nodom'
+//import * as ipynb from 'ipynb2html'
+//import { Document as Doc } from 'nodom'
 export default {
     name: 'CodeRender',
     components: {
@@ -65,7 +65,7 @@ export default {
             return this.$root.getCodeExt(this.code.filename);
         },
         isRender() {
-            return this.isMarkdown || this.isOrg || this.isIpynb || this.isImage || this.isSvg;
+            return this.isMarkdown || this.isOrg || /*this.isIpynb ||*/ this.isImage || this.isSvg;
         }
     },
     methods: {
@@ -85,11 +85,11 @@ export default {
             ele.querySelectorAll('pre code').forEach(block => hljs.highlightBlock(block));
 
             return ele.innerHTML;
-        },
+        }/*,
         renderIpynb(content) {
             const renderNotebook = ipynb.createRenderer(new Doc())
             return renderNotebook(JSON.parse(content)).outerHTML;
-        }
+        }*/
     }
 }
 </script>
