@@ -4,7 +4,7 @@
             <section class="layout-logo">
                 <router-link to="/">
                     <img src="../assets/logo.png" alt="" />
-                    <span class="title">Code Snippit</span>
+                    <span class="title">Code Snippet</span>
                 </router-link>
             </section>
             <nav class="layout-nav">

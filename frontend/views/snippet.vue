@@ -588,7 +588,6 @@ export default {
         background: #FFF;
     }
     span {
-        font-size: 12px;
         vertical-align: middle;
     }
 }
@@ -720,7 +719,7 @@ export default {
             font-size: 1.2em;
         }
         .lastlogin {
-            font-size: .5em;
+            font-size: 12px;
         }
         p {
             text-overflow: ellipsis;
