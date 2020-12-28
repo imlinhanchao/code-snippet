@@ -2,6 +2,7 @@ const axios = require('axios')
 const model = require('../model');
 const App = require('./app');
 const Languages = require('../langs.json');
+const https = require('https');
 
 const domain = 'https://run.glot.io';
 const token = require('../config').base.glot;
@@ -34,6 +35,9 @@ class GlotApp extends App {
                 headers: {
                     'Authorization': `Token ${token}`
                 },
+                httpsAgent: new https.Agent({  
+                    rejectUnauthorized: false
+                }),
                 data: {
                     files,
                     stdin,
