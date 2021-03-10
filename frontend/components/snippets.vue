@@ -74,6 +74,9 @@ export default {
     methods: {
         OnExecute(snippet) {
             this.snippet = Object.assign({}, snippet);
+            if (snippet.codes.length == 0) snippet.codes.push({
+                filename: '<No File>', content: ''
+            })
             this.executeModal = true;
         }
     }
