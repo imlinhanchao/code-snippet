@@ -19,6 +19,7 @@
     "auto-loader": "^0.2.0",
     "axios": ">=0.21.2",
     "cookie-parser": "^1.4.5",
+    "debug": "^4.3.3",
     "express": "^4.17.1",
     "express-partials": "^0.3.0",
     "express-robots": "^0.1.6",

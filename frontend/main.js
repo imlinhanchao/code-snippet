@@ -10,7 +10,7 @@ import store from './store';
 import Util from './util';
 import VueHljs from 'vue-hljs-with-line-number';
 import 'iview/dist/styles/iview.css';
-import 'highlight.js/styles/railscasts.css';
+import 'highlight.js/styles/atom-one-dark.css';
 import 'vue-hljs-with-line-number/line-number.css';
 import 'mavon-editor/dist/css/index.css'
 import axios from 'axios';
