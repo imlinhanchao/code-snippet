@@ -27,8 +27,12 @@
                 </ul>
             </span>
             <span class="menu">
-                <Tooltip :content="$t('developing')"><Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button></Tooltip>
-                <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
+                <Tooltip :content="$t('developing')">
+                    <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
+                </Tooltip>
+                <Tooltip :content="$t('new_snippet')">
+                    <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
+                </Tooltip>
             </span>
         </section>
         <section class="layout-info" v-if="!$root.isLogin">
