@@ -25,16 +25,16 @@
             <Form ref="formProfile" :model="info" class="info">
                 <h1>{{$t('profile')}}</h1>
                 <FormItem prop="nickname" :label="$t('nickname')">
-                    <Input v-model="info.nickname"></Input>
+                    <Input v-model.trim="info.nickname"></Input>
                 </FormItem>
                 <FormItem prop="company" :label="$t('company')">
-                    <Input v-model="info.company"></Input>
+                    <Input v-model.trim="info.company"></Input>
                 </FormItem>
                 <FormItem prop="location" :label="$t('location')">
-                    <Input v-model="info.location"></Input>
+                    <Input v-model.trim="info.location"></Input>
                 </FormItem>
                 <FormItem prop="url" :label="$t('url')">
-                    <Input v-model="info.url"></Input>
+                    <Input v-model.trim="info.url"></Input>
                 </FormItem>
                 <FormItem prop="motto" :label="$t('motto')">
                     <Input v-model="info.motto" :rows="3" type="textarea"></Input>

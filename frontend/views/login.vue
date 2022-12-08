@@ -61,7 +61,7 @@
             <FormItem prop="username">
                 <Input
                     type="text"
-                    v-model="login.username"
+                    v-model.trim="login.username"
                     placeholder="username"
                     @on-keyup.enter="$refs['password'].focus()"
                     @on-blur="existCheck"
@@ -89,7 +89,7 @@
             <FormItem v-if="isRegister" prop="email">
                 <Input ref="email" 
                     type="text"
-                    v-model="login.email"
+                    v-model.trim="login.email"
                     placeholder="email"
                     @on-keyup.enter="$refs['captcha'].focus()"
                 >
@@ -99,7 +99,7 @@
             <FormItem v-if="isRegister" prop="captcha">
                 <Input ref="captcha"
                     type="text"
-                    v-model="login.captcha"
+                    v-model.trim="login.captcha"
                     :placeholder="$t('are_you_robot')"
                     @on-keyup.enter="submit('loginForm')"
                 >
@@ -245,20 +245,20 @@ export default {
         registerSubmit(form) {
             this.$refs[form].validate(async valid => {
                 if (!valid) return;
+                this.login_loading = true;
                 try {
-                    this.login_loading = true;
                     let rsp = await this.$store.dispatch('account/create', this.login);
                     if (rsp && rsp.state == 0) {
                         this.isRegister = false;
                         this.loginSubmit(form);
-                        await this.$store.dispatch('account/sendverify', this.rsp.data);
+                        await this.$store.dispatch('account/sendverify', rsp.data);
                     } else {
-                        this.login_loading = false;
                         this.$Message.error(rsp.msg);
                     }
                 } catch (err) {
                     this.$Message.error(err.message);
                 }
+                this.login_loading = false;
             });
         },
         async existCheck (usename) {
