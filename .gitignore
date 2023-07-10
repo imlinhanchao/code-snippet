@@ -32,8 +32,6 @@ npm-debug.log
 # session files
 sessions
 
-package-lock.json
-
 # static build
 public/index.html
 public/dist
