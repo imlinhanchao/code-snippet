@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import FileIcons from 'file-icons-js';
+import * as FileIcons from 'file-icons-js';
 import 'file-icons-js/css/style.css'
 export default {
     name: 'FileIcon',

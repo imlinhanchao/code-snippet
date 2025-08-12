@@ -1,6 +1,6 @@
 <template>
     <section>
-        <section class="code-header">
+        <section class="code-header" v-if="header">
             <section class="filename">{{code.filename}}</section>
             <Action :snippet="snippet" :code="code" :render="isRender"  @source="source = arguments[0]"></Action>
         </section>
@@ -37,11 +37,19 @@ export default {
         maxHeight: {
             type: [Number, Boolean],
             default: false
+        },
+        header: {
+            type: Boolean,
+            default: true,
+        },
+        onlySource: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
         return {
-            source: false
+            source: this.onlySource,
         }
     },
     computed: {

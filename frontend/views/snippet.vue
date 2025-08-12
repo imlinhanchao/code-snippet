@@ -125,7 +125,7 @@
                                     <section v-if="!c.edit" class="comment-content markdown-body"> 
                                         <section v-html="$markdown.markdownIt.render(c.content)"></section>
                                         <section v-if="c.create_time != c.update_time" style="text-align: right; color:#515a6e">
-                                            {{$t('update_on')}} <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time></span>
+                                            {{$t('update_on')}} <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time>
                                         </section>
                                     </section>
                                     <section class="comment-area" v-if="c.edit && c.username == $root.loginUser.username">

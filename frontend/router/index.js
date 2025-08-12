@@ -115,6 +115,12 @@ const routers = [{
         title: 'Register'
     },
     component: () => import('../views/login')
+}, {
+    path: '/embed/:id',
+    meta: {
+        title: 'Embed'
+    },
+    component: () => import('../views/embed')
 },{
     path: '*',
     redirect: '/'
