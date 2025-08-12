@@ -4,7 +4,7 @@
         <Tabs :animated="false" class="embed-tabs" v-model="tab">
             <TabPane 
                 v-for="(c, i) in snippet.codes" 
-                v-bind:key="i" 
+                v-bind:key="c.id" 
                 :label="getLabel(c.filename, 0, { custom: getFileIcon(c.filename) })" 
                 :name="c.id"
             >
@@ -14,8 +14,8 @@
                 >
                 </CodeRender>
             </TabPane>
-            <TabPane v-for="(c, i) in previewList" 
-                v-bind:key="i"
+            <TabPane v-for="(c) in previewList" 
+                v-bind:key="'preview' + c.id"
                 :label="getLabel(c.filename, 0, { custom: 'fa fa-chrome' })" 
                 :name="'preview' + c.id" 
                 v-if="canPreview"
@@ -25,37 +25,32 @@
 
                 </iframe>
             </TabPane>
-            <TabPane v-if="canExcute" label="Input" name="input" icon="md-return-left">
-                <p class="input-textarea">
-                    <Input v-model="input" type="textarea" :rows="6" placeholder="Text entered here will be sent to stdin." >
-                    </Input>
-                </p>
+            <TabPane v-if="canExecute" :label="getLabel($t('execute'), 0, { custom: 'fa fa-terminal' })" name="execute" class="preview-tab">
+                <Execute :snippet="snippet" :codes="snippet.codes" :auto="snippet.command == ''"></Execute>
             </TabPane>
-            <TabPane v-if="canExcute" label="Output" name="output" icon="ios-arrow-forward">
-                <section class="result">
-                    <p v-if="executed || loading">
-                        <span 
-                        style="color:#9be14f">user</span>@<span 
-                        style="color:#fce96c">localhost</span>:<span 
-                        style="color:#86b1d6">~</span>$ 
-                        {{auto ? './auto-execute' : snippet.command}}&nbsp;&nbsp;
-                    </p>
-                    <p v-if="!executed || loading">{{tip}}</p>
-                    <p v-html="toHtml(result.stderr)" v-if="result.stderr" style="color: #f44336"></p>
-                    <p v-html="toHtml(result.stdout)" v-if="result.stdout"></p>
-                    <p v-html="toHtml(result.error)" v-if="result.error"></p>
-                </section>
+            <TabPane 
+                v-for="(c) in executeList" 
+                v-bind:key="'execute' + c.id" 
+                :label="getLabel($t('execute') + ' ' + c.filename, 0, { custom: 'fa fa-terminal' })" 
+                :name="'execute' + c.id" 
+                class="preview-tab"
+            >
+                <Execute :snippet="c" :codes="[c]" :auto="c.command == ''"></Execute>
             </TabPane>
-            <section slot="extra" class="extra">
-                <Button class="execute-btn" v-if="canExcute" type="error" size="small" icon=" fa fa-play" @click="OnExecute" :loading="loading">{{$t('execute')}}</Button>
-            </section>
         </Tabs>
     </Content>
-    <Footer class="info">
-        <img :src="`/api/account/avatar/${snippet.username}`" />
-        <span>
-            <router-link :to="`/u/${snippet.username}`">{{snippet.username}}</router-link>
-        </span>
+    <Footer>
+        <section class="layout-logo">
+            <a :href="$config.base.domain" target="_blank">
+                <img src="../assets/logo.png" alt="" />
+                <span class="title">Code Snippet</span>
+            </a>
+        </section>
+        <section class="info">
+            <span>
+                <a :href="`${$config.base.domain}/u/${snippet.username}`" target="_blank">@{{snippet.username}}</a>
+            </span>
+        </section>
     </Footer>
   </Layout>
 </template>
@@ -63,10 +58,12 @@
 import * as FileIcons from 'file-icons-js';
 import 'file-icons-js/css/style.css'
 import CodeRender from '../components/coderender'
+import Execute from '../components/execute-panel'
 export default {
-    name: "snippet",
+    name: "Embed",
     components: {
         CodeRender,
+        Execute,
     },
     async mounted() {
         await this.Init();
@@ -90,14 +87,6 @@ export default {
             },
             tab: 'preview',
             last_data: new Date().getTime(),
-            result: {
-                stdout: '',
-                stderr: '',
-                error: ''
-            },
-            executed: false,
-            input: '',
-            loading: false
         };
     },
     methods: {
@@ -150,90 +139,32 @@ export default {
                 });
                 this.tab = 'preview' + this.previewList[0].id
             }
-            if (this.canExcute) {
-                this.tab = 'input'
+            if (this.executeList.length) {
+                this.tab = 'execute' + this.executeList[0].id;
             }
-            if (this.$router.query.tab) {
+            if (this.canExecute) {
+                this.tab = 'execute';
+            }
+            if (this.$router.query && this.$router.query.tab) {
                 this.tab = this.$router.query.tab;
             }
-        },
-        async OnExecute() {
-            try {
-                this.tab = 'output';
-                this.executed = false;
-                this.result = {
-                    stdout: '',
-                    stderr: '',
-                    error: ''
-                };
-                this.loading = true;
-                let snippet = Object.assign({}, this.snippet);
-                snippet.input = this.input;
-                if (this.auto) snippet.command = '';
-                if (!snippet.language) snippet.language = this.getLanguage(this.codes[0]).language;
-                let rsp = await this.$store.dispatch("snippet/execute", { snippet, codes: snippet.codes });
-                this.loading = false;
-                this.executed = true;
-                if (rsp.state != 0) {
-                    this.result.stderr = rsp.msg;
-                    return;
-                }
-                this.result = rsp.data;
-            } catch (err) {
-                this.result.stderr = err.message;
-                this.loading = false;
-            }
-        },
-        toHtml(text) {
-            return  text.replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/\t/g, '    ')
-                        .replace(/\n/g, '<br>')
-                        .replace(/\s/g, '&nbsp;')
-        },
-        getLanguage(f) {
-            let ext = f.filename.split('.').slice(-1).join('');
-            let lang = this.langs.find(l => l.ext == ext)
-            return lang;
         },
     },
     computed: {
         id() {
             return this.$route.params.id
         },
-        status() {
-            if (this.result.stderr) {
-                return 'error';
-            }
-            else if(!this.executed) {
-                return 'info'
-            }
-            else {
-                return 'success'
-            }
-        },
-        tip() {
-            if (this.executed) {
-                return this.result.stderr ? this.$t('compiler_error') : this.$t('compiler_success');
-            }
-            else if (this.loading) {
-                return this.$t('compiling');
-            }
-            else {
-                return this.$t('press_exec');
-            }
-        },
-        langs() {
-            return this.$store.getters['snippet/langs'];
-        },
         canPreview() {
             return this.snippet.codes.some(c => c.filename.endsWith('.html') || c.filename.endsWith('.htm'));
         },
-        canExcute() {
+        canExecute() {
             return this.snippet.execute && this.snippet.language != 'HTML'
         },
         previewList() {
             return this.snippet.codes.filter(c => c.filename.endsWith('.html') || c.filename.endsWith('.htm'));
+        },
+        executeList() {
+            return this.snippet.codes.filter(c => c.execute);
         }
     },
     watch: {
@@ -250,13 +181,32 @@ export default {
 }
 .layout {
     width: 100%;
-    max-width: 1080px;
     margin: auto;
     font-size: 14px;
     height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .ivu-layout-content {
+        flex: 1;
+        overflow: hidden;
+    }
+}
+.layout-logo a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 .5em;
+    font-weight: bold;
+    color: #FFF;
+    font-size: 20px;
+    img {
+        width: 30px;
+        margin-right: 10px;
+    }
 }
 .info {
-    font-size: 1em;
+    font-size: 1.2em;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -264,23 +214,26 @@ export default {
     padding: .5em;
     text-align: right;
     background: #181a1b;
-    color: #FFF;
-    img {
-        width: 1em;
-        height: 1em;
-        vertical-align: middle;
-        border: 1px solid #FFF;
-        background: #FFF;
-        border-radius: 50%;
-    }
-    span {
-        vertical-align: middle;
-    }
+    font-weight: bold;
+}
+.ivu-layout-footer {
+    padding: 0;
+    background: #181a1b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .embed-tabs {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+.execute-toolbar {
+    padding: .5em;
+    padding-bottom: 0;
+    .active {
+        border-color: #ffad33;
+    }
 }
 .code-desc {
     padding: 0 1em;
@@ -445,6 +398,7 @@ body, html {
 .embed-tabs {
     .ivu-tabs-content {
         flex: 1;
+        overflow: auto;
     }
     .ivu-tabs-bar {
         margin: 0;

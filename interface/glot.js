@@ -4,7 +4,7 @@ const App = require('./app');
 const Languages = require('../langs.json');
 const https = require('https');
 
-const domain = 'https://run.glot.io';
+const domain = 'https://glot.io/api/run';
 const token = require('../config').base.glot;
 
 // 错误码定义
@@ -27,7 +27,7 @@ class GlotApp extends App {
 
     static async compiler(language, files, stdin = '', command = '', version = 'latest') {
         try {
-            let url = `${domain}/languages/${GlotApp.langs[language]}/${version}`;
+            let url = `${domain}/${GlotApp.langs[language]}/${version}`;
             let rsp = await axios({
                 method: 'POST',
                 url,
