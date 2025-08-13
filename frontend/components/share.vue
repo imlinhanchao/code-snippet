@@ -52,7 +52,7 @@ export default {
             return [ 320, 480, 560, 720, 960 ];
         },
         iFrameCode() {
-            return `<iframe src="${this.$config.base.domain}/embed/${this.snippet.id}" width="100%" height="${this.iFrameHeight}" frameborder="0"></iframe>`;
+            return `<iframe src="${location.origin}/embed/${this.snippet.id}" width="100%" height="${this.iFrameHeight}" frameborder="0"></iframe>`;
         }
     },
     methods: {
