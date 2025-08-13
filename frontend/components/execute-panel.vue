@@ -36,7 +36,6 @@ export default {
     name: 'Execute',
     data() {
         return {
-            executeModal: false,
             defaultInput: true,
             loading: false,
             result: {
@@ -50,11 +49,6 @@ export default {
         }
     },
     props: {
-        value: {
-            type: Boolean,
-            default: false,
-            required: true
-        },
         auto: {
             type: Boolean,
             default: false
@@ -75,7 +69,6 @@ export default {
         }
     },
     mounted() {
-        this.executeModal = this.value;
         this.input = this.snippet.input;
         this.defaultInput = this.edit;
     },
@@ -184,7 +177,7 @@ export default {
     }
 }
 p {
-    margin: .5em 0 ;
+    margin: 0 ;
     padding: 0 1em;
     word-break: break-all;
 }
@@ -202,6 +195,18 @@ p {
         flex: 1;
     }
 }
+.execute-toolbar {
+    padding: .5em;
+    padding-bottom: 0;
+    .active {
+        border: #2b2b2c;
+        background-color: #2b2b2c;
+        color: white;
+    }
+    .ivu-btn {
+        border: black;
+    }
+}
 </style>
 <style lang="less">
 p.input-textarea {
@@ -212,6 +217,8 @@ p.input-textarea {
         height: 100%;
         textarea {
             height: 100%;
+            border: none;
+            background-color: #2b2b2c;
         }
     }
 }

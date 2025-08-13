@@ -46,6 +46,8 @@ Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
 Vue.prototype.$markdown = mavonEditor;
 
+console.dir(mavonEditor)
+
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VueHljs);

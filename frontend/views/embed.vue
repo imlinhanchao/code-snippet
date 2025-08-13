@@ -204,6 +204,9 @@ export default {
         width: 30px;
         margin-right: 10px;
     }
+    .title {
+        white-space: nowrap;
+    }
 }
 .info {
     font-size: 1.2em;
@@ -227,12 +230,8 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
-}
-.execute-toolbar {
-    padding: .5em;
-    padding-bottom: 0;
-    .active {
-        border-color: #ffad33;
+    .code {
+        height: 100%;
     }
 }
 .code-desc {
@@ -250,6 +249,28 @@ export default {
     margin-top: 1em;
     padding: 0 1em;
     max-width: 20%;
+}
+.extra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5em;
+}
+
+.preview {
+    border: 0;
+    width: 100%;
+    height: 100%;
+}
+.execute-btn{
+    margin: 2px;
+}
+.preview-tab {
+    height: 100%;
+}
+
+.ivu-tabs .ivu-tabs-tabpane {
+    height: 100%;
 }
 
 @media (max-width: 480px) {
@@ -348,33 +369,6 @@ export default {
             }
         }
     }
-}
-.input-textarea {
-    padding: .5em;
-}
-.result {
-    padding: .5em;
-    background: #2b2b2c;
-    height: 100%;
-    overflow: auto;
-}
-.extra {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .5em;
-}
-
-.preview {
-    border: 0;
-    width: 100%;
-    height: 100%;
-}
-.execute-btn{
-    margin: 2px;
-}
-.preview-tab {
-    height: 100%;
 }
 </style>
 

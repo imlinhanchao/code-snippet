@@ -52,23 +52,26 @@
                     </p>
                     <p v-if="!snippet.fork">{{$t('create_at')}} <Time :title="new Date(snippet.create_time * 1000).toLocaleString()" :time="snippet.create_time"></Time></p>
                 </section>
-                <section class="ext-info">
-                    <span class="tag isprivate" v-if="snippet.private">
-                        <Icon custom="fa fa-lock " title="Private"></Icon>
-                        {{$t('private')}}
-                    </span>
-                    <span class="tag isexecute" v-if="snippet.execute && snippet.language != 'HTML'" style="cursor:pointer" @click="executeModal = true">
-                        <Icon custom="fa fa-terminal " title="Execute"></Icon>
-                        {{$t('execute')}}
-                    </span>
-                    <span class="tag isexecute" v-if="snippet.execute && snippet.language == 'HTML'" style="cursor:pointer" @click="previewModal = true">
-                        <Icon custom="fa fa-chrome " title="Preview"></Icon>
-                        {{$t('preview')}}
-                    </span>
-                    <span class="tag" style="cursor:pointer" @click="OnDownload">
-                        <Icon custom="fa fa-download " title="Preview"></Icon>
-                        {{$t('download')}}
-                    </span>
+                <section class="ext-banner">
+                    <section class="ext-info">
+                        <span class="tag isprivate" v-if="snippet.private">
+                            <Icon custom="fa fa-lock " title="Private"></Icon>
+                            {{$t('private')}}
+                        </span>
+                        <span class="tag isexecute" v-if="snippet.execute && snippet.language != 'HTML'" style="cursor:pointer" @click="executeModal = true">
+                            <Icon custom="fa fa-terminal " title="Execute"></Icon>
+                            {{$t('execute')}}
+                        </span>
+                        <span class="tag isexecute" v-if="snippet.execute && snippet.language == 'HTML'" style="cursor:pointer" @click="previewModal = true">
+                            <Icon custom="fa fa-chrome " title="Preview"></Icon>
+                            {{$t('preview')}}
+                        </span>
+                        <span class="tag" style="cursor:pointer" @click="OnDownload">
+                            <Icon custom="fa fa-download " title="Preview"></Icon>
+                            {{$t('download')}}
+                        </span>
+                    </section>
+                    <Share :snippet="snippet" class="share-input" />
                 </section>
             </aside>
         </header>
@@ -220,6 +223,7 @@ export default {
         Execute: () => import('../components/execute'),
         Preview: () => import('../components/preview'),
         Comment: () => import('../components/comment'),
+        Share: () => import('../components/share'),
         CodeRender,
     },
     async mounted() {
@@ -267,7 +271,7 @@ export default {
                 reply: '',
                 snippet: ''
             },
-            menus: ''
+            menus: '',
         };
     },
     methods: {
@@ -559,7 +563,7 @@ export default {
         replyfloor() {
             let comment = this.comments.find(c => c.id == this.comment.reply);
             return comment ? comment.index : -1;
-        }
+        },
     },
     watch: {
         $route() {
@@ -624,6 +628,12 @@ export default {
                     background: #373c3e;
                 }
             }
+        }
+        .ext-banner {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
         }
     }
     .info img {
@@ -906,6 +916,18 @@ export default {
                 .action-menu-hide {
                     display: none;
                 }
+            }
+        }
+        .ext-banner {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            .ext-info {
+                margin-bottom: 1em;
+                width: 100%;
+            }
+            .share-input {
+                width: 100%;
             }
         }
     }

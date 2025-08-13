@@ -1,18 +1,24 @@
 <template>
-    <section>
+    <section class="code-render">
         <section class="code-header" v-if="header">
             <section class="filename">{{code.filename}}</section>
             <Action :snippet="snippet" :code="code" :render="isRender"  @source="source = arguments[0]"></Action>
         </section>
         <section class="code-content" :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
             <pre v-if="!isRender || source" v-hljs="code.content"><code></code></pre>
-            <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.markdownIt.render(code.content)"></section>
+            <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.mavonEditor.getMarkdownIt().render(code.content)"></section>
             <section class="render org-mode markdown-body" v-if="isOrg && !source" v-html="renderOrg(code.content)"></section>
             <section class="render ipynb markdown-body" v-if="isIpynb && !source" v-html="renderIpynb(code.content)"></section>
             <section class="render image" v-if="isImage && !source"><img :src="code.content" /></section>
             <section class="render svg" v-if="isSvg && !source" v-html="code.content"></section>
         </section>
         <slot></slot>
+        <section class="render-switch" v-if="isRender && !header">
+            <ButtonGroup shape="circle">
+                <Button custom-icon="fa fa-eye" :type="!source ? 'error' : 'default'" @click="source = false"></Button>
+                <Button custom-icon="fa fa-code" :type="source ? 'error' : 'default'" @click="source = true"></Button>
+            </ButtonGroup>
+        </section>
     </section>
 </template>
 
@@ -103,6 +109,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.code-render {
+    position: relative;
+    .render-switch {
+        position: absolute;
+        top: 1em;
+        right: 1em;
+        z-index: 10;
+        background: #1a1c1e;
+        border-bottom-left-radius: 6px;
+        border-top-left-radius: 6px;
+    }
+}
 .code-header {
     background: #1a1c1e;
     padding: .5em;
@@ -123,7 +141,8 @@ export default {
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
     border: 1px solid #373c3e;
-    overflow: hidden;
+    overflow: auto;
+    height: 100%;
     pre {
         margin: 0;
     }
