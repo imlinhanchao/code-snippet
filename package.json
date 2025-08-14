@@ -50,7 +50,7 @@
     "mime-types": "^2.1.27",
     "nodom": "^2.4.0",
     "org": "^0.2.0",
-    "parcel-bundler": "^1.10.3",
+    "parcel-bundler": "^1.12.5",
     "require-context": "^1.1.0",
     "vue": "^2.6.11",
     "vue-clipboard2": "^0.3.1",
