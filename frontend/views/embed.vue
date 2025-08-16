@@ -41,7 +41,7 @@
     </Content>
     <Footer>
         <section class="layout-logo">
-            <a :href="$config.base.domain" target="_blank">
+            <a :href="$config.base.domain + '/s/' + snippet.id" target="_blank">
                 <img src="../assets/logo.png" alt="" />
                 <span class="title">Code Snippet</span>
             </a>
