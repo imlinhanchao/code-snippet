@@ -2,7 +2,9 @@ const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
+const Activity = require('./activity');
 const Comment = model.comment;
+const Snippet = model.snippet;
 
 let __error__ = Object.assign({
     notexisted: App.error.existed('评论', false)
@@ -14,6 +16,7 @@ class Module extends App {
         this.session = session;
         this.name = '评论';
         this.account = new Account(session);
+        this.activity = new Activity(session);
         this.saftKey = ['id', 'create_time', 'update_time'].concat(Comment.keys());
     }
 
@@ -26,6 +29,23 @@ class Module extends App {
             data.username = this.account.user.username;
 
             let comment = App.filter(await super.new(data, Comment), this.saftKey);
+            let targetUser = '';
+            if (data.reply) {
+                let replyComment = await Comment.findOne({
+                    where: { id: data.reply }
+                });
+                if (replyComment) {
+                    targetUser = replyComment.username;
+                }
+            } else {
+                let snippet = await Snippet.findOne({
+                    where: { id: data.snippet }
+                });
+                if (snippet) {
+                    targetUser = snippet.username;
+                }
+            }
+            this.activity.comment(comment, this.account.user.username, targetUser);
             return this.okcreate(comment);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -61,6 +81,7 @@ class Module extends App {
             let comment = await Comment.destroy({
                 where: data
             });
+            this.activity.removeComment(data, this.account.user.username);
             return this.okdelete(comment ? comment.id : null);
         } catch (err) {
             if (err.isdefine) throw (err);

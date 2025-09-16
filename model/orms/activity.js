@@ -7,7 +7,7 @@ let orm = {
     },
     type: {
         type: db.INTEGER,
-        comment: '类型: 0-create, 1-star, 2-fork, 3-comment'
+        comment: '类型: 0-create, 1-star, 2-fork, 3-comment, 4-reply, 5-follow, -1-system'
     },
     private: {
         type: db.BOOLEAN,
@@ -17,14 +17,29 @@ let orm = {
         type: db.ID,
         comment: '所属片段 ID'
     },
-    fork_snippet: {
+    source: {
         type: db.ID,
-        comment: 'Fork 片段 ID'
+        comment: '源头 ID'
+    },
+    target: {
+        type: db.ID,
+        comment: '来源ID，如 fork 的源片段 ID，回复的评论 ID',
+        defaultValue: ''
     },
     notice: {
         type: db.STRING(20),
         comment: '通知帐号，为空则为广播信息流'
     },
+    readed: {
+        type: db.BOOLEAN,
+        comment: '是否已读',
+        defaultValue: false
+    },
+    description: {
+        type: db.STRING(1024),
+        comment: '描述',
+        defaultValue: ''
+    }
 };
 let table_name = prefix + 'activity';
 module.exports = db.defineModel(table_name, orm, {

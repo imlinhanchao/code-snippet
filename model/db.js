@@ -44,7 +44,7 @@ function defineModel(name, attributes, defineAttr = {}) {
         timestamps: false,
         hooks: {
             beforeCreate: function (obj) {
-                let now = (new Date()).valueOf() / 1000;
+                let now = Date.now() / 1000;
                 if (obj.isNewRecord) {
                     obj.create_time = now;
                     obj.update_time = now;
@@ -53,7 +53,7 @@ function defineModel(name, attributes, defineAttr = {}) {
                 }
             },
             beforeBulkCreate: function (records) {
-                let now = (new Date()).valueOf() / 1000;
+                let now = Date.now() / 1000;
                 for (let i in records) {
                     if (records[i].isNewRecord) {
                         records[i].create_time = now;

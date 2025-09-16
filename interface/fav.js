@@ -1,8 +1,9 @@
-const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
+const Activity = require('./activity');
 const Fav = model.fav;
+const Snippet = model.snippet;
 
 let __error__ = Object.assign({
     existed: App.error.existed('已收藏过', true, true)
@@ -14,6 +15,7 @@ class Module extends App {
         this.session = session;
         this.name = '收藏';
         this.account = new Account(session);
+        this.activity = new Activity(session);
         this.saftKey = ['create_time', 'update_time'].concat(Fav.keys());
     }
 
@@ -25,7 +27,15 @@ class Module extends App {
         try {
             data.username = this.account.user.username;
 
+            if (!App.haskeys(data, ['snippet'])) throw this.error.param;
+            let snippet = await Snippet.findOne({
+                where: { id: data.snippet }
+            });
+            if (!snippet) throw this.error.notexisted;
+
             let fav = App.filter(await super.new(data, Fav, ['username', 'snippet']), this.saftKey);
+
+            this.activity.star(snippet, this.account.user.username);
             return this.okcreate(fav);
         } catch (err) {
             if (err.isdefine) throw (err);

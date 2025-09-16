@@ -1,10 +1,10 @@
-const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
 const Code = require('./code');
 const Fav = require('./fav');
 const Comment = require('./comment');
+const Activity = require('./activity');
 const Glot = require('./glot');
 const Snippet = model.snippet;
 
@@ -23,6 +23,7 @@ class Module extends App {
         this.code = new Code(session);
         this.fav = new Fav(session);
         this.comment = new Comment(session);
+        this.activity = new Activity(session);
         this.saftKey = ['id', 'create_time', 'update_time'].concat(Snippet.keys());
     }
 
@@ -43,6 +44,7 @@ class Module extends App {
             });
             snippet.codes = (await this.code.create(data.codes))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
+            this.activity.create(snippet, this.account.user.username); 
             if (onlyData) return snippet;
             return this.okcreate(snippet);
         } catch (err) {
@@ -104,6 +106,7 @@ class Module extends App {
                 return true;
             });
             await this.code.del(data.id);
+            this.activity.removeSnippet(data);
             return this.okdelete(info.id);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -123,7 +126,7 @@ class Module extends App {
     
             snippet.fork_from = snippet.id;
             delete snippet.id;
-
+            this.activity.fork(snippet, this.account.user.username);
             return await this.new(snippet);
         } catch (err) {
             if (err.isdefine) throw (err);

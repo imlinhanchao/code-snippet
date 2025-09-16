@@ -1,9 +1,11 @@
+const Op = require('../model/db').Op;
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const model = require('../model');
 const App = require('./app');
+const Activity = require('./activity');
 const Account = model.account;
 const Token = model.token;
 const config = require('../config.json');
@@ -40,8 +42,10 @@ class Module extends App {
             { fun: App.ok, name: 'okget', msg: '获取成功' },
             { fun: App.ok, name: 'oksend', msg: '发送成功' },
             { fun: App.ok, name: 'okverify', msg: '验证成功' },
+            { fun: App.ok, name: 'okfollow', msg: '关注成功' },
         ]);
         this.session = session;
+        this.activity = new Activity(session);
         this.name = '用户';
         this.saftKey = ['id'].concat(Account.keys().filter(k => ['passwd'].indexOf(k) < 0));
     }
@@ -273,6 +277,140 @@ class Module extends App {
         return buffer;
     }
 
+    isFollow(usernames) {
+        if (!this.islogin) {
+            throw (this.error.nologin);
+        }
+        if (!usernames || !usernames.length) {
+            throw (this.error.param);
+        }
+        return model.follow.findAll({
+            where: {
+                username: this.session.account_login.username,
+                target: usernames
+            },
+            attributes: ['target']
+        }).then(follows => {
+            let followmap = {};
+            follows.forEach(f => {
+                followmap[f.target] = true;
+            });
+            return followmap;
+        });
+    }
+
+    async follow(data) {
+        const { target, follow = true } = data;
+
+        if (!this.islogin) {
+            throw (this.error.nologin);
+        }
+        if (!target || !target.length) {
+            throw (this.error.param);
+        }
+        if (target == this.session.account_login.username) {
+            throw (this.error.reg('不能关注自己！'));
+        }
+        const isFollow = await model.follow.findOne({
+            where: {
+                username: this.session.account_login.username,
+                target
+            }
+        });
+        if (isFollow && follow) {
+            throw (this.error.existed('关注'));
+        }
+        try {
+            if (follow) {
+                await super.new({
+                    username: this.session.account_login.username,
+                    target
+                }, model.follow);
+                this.activity.follow({ target }, this.session.account_login.username);
+            } else {
+                await model.follow.destroy({
+                    where: {
+                        username: this.session.account_login.username,
+                        target
+                    }
+                });
+                this.activity.unfollow({ target }, this.session.account_login.username);
+            }
+            return this.okfollow(follow);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async following(data={}) {
+        const { index = 0, count = 20 } = data;
+        if (!this.islogin) {
+            throw (this.error.nologin);
+        }
+        try {
+            let follows = await model.follow.findAll({
+                where: {
+                    username: this.session.account_login.username
+                },
+                attributes: ['target'],
+                offset: index,
+                limit: count,
+            });
+            follows = await model.account.findAll({
+                where: {
+                    username: {
+                        [Op.in]: follows.map(f => f.target)
+                    }
+                },
+                attributes: this.saftKey
+            });
+            return this.okget(follows.map(f => App.filter(f, this.saftKey)));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async follower(data={}) {
+        const { index = 0, count = 20 } = data;
+        if (!this.islogin) {
+            throw (this.error.nologin);
+        }
+        try {
+            let follows = await model.follow.findAll({
+                where: {
+                    target: this.session.account_login.username
+                },
+                attributes: ['username'],
+                offset: index,
+                limit: count,
+            });
+            follows = await model.account.findAll({
+                where: {
+                    username: {
+                        [Op.in]: follows.map(f => f.username)
+                    }
+                },
+                attributes: this.saftKey
+            });
+            return this.okget(follows.map(f => App.filter(f, this.saftKey)));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async activities(data={}) {
+        const follows = await model.follow.findAll({
+            where: {
+                username: this.session.account_login.username
+            },
+            attributes: ['target'],
+        })
+        return await this.activity.list(data, follows);
+    }
+
     async query(query, fields=null, onlyData=false) {
         let ops = {
             id: App.ops.in,
@@ -289,6 +427,10 @@ class Module extends App {
             let queryData = await super.query(
                 data, Account, ops
             );
+            const isFollow = await this.isFollow(queryData.data.map(d => d.username));
+            queryData.list = queryData.data.forEach(d => {
+                d.isfollow = !!isFollow[d.username];
+            });
             if (onlyData) return queryData;
             return this.okquery(queryData);
         } catch (err) {
