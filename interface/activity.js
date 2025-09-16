@@ -130,8 +130,12 @@ class Module extends App {
     }
 
     async list(data) {
-        const { lastTime = Date.now() / 1000, limit = 20, follows } = data;
-        let where = {};
+        const { lastTime = Date.now() / 1000, limit = 20, follows, type } = data;
+        let where = { 
+            type: {
+                [Activity.db.Op.in]: type.split(',').map(t => Number(t)),
+            }
+        };
         if (lastTime) {
             where.create_time = {
                 [Activity.db.Op.lt]: lastTime
