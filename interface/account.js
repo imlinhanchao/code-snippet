@@ -408,7 +408,7 @@ class Module extends App {
             },
             attributes: ['target'],
         })
-        return await this.activity.list(data, follows);
+        return await this.activity.list({ ...data, follows }, this.user.username);
     }
 
     async query(query, fields=null, onlyData=false) {

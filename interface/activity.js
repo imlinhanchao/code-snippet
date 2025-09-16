@@ -1,6 +1,5 @@
 const model = require('../model');
 const App = require('./app');
-const Account = require('./account');
 const Activity = model.activity;
 
 let __error__ = Object.assign({
@@ -11,8 +10,7 @@ class Module extends App {
         super([ ]);
         this.session = session;
         this.name = '活动';
-        this.account = new Account(session);
-        this.saftKey = ['id', 'create_time', 'update_time'].concat(Code.keys());
+        this.saftKey = ['id', 'create_time', 'update_time'].concat(Activity.keys());
     }
 
     get error() {
@@ -129,7 +127,7 @@ class Module extends App {
         });
     }
 
-    async list(data) {
+    async list(data, username) {
         const { lastTime = Date.now() / 1000, limit = 20, follows, type } = data;
         let where = { 
             type: {
@@ -144,7 +142,7 @@ class Module extends App {
         where.private = false;
         where[Activity.db.Op.or] = [
             { username: { [Activity.db.Op.in]: follows } },
-            { notice: this.account.user.username }
+            { notice: username }
         ];
         return this.okget(await Activity.findAll({
             where,
