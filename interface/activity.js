@@ -1,13 +1,17 @@
 const model = require('../model');
 const App = require('./app');
 const Activity = model.activity;
+const Code = model.code;
+const Account = model.account;
 
 let __error__ = Object.assign({
 }, App.error);
 
 class Module extends App {
     constructor(session) {
-        super([ ]);
+        super([
+            { fun: App.ok, name: 'okget', msg: '获取成功' },
+        ]);
         this.session = session;
         this.name = '活动';
         this.saftKey = ['id', 'create_time', 'update_time'].concat(Activity.keys());
@@ -16,7 +20,7 @@ class Module extends App {
     get error() {
         return __error__;
     }
-    
+
     async create(data, user) {
         if (!App.haskeys(data, ['id', 'private'])) throw this.error.param;
         Activity.create({
@@ -24,21 +28,30 @@ class Module extends App {
             type: 0,
             private: data.private || false,
             snippet: data.id,
-            source: data.id,
-            description: data.title || `${data.username}/${data.codes[0].filename}`,
+            source: JSON.stringify(data),
+            description: data.codes[0].filename,
             notice: ''
         })
     }
 
     async star(data, user) {
         if (!App.haskeys(data, ['id'])) throw this.error.param;
+        let name = data.codes?.[0]?.filename
+        if (!name) {
+            let code = await Code.findOne({
+                where: { snippet: data.id },
+                order: [['order', 'ASC']]
+            });
+            if (code) name = code.filename;
+        }
         Activity.create({
             username: user,
             type: 1,
             private: false,
             snippet: data.id,
-            source: data.id,
-            description: data.title || `${data.username}/${data.codes[0].filename}`,
+            source: JSON.stringify(data),
+            target: data.username,
+            description: name,
             notice: ''
         })
     }
@@ -61,9 +74,9 @@ class Module extends App {
             type: 2,
             private: false,
             snippet: data.id,
-            source: data.id,
-            target: data.fork_from,
-            description: data.title || `${data.username}/${data.codes[0].filename}`,
+            source: JSON.stringify(data),
+            target: data.username,
+            description: data.codes[0].filename,
             notice: ''
         })
     }
@@ -72,7 +85,7 @@ class Module extends App {
         if (!App.haskeys(data, ['id'])) throw this.error.param;
         Activity.destroy({
             where: {
-                type: {[Activity.db.Op.in]: [0, 1, 2] },
+                type: { [Activity.db.Op.in]: [0, 1, 2] },
                 snippet: data.id
             }
         });
@@ -85,10 +98,10 @@ class Module extends App {
             type: data.reply ? 3 : 4,
             private: false,
             snippet: data.snippet,
-            source: data.id,
+            source: JSON.stringify(data),
             target: data.reply,
             notice: notice || '',
-            description: `${user} ${data.reply ? '回复了你的评论' : '评论了你的片段'}`
+            description: data.reply ? 'reply_comment' : 'comment_snippet'
         })
     }
 
@@ -103,16 +116,18 @@ class Module extends App {
         });
     }
 
-    follow(data, user) {
+    async follow(data, user) {
         if (!App.haskeys(data, ['target'])) throw this.error.param;
+        const account = await Account.findOne({ where: { username: data.target } });
+        delete account.passwd;
         Activity.create({
             username: user,
             type: 5,
             private: false,
             snippet: '',
-            source: data.target,
+            source: JSON.stringify(account),
             notice: data.target,
-            description: `${user} 关注了 ${data.target}`
+            description: data.target,
         })
     }
 
@@ -128,12 +143,16 @@ class Module extends App {
     }
 
     async list(data, username) {
-        const { lastTime = Date.now() / 1000, limit = 20, follows, type } = data;
-        let where = { 
-            type: {
-                [Activity.db.Op.in]: type.split(',').map(t => Number(t)),
+        const { lastTime = Date.now() / 1000, count = 20, follows, type } = data;
+        let where = {};
+        if (type) {
+            let types = type.split(',').map(t => Number(t));
+            if (types.length == 1) {
+                where.type = types[0];
+            } else {
+                where.type = { [Activity.db.Op.in]: types };
             }
-        };
+        }
         if (lastTime) {
             where.create_time = {
                 [Activity.db.Op.lt]: lastTime
@@ -147,8 +166,11 @@ class Module extends App {
         return this.okget(await Activity.findAll({
             where,
             order: [['create_time', 'DESC']],
-            limit
-        }).then(d => d.map(v => App.filter(v, this.saftKey))));
+            limit: count
+        }).then(d => d.map(v => {
+            v.source = v.source ? JSON.parse(v.source) : null;
+            return App.filter(v, this.saftKey)
+        })));
     }
 }
 

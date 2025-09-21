@@ -18,8 +18,8 @@ let orm = {
         comment: '所属片段 ID'
     },
     source: {
-        type: db.ID,
-        comment: '源头 ID'
+        type: db.TEXT,
+        comment: '来源数据，如 fork 的源片段 JSON，评论内容等',
     },
     target: {
         type: db.ID,

@@ -44,10 +44,10 @@ Vue.prototype.$uweb = uweb;
 Vue.prototype.$axios = axios;
 Vue.prototype.$util = Util;
 Vue.prototype.$config = config;
-Vue.prototype.$markdown = mavonEditor;
+Vue.prototype.$markdown = mavonEditor.mavonEditor;
+console.dir(mavonEditor.mavonEditor);
 
-console.dir(mavonEditor)
-
+Vue.use(mavonEditor)
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VueHljs);

@@ -44,8 +44,8 @@ class Module extends App {
             });
             snippet.codes = (await this.code.create(data.codes))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
-            this.activity.create(snippet, this.account.user.username); 
             if (onlyData) return snippet;
+            this.activity.create(snippet, this.account.user.username); 
             return this.okcreate(snippet);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -126,8 +126,9 @@ class Module extends App {
     
             snippet.fork_from = snippet.id;
             delete snippet.id;
+            snippet = await this.new(snippet, true);
             this.activity.fork(snippet, this.account.user.username);
-            return await this.new(snippet);
+            return this.okcreate(snippet);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -175,13 +176,16 @@ class Module extends App {
             create_time: App.ops.less
         };
 
+        if (this.account.islogin && data.query.username == this.account.user.username) {
+            data.query.private = undefined;
+        } else {
+            data.query.private = false;
+        }
+
         try {
             let queryData = await super.query(
                 data, Snippet, ops
             );
-
-            queryData.data = queryData.data.filter(q => (!q.private 
-                || (this.account.islogin && q.username == this.account.user.username)))
 
             data.fields = data.fields || ['codes', 'stars', 'fork', 'forks', 'comments'].concat(this.saftKey)
             var ids = queryData.data.map(b => b.id);

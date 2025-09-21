@@ -31,7 +31,7 @@
                     <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
                 </Tooltip>
                 <Tooltip :content="$t('new_snippet')">
-                    <Button type="text" class="icon-btn" @click="$router.push('/')"><Icon custom="fa fa-plus" /></Button>
+                    <Button type="text" class="icon-btn" @click="$router.push('/editor')"><Icon custom="fa fa-plus" /></Button>
                 </Tooltip>
             </span>
         </section>

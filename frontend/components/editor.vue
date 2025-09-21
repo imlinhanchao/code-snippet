@@ -298,8 +298,9 @@ export default {
             try {
                 this.loading = true;
                 let snippet = await this.OnVerify();
-                let rsp = await this.$store.dispatch("snippet/create", snippet);
-                this.loading = false;
+                let rsp = await this.$store.dispatch("snippet/create", snippet).finally(() => {
+                    this.loading = false;
+                });
                 if (rsp.state != 0) {
                     this.$root.message($m.ERROR, rsp.msg);
                     return;

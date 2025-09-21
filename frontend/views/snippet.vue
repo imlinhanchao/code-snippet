@@ -126,7 +126,7 @@
                                         </div>
                                     </section>
                                     <section v-if="!c.edit" class="comment-content markdown-body"> 
-                                        <section v-html="$markdown.markdownIt.render(c.content)"></section>
+                                        <section v-html="$markdown.getMarkdownIt().render(c.content)"></section>
                                         <section v-if="c.create_time != c.update_time" style="text-align: right; color:#515a6e">
                                             {{$t('update_on')}} <Time :time="c.update_time" :title="new Date(c.update_time * 1000).toUTCString()" ></Time>
                                         </section>
@@ -394,7 +394,8 @@ export default {
                     h('span', title),
                     h('Badge', {
                         props: {
-                            count
+                            count,
+                            type: 'normal',
                         },
                         style: {
                             paddingLeft: '5px'
@@ -419,7 +420,7 @@ export default {
             try {
                 this.loading = true;
                 let rsp = await this.$store.dispatch('fav/query', {
-                    query: { snippet: [ id ] }, index: (this.page.star - 1) * 12, count: 12
+                    query: { snippet: [ id ] }, index: this.stars.length, count: 12
                 });
                 
                 if (rsp.state != 0) {
@@ -428,6 +429,11 @@ export default {
                 }
 
                 this.snippet.stars = rsp.data.total;
+                this.stars = [];
+                if (this.snippet.stars == 0) {
+                    this.loading = false;
+                    return true;
+                }
 
                 let username = rsp.data.data.map(d => d.username);
                 rsp = await this.$store.dispatch('account/query', {
@@ -452,7 +458,7 @@ export default {
                 this.loading = true;
                 let rsp = await this.$store.dispatch('comment/query', {
                     query: { snippet: [ id ] }, 
-                    index: (this.page.comment - 1) * 10, count: 10,
+                    index: this.comments.length, count: 10,
                     order: [['create_time', 'ASC']]
                 });
                 
@@ -463,6 +469,11 @@ export default {
 
                 this.snippet.comments = rsp.data.total;
                 let comments = rsp.data.data;
+
+                if (this.snippet.comments == 0) {
+                    this.loading = false;
+                    return true;
+                }
 
                 let username = rsp.data.data.map(d => d.username);
                 rsp = await this.$store.dispatch('account/query', {
@@ -499,7 +510,7 @@ export default {
             try {
                 this.loading = true;
                 let rsp = await this.$store.dispatch('snippet/query', {
-                    query: { fork_from: [ id ] }, index: (this.page.fork - 1) * 12, count: 12
+                    query: { fork_from: [ id ] }, index: this.forks.length, count: 12
                 });
                 
                 if (rsp.state != 0) {
@@ -509,6 +520,10 @@ export default {
 
                 this.snippet.forks = rsp.data.total;
                 let forks = rsp.data.data;
+                if (this.snippet.forks == 0) {
+                    this.loading = false;
+                    return true;
+                }
 
                 let username = forks.map(d => d.username);
                 rsp = await this.$store.dispatch('account/query', {

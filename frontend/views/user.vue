@@ -55,10 +55,8 @@
                     <Time :time="info.lastlogin"></Time>
                 </p>
                 <p class="action">
-                    <Tooltip :content="$t('developing')" style="width: 100%">
-                        <Button long v-if="!isCurrentUser">{{$t('follow')}}</Button>
-                    </Tooltip>
-                    <Button long v-if="isCurrentUser" @click="$router.push('/setting')">{{$t('edit_profile')}}</Button>
+                    <Button long v-if="!isCurrentUser" @click="follow(!info.isfollow)">{{info.isfollow ? $t('cancel_follow') : $t('follow')}}</Button>
+                    <Button long v-else @click="$router.push('/setting')">{{$t('edit_profile')}}</Button>
                 </p>
                 <p class="other" v-if="info.company">
                     <i class="fa fa-building" aria-hidden="true"></i> 
@@ -368,6 +366,14 @@ export default {
             this.loading = true;
             await this.loadSnippet(this.$route.params.user);
             this.loading = false;
+        },
+        follow(follow) {
+            this.$store.dispatch("account/follow", { target: this.info.username, follow }).then(rsp => {
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                this.$set(this.info, 'isfollow', follow);
+            }).catch(err => {
+                this.$root.message($m.ERROR, err.message);
+            });
         },
         OnPage(type, page) {
             this.$router.push(`/u/${this.$route.params.user}/${type}/${page}`);

@@ -6,7 +6,7 @@
         </section>
         <section class="code-content" :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
             <pre v-if="!isRender || source" v-hljs="code.content"><code></code></pre>
-            <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.mavonEditor.getMarkdownIt().render(code.content)"></section>
+            <section class="render markdown-body" v-if="isMarkdown && !source" v-html="$markdown.getMarkdownIt().render(code.content)"></section>
             <section class="render org-mode markdown-body" v-if="isOrg && !source" v-html="renderOrg(code.content)"></section>
             <section class="render ipynb markdown-body" v-if="isIpynb && !source" v-html="renderIpynb(code.content)"></section>
             <section class="render image" v-if="isImage && !source"><img :src="code.content" /></section>

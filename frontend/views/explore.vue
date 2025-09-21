@@ -32,7 +32,7 @@ export default {
                 let count = 10;
                 this.loading = true;
                 let rsp = await this.$store.dispatch("snippet/query", {
-                    query: { create_time: this.last_data, private: false, ...query }, index: 0
+                    query: { create_time: this.last_data, private: false, ...query }, index: 0, count
                 });
                 this.loading = false;
                 if (!rsp || rsp.state != 0) {

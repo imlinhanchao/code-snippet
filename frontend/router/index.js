@@ -18,6 +18,13 @@ const routers = [{
             component: () => import('../views/home')
         },
         {
+            path: 'editor',
+            meta: {
+                title: 'Editor'
+            },
+            component: () => import('../views/editor')
+        },
+        {
             path: 'setting',
             meta: {
                 title: 'Setting',

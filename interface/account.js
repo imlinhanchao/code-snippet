@@ -407,7 +407,7 @@ class Module extends App {
                 username: this.session.account_login.username
             },
             attributes: ['target'],
-        })
+        }).then((follows) => follows.map(f => f.target));
         return await this.activity.list({ ...data, follows }, this.user.username);
     }
 

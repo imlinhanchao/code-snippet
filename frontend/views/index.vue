@@ -1,27 +1,27 @@
 <template>
     <Layout class="layout">
         <Header></Header>
-        <section class="message">
-            <Alert :type="$root.msg.name" banner show-icon v-if="$root.msg.content">
-                {{$root.msg.title}}
-                <section class="msg-content" slot="desc">
-                    <span>
-                        <span slot="desc">
-                            <span v-html="$root.msg.content"></span>
-                        </span>
-                    </span>
-                    <span @click="$root.msg.content=''" class="fa fa-times msg-close">
-
-                    </span>
-                </section>
-            </Alert>
-        </section>
         <Content>
+            <section class="message">
+                <Alert :type="$root.msg.name" banner show-icon v-if="$root.msg.content">
+                    {{$root.msg.title}}
+                    <section class="msg-content" slot="desc">
+                        <span>
+                            <span slot="desc">
+                                <span v-html="$root.msg.content"></span>
+                            </span>
+                        </span>
+                        <span @click="$root.msg.content=''" class="fa fa-times msg-close">
+    
+                        </span>
+                    </section>
+                </Alert>
+            </section>
             <router-view />
         </Content>
-        <Footer class="layout-footer">
+        <footer class="layout-footer">
             <p>&copy; {{new Date().getFullYear()}} <a href ="https://github.com/imlinhanchao/code-snippet" target="_black" >Code-Snippet</a> Open Source. <br>All rights reserved. </p>
-        </Footer>
+        </footer>
         <BackTop style="left: 0;bottom: auto;right: 0;top: 30px;width: 3em;margin: auto;"></BackTop>
     </Layout>
 </template>
@@ -47,6 +47,9 @@ export default {
 .layout {
     background: transparent;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .layout-footer {

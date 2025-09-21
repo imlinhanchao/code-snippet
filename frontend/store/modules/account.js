@@ -48,6 +48,18 @@ const actions = {
             throw error;
         }
     },
+    async getActivities({ commit }, { lastTime, count, type } = {}) {
+        try {
+            let rsp = await axios.post('/account/activities', {
+                lastTime, count, type
+            });
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
     async getInfo({ commit }, username) {
         try {
             let rsp = await axios.post('/account/query', { username: [ username ] })
@@ -61,6 +73,16 @@ const actions = {
     async query({ commit }, query) {
         try {
             let rsp = await axios.post('/account/query', query)
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
+    async follow({ commit }, { target, follow }) {
+        try {
+            let rsp = await axios.post('/account/follow', { target, follow })
             rsp = rsp.data;
             return rsp;
         } catch (error) {
