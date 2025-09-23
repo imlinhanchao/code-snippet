@@ -114,6 +114,8 @@
     "created_snippet": "創建了一個代碼片段",
     "stared_snippet": "收藏了代碼片段",
     "forked_snippet": "復刻了一個代碼片段",
+    "followed": "關注了",
+    "followed_you": "關注了你",
     "select": "選擇",
     "empty_filename": "<a href=\"#code{{i}}\">#{{i}}</a>的文件名為空！",
     "empty_content": "<a href=\"#code{{i}}\">#{{i}}</a>的文件內容為空！",

@@ -39,12 +39,27 @@
                 <span class="activity-title">
                     <span>
                         <router-link :to="`/u/${activity.username}`">{{activity.username}}</router-link>
-                        <span> {{$t('followed')}} </span>
-                        <router-link :to="`/u/${activity.description}`">{{activity.description}}</router-link>
+                        <span> {{isCurrentUser(activity) ? $t('followed_you') : $t('followed')}} </span>
                     </span>
                     <p class="time"><Time :time="activity.create_time"></Time></p>
                 </span>
             </p>
+            <section class="activity-content" v-if="activity.source">
+                <section class="activity-info">
+                    <p>
+                        <img :src="`/api/account/avatar/${activity.source.username}`" />
+                        <router-link :to="`/u/${activity.source.username}`">{{activity.source.nickname}}</router-link>
+                    </p>
+                    <p class="activity-desc">{{activity.source.motto}}</p>
+                </section>
+                <section class="activity-action">
+                    <section>
+                        <Button class="action-btn" @click="OnFollow(activity.source)">
+                            <span> {{activity.source.isfollow ? $t('cancel_follow') : $t('follow')}}</span>
+                        </Button>
+                    </section>
+                </section>
+            </section>
         </section>
     </section>
 </article>
@@ -82,6 +97,17 @@ export default {
                 console.error(error.message);
                 this.$root.message($m.ERROR, error.message);
             }
+        },
+        onFollow(follow) {
+            this.$store.dispatch("account/follow", { target: follow.username, follow: !follow.isfollow }).then(rsp => {
+                if (rsp.state != 0) return this.$root.message($m.ERROR, rsp.msg);
+                this.$set(follow, 'isfollow', !follow.isfollow);
+            }).catch(err => {
+                this.$root.message($m.ERROR, err.message);
+            });
+        },
+        isCurrentUser(user) {
+            return this.$root.isLogin && this.$root.loginUser.username == user.description;
         },
     }
 }

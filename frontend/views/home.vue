@@ -57,6 +57,7 @@ export default {
             this.activities = this.activities.concat(activities);
                 this.total = activities.length;
             this.getSnippets();
+            this.getUsers();
         },
         setType() {
             this.activities = [];
@@ -75,6 +76,18 @@ export default {
                 }
             });
         },
+        async getUsers() {
+            const usernames = this.activities.filter(a => a.type == 5 && !a.follow)
+                .map(a => this.$root.loginUser.username == a.description ? a.username : a.description)
+                .filter(u => u);
+            if (usernames.length == 0) return;
+            const users = await this.$store.dispatch('account/query', { username: usernames }).then(res => res.data.data || []);
+            this.activities.forEach(a => {
+                const user = users.find(u => (this.$root.loginUser.username == a.description ? a.username : a.description) == u.username);
+                if (!user) return;
+                this.$set(a, 'source', user);
+            });
+        }
     }
 };
 </script>

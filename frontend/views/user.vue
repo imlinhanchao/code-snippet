@@ -4,13 +4,13 @@
         <section class="section">
             <div class="avatar-box">
                 <div class="avatar">
-                <img :src="avatar" />
-                <section class="avatar-upload" v-if="isCurrentUser">
-                    <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
-                    <Button class="upload-btn" type="text" @click="$refs.upload.click()">
-                    <Icon type="ios-cloud-upload" size="30"></Icon>
-                    </Button>
-                </section>
+                    <img :src="avatar" />
+                    <section class="avatar-upload" v-if="isCurrentUser">
+                        <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
+                        <Button class="upload-btn" type="text" @click="$refs.upload.click()">
+                        <Icon type="ios-cloud-upload" size="30"></Icon>
+                        </Button>
+                    </section>
                 </div>
             </div>
             <div class="info">

@@ -116,6 +116,8 @@
     "stared_snippet": "Starred a snippet",
     "created_snippet": "Created a snippet",
     "forked_snippet": "Forked a snippet",
+    "followed": "followed",
+    "followed_you": "followed you",
     "select": "Select",
     "empty_filename": "The filename of <a href=\"#code{{i}}\">#{{i}}</a> is empty! ",
     "empty_content": "The content of <a href=\"#code{{i}}\">#{{i}}</a> is empty! ",
