@@ -155,6 +155,7 @@
     "reply_your_comment": "Reply your comment",
     "check": "Check",
     "read_all": "Mark Read All",
+    "no_feeds": "No feeds yet, you can follow some people or go to explore.",
     "errors": {
         "account": {
             "verify": "Username or password incorrect!",

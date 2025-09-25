@@ -155,6 +155,7 @@
     "reply_your_comment": "回复了你的評論",
     "check": "查看",
     "read_all": "標記全部已讀",
+    "no_feeds": "沒有任何動態，你可以去關注一些人或上廣場看看。",
     "errors": {
         "account": {
             "verify": "用戶名或密碼錯誤！",

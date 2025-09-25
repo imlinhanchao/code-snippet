@@ -3,8 +3,11 @@
         <header>
             <h1>{{$t("feed")}} </h1>
         </header>
-        <Content class="snippet" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
+        <Content v-if="activities.length" class="feeds" v-infinite-scroll="loadMore" infinite-scroll-disabled="noMore" infinite-scroll-distance="10">
             <Feeds :activities="activities" ></Feeds>
+        </Content>
+        <Content v-else class="feeds none">
+            <p>{{ $t('no_feeds') }}</p>
         </Content>
         <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
     </Layout>
@@ -97,10 +100,19 @@ export default {
     max-width: 986px;
     margin: auto;
     margin-top: 1em;
+    padding: 0 1em;
     header {
         padding: 0 1em;
         display: flex;
         justify-content: space-between;
+    }
+    .feeds {
+        height: 100%;
+        &.none {
+            text-align: center;
+            color: #888;
+            padding: 2em 0;
+        }
     }
 }
 </style>
