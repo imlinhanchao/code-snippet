@@ -1,13 +1,13 @@
-const modules = require(require('path').resolve(process.cwd(), 'modules.js'));
+const modules = require('../modules.js');
 const model = require('../model');
 const Activity = modules.activity;
 
 // 补充/重建信息流
 async function main() {
-  // await SnippetActivity();
+  await SnippetActivity();
   await StarActivity();
-  //await CommentActivity();
-  //await FollowActivity();
+  await CommentActivity();
+  await FollowActivity();
 }
 
 async function SnippetActivity() {

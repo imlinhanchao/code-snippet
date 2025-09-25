@@ -7,23 +7,28 @@ let orm = {
     },
     description: {
         type: db.STRING(500),
-        comment: '当前描述'
+        comment: '当前描述',
+        defaultValue: ''
     },
     language: {
         type: db.STRING(10),
-        comment: '运行语言'
+        comment: '运行语言',
+        defaultValue: ''
     },
     input: {
         type: db.TEXT,
-        comment: '运行默认输入'
+        comment: '运行默认输入',
+        defaultValue: ''
     },
     command: {
         type: db.STRING(64),
-        comment: '运行命令'
+        comment: '运行命令',
+        defaultValue: ''
     },
     execute: {
         type: db.BOOLEAN,
-        comment: '是否可执行'
+        comment: '是否可执行',
+        defaultValue: false
     },
 };
 let table_name = prefix + 'change';
