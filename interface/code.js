@@ -32,6 +32,7 @@ class Module extends App {
                     change_id: changeId,
                     snippet: c.snippet,
                     filename: c.filename,
+                    pre_content: '',
                     content: c.content,
                     modify_date: Math.floor(Date.now() / 1000)
                 }));
@@ -62,16 +63,18 @@ class Module extends App {
                 let newData = codes.find(c => c.id == data[i].id);
                 if (!newData) continue;
                 if (App.isSame(data, newData, keys)) continue;
-                keys.forEach(k => data[i][k] = newData[k]);
-                await data[i].save();
-                historys.push({
+                const history = {
                     file_id: data[i].id,
                     change_id: changeId,
                     snippet: data[i].snippet,
                     filename: data[i].filename,
-                    content: data[i].content,
+                    pre_content: data[i].content,
+                    content: newData[i].content,
                     modify_date: Math.floor(Date.now() / 1000)
-                });
+                };
+                keys.forEach(k => data[i][k] = newData[k]);
+                await data[i].save();
+                historys.push(history);
             }
             return historys;
         } catch (err) {
@@ -114,6 +117,7 @@ class Module extends App {
                 change_id: changeId,
                 snippet: c.snippet,
                 filename: c.filename,
+                pre_content: c.content,
                 content: '',
                 modify_date: Math.floor(Date.now() / 1000)
             }));

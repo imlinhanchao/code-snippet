@@ -18,6 +18,10 @@ let orm = {
         type: db.STRING(50),
         comment: '文件名'
     },
+    pre_content: {
+        type: db.TEXT,
+        comment: '旧文件内容'
+    },
     content: {
         type: db.TEXT,
         comment: '文件内容'

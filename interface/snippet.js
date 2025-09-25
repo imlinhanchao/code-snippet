@@ -6,6 +6,7 @@ const Fav = require('./fav');
 const Comment = require('./comment');
 const Activity = require('./activity');
 const Glot = require('./glot');
+const { off } = require('../app');
 const Snippet = model.snippet;
 const History = model.history;
 const Change = model.change;
@@ -73,7 +74,7 @@ class Module extends App {
 
             const change = await super.new({
                 snippet: data.id,
-                description: data.description || snippet.description
+                ...data,
             }, Change);
 
             data.codes.forEach(c => {
@@ -178,6 +179,35 @@ class Module extends App {
         if (onlyData) return App.filter(info, this.saftKey.concat(extendKeys));
 
         return this.okquery(App.filter(info, this.saftKey.concat(extendKeys)));
+    }
+
+    async changes(data, onlyData = false) {
+        if (!App.haskeys(data, ['id'])) throw this.error.param;
+        const { index = 0, count = 20 } = data;
+        try {
+            let changes = await Change.findAll({
+                where: { snippet: data.id },
+                order: [['create_time', 'DESC']],
+                offset: Number(index),
+                limit: Number(count) + 1
+            });
+
+            changes = changes.map(d => App.filter(d, Change.keys().concat(['id'])));
+            const historys = await History.findAll({
+                where: { change_id: changes.map(c => c.id) },
+                order: [['modify_date', 'DESC']]
+            });
+            changes.forEach(c => {
+                c.historys = historys.filter(h => h.change_id == c.id)
+                    .map(h => App.filter(h, History.keys().concat(['id'])));
+            });
+            if (onlyData) return changes;
+
+            return this.okquery(changes);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
     }
     
     async query(data, onlyData = false) {
