@@ -14,7 +14,7 @@ import 'highlight.js/styles/atom-one-dark.css';
 import 'vue-hljs-with-line-number/line-number.css';
 import 'mavon-editor/dist/css/index.css'
 import axios from 'axios';
-import config from '../config.json'
+import config from './config.json'
 import InfiniteScroll from 'vue-infinite-scroll'
 import locale from 'iview/dist/locale/en-US';
 import VueClipboard from 'vue-clipboard2';
@@ -55,7 +55,7 @@ Vue.use(InfiniteScroll);
 Vue.use(VueClipboard)
 Vue.use(iView, { locale });
 Vue.use(mavonEditor)
-Vue.use(uweb, config.base.cnzz);
+Vue.use(uweb, config.cnzz);
 Vue.use(VueI18n)
 
 // Router config
@@ -68,7 +68,7 @@ const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     if(!to.meta.notitle) Util.title(to.meta.title);
-    if(from.path != '/') uweb.trackPageview(to.path, config.base.domain + from.path);
+    if(from.path != '/') uweb.trackPageview(to.path, config.domain + from.path);
     next();
 });
 
@@ -84,7 +84,7 @@ window.$m = {
     get ERROR() { return 3 },
 };
 
-if (location.hostname == config.base.preview_domain) location = config.base.domain + location.pathname;
+if (location.hostname == config.preview_domain) location = config.domain + location.pathname;
 
 const messages = {
     en: Object.assign(en, ivuEn),
@@ -151,7 +151,7 @@ new Vue({
                 'Exceeding file size limit');
         },
         fileUrl (name, defaults) {
-            let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;
+            let img = name.indexOf('http') == 0 ? name : config.fileurl + name;
             return name ? img : defaults;
         },
         getCodeExt(f) {
@@ -164,7 +164,7 @@ new Vue({
     },
     computed: {
         maxSize() {
-            return config.file.maxSize * 1024;
+            return config.maxSize * 1024;
         },
         uploadInterface() {
             return '/lib/upload';

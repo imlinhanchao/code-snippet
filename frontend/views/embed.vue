@@ -21,7 +21,7 @@
                 v-if="canPreview"
                 class="preview-tab"
             >
-                <iframe ref="iframe" class="preview" :src="`${$config.base.preview_url}/view/${snippet.id}/${c.filename}`">
+                <iframe ref="iframe" class="preview" :src="`${$config.preview_url}/view/${snippet.id}/${c.filename}`">
 
                 </iframe>
             </TabPane>
@@ -41,14 +41,14 @@
     </Content>
     <Footer>
         <section class="layout-logo">
-            <a :href="$config.base.domain + '/s/' + snippet.id" target="_blank">
+            <a :href="$config.domain + '/s/' + snippet.id" target="_blank">
                 <img src="../assets/logo.png" alt="" />
                 <span class="title">Code Snippet</span>
             </a>
         </section>
         <section class="info">
             <span>
-                <a :href="`${$config.base.domain}/u/${snippet.username}`" target="_blank">@{{snippet.username}}</a>
+                <a :href="`${$config.domain}/u/${snippet.username}`" target="_blank">@{{snippet.username}}</a>
             </span>
         </section>
     </Footer>

@@ -303,7 +303,7 @@ export default {
             let img = this.info.avatar.indexOf('data:') == 0 || 
                 this.info.avatar.indexOf("http") == 0
                 ? this.info.avatar
-                : this.$config.file.fileurl + this.info.avatar;
+                : this.$config.fileurl + this.info.avatar;
             return this.info.avatar ? img : "/res/user.png";
         },
         uploadInterface() {

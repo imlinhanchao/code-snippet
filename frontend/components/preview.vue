@@ -12,7 +12,7 @@
                         <span class="tags">
                             <Icon custom="fa fa-lock isprivate" v-if="snippet.private" title="Private"></Icon>
                             <Tooltip :content="$t('right_copy_link')" placement="bottom">
-                                <a target="_blank" :href="`${$config.base.preview_url}/view/${snippet.id}/${code}`"><Icon custom="fa fa-link"></Icon></a>
+                                <a target="_blank" :href="`${$config.preview_url}/view/${snippet.id}/${code}`"><Icon custom="fa fa-link"></Icon></a>
                             </Tooltip>
                             <Tooltip :content="$t('reload')" placement="bottom">
                                 <a @click="OnReload"><Icon custom="fa fa-refresh"></Icon></a>
@@ -26,7 +26,7 @@
             </article>
             <section class="content">
                 <i v-if="!loading" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-                <iframe v-show="loading" ref="iframe" class="preview" :src="`${$config.base.preview_url}/view/${snippet.id}/${code}`">
+                <iframe v-show="loading" ref="iframe" class="preview" :src="`${$config.preview_url}/view/${snippet.id}/${code}`">
 
                 </iframe>
             </section>
@@ -72,7 +72,7 @@ export default {
         }
         this.$uweb.trackPageview(
             this.$config.bash.domain + `/preview/${this.snippet.id}`, 
-            this.$config.base.domain + location.path);
+            this.$config.domain + location.path);
 
     },
     watch: {

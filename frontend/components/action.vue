@@ -1,7 +1,7 @@
 <template>
     <section class="action">
         <a v-if="$root.getCodeExt(code.filename) == 'html'" @click.prevent="previewModal=true" 
-        class="action-link" :href="`${$config.base.preview_url}/view/${snippet.id}/${code.filename}`"
+        class="action-link" :href="`${$config.preview_url}/view/${snippet.id}/${code.filename}`"
         target="_blank" :title="$t('preview')">
             <Icon custom="fa fa-chrome"></Icon>
         </a>

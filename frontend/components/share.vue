@@ -23,7 +23,7 @@
                     class="preview"
                     width="100%"
                     :height="this.iFrameHeight"
-                    :src="`${$config.base.domain}/embed/${snippet.id}`"
+                    :src="`${$config.domain}/embed/${snippet.id}`"
                     frameborder="0"
                 >
                 </iframe>
