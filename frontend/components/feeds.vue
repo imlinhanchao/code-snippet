@@ -16,7 +16,7 @@
                 <section class="activity-info">
                     <p>
                         <FileIcon class="icon" :filename="activity.description"></FileIcon>
-                        <router-link :to="`/u/${activity.username}`">{{activity.username}}</router-link>
+                        <router-link :to="`/u/${activity.source.username}`">{{activity.source.username}}</router-link>
                         <span>/</span>
                         <router-link :to="`/s/${activity.source.id}`">{{activity.description}}</router-link>
                     </p>

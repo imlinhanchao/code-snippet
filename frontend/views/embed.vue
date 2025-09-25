@@ -113,7 +113,7 @@ export default {
         },
         getFileIcon(filename) {
             let name = FileIcons.getClassWithColor(filename);
-            return name || 'fa fa-file-code-o';
+            return name || 'fa fa-code';
         },
         async getSnippet() {
             let rsp = await this.$store.dispatch('snippet/get', this.id);

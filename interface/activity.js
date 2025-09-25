@@ -39,17 +39,12 @@ class Module extends App {
     async star(data, user) {
         if (!App.haskeys(data, ['id'])) throw this.error.param;
         let name = data.codes?.[0]?.filename
-        let notice = '';
         if (!name) {
             let code = await Code.findOne({
                 where: { snippet: data.id },
                 order: [['order', 'ASC']]
             });
             if (code) name = code.filename;
-            let snippet = await Snippet.findOne({
-                where: { id: data.id },
-            })
-            if (snippet) notice = snippet.username;
         }
         Activity.create({
             username: user,
@@ -59,7 +54,7 @@ class Module extends App {
             source: JSON.stringify(data),
             target: data.username,
             description: name,
-            notice: notice,
+            notice: data.username,
             create_time: data.create_time
         })
     }
