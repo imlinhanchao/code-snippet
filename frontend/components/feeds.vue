@@ -23,10 +23,10 @@
                     <p class="activity-desc">{{activity.source.description}}</p>
                 </section>
                 <section class="activity-action">
-                    <section>
+                    <section class="action-box">
                         <Button class="action-btn count-btn" @click="OnStar">
                             <Icon custom="fa fa-star-o" v-if="!activity.snippet.stared"></Icon>
-                            <Icon custom="fa fa-star" v-if="activity.snippet.stared"></Icon> 
+                            <Icon custom="fa fa-star active" v-if="activity.snippet.stared"></Icon> 
                             <span> {{$t('star')}}</span>
                         </Button><router-link :to="`/s/${activity.source.id}/star`" class="count">{{activity.snippet.stars || 0}}</router-link>
                     </section>
@@ -53,7 +53,7 @@
                     <p class="activity-desc">{{activity.source.motto}}</p>
                 </section>
                 <section class="activity-action">
-                    <section>
+                    <section class="action-box">
                         <Button class="action-btn" @click="OnFollow(activity.source)">
                             <span> {{activity.source.isfollow ? $t('cancel_follow') : $t('follow')}}</span>
                         </Button>
@@ -162,6 +162,14 @@ export default {
             }
         }
     }
+    .activity-action {
+        margin-left: 1em;
+    }
+    .action-box {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
 }
 .count-btn {
     border-radius: 4px 0 0 4px;
@@ -173,8 +181,12 @@ export default {
     display: inline-block;
     border: 1px solid #373c3e;
     border-left: 0;
-    padding: 3px 1em 5px;
+    padding: 3px 1em 3px;
     border-radius: 0 4px 4px 0;
     height: 100%;
+    line-height: 2;
+}
+.active {
+    color: #f3c623;
 }
 </style>

@@ -332,7 +332,7 @@ export default {
     color: #555657;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .title, li.nav-home {
         display: none;
     }

@@ -2,54 +2,58 @@
     <Layout class="layout">
         <Content class="profile" v-if="info.id">
         <section class="section">
-            <div class="avatar-box">
-                <div class="avatar">
-                    <img :src="avatar" />
-                    <section class="avatar-upload" v-if="isCurrentUser">
-                        <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
-                        <Button class="upload-btn" type="text" @click="$refs.upload.click()">
-                        <Icon type="ios-cloud-upload" size="30"></Icon>
-                        </Button>
-                    </section>
-                </div>
-            </div>
             <div class="info">
-                <p class="nickname">
-                    <Input
-                        v-model="temp.nickname"
-                        v-if="edit.nickname"
-                        @on-keyup.enter="submitForm({
-                                        nickname: temp.nickname
-                                    }, $t('nickname'));edit.nickname=false;"
-                        @on-keyup.esc="edit.nickname=false;"></Input>
-                    <span v-show="!edit.nickname">{{info.nickname || info.username}}</span>
-                    <Icon
-                        @click="edit.nickname=true;temp.nickname=info.nickname"
-                        v-if="isCurrentUser && !edit.nickname"
-                        custom="fa fa-pencil"
-                        size="15"
-                        class="edit-text"
-                    ></Icon>
-                </p>
-                <p class="username">{{info.username}}</p>
-                <p class="other motto">
-                    <Input :rows="3" type="textarea"
-                        v-model="temp.motto" :title="$t('enter_esc')"
-                        v-if="edit.motto"
-                        @on-keyup.enter="submitForm({
-                                        motto: temp.motto
-                                    }, $t('motto'));edit.motto=false;"
-                        @on-keyup.esc="edit.motto=false;"
-                    ></Input>
-                    <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
-                    <Icon
-                        @click="edit.motto=true;temp.motto=info.motto||''"
-                        v-if="isCurrentUser && !edit.motto"
-                        custom="fa fa-pencil"
-                        size="15"
-                        class="edit-text"
-                    />
-                </p>
+                <div class="user-info">
+                    <div class="avatar-box">
+                        <div class="avatar">
+                            <img :src="avatar" />
+                            <section class="avatar-upload" v-if="isCurrentUser">
+                                <input @change="PreUpload" ref="upload" type="file" accept="image/*" name="" style="display:none">
+                                <Button class="upload-btn" type="text" @click="$refs.upload.click()">
+                                <Icon type="ios-cloud-upload" size="30"></Icon>
+                                </Button>
+                            </section>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="nickname">
+                            <Input
+                                v-model="temp.nickname"
+                                v-if="edit.nickname"
+                                @on-keyup.enter="submitForm({
+                                                nickname: temp.nickname
+                                            }, $t('nickname'));edit.nickname=false;"
+                                @on-keyup.esc="edit.nickname=false;"></Input>
+                            <span v-show="!edit.nickname">{{info.nickname || info.username}}</span>
+                            <Icon
+                                @click="edit.nickname=true;temp.nickname=info.nickname"
+                                v-if="isCurrentUser && !edit.nickname"
+                                custom="fa fa-pencil"
+                                size="15"
+                                class="edit-text"
+                            ></Icon>
+                        </p>
+                        <p class="username">{{info.username}}</p>
+                        <p class="other motto">
+                            <Input :rows="3" type="textarea"
+                                v-model="temp.motto" :title="$t('enter_esc')"
+                                v-if="edit.motto"
+                                @on-keyup.enter="submitForm({
+                                                motto: temp.motto
+                                            }, $t('motto'));edit.motto=false;"
+                                @on-keyup.esc="edit.motto=false;"
+                            ></Input>
+                            <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
+                            <Icon
+                                @click="edit.motto=true;temp.motto=info.motto||''"
+                                v-if="isCurrentUser && !edit.motto"
+                                custom="fa fa-pencil"
+                                size="15"
+                                class="edit-text"
+                            />
+                        </p>
+                    </div>
+                </div>
                 <p class="lastlogin" v-if="info.lastlogin">
                     {{$t('last_login')}}:
                     <Time :time="info.lastlogin"></Time>
@@ -606,10 +610,16 @@ ul.ivu-page {
         .section {
             flex-direction: row;
             justify-content: center;
+            .user-info {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
             .avatar-box {
-                width: 45%;
+                width: 35%;
                 display: flex;
                 align-items: center;
+                margin-right: 1em;
             }
             .other {
                 display: none;
