@@ -2,6 +2,7 @@ const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
 const Code = model.code;
+const History = model.history;
 
 let __error__ = Object.assign({
     notexisted: App.error.existed('代码', false)
@@ -20,18 +21,29 @@ class Module extends App {
         return __error__;
     }
     
-    async create(codes) {
+    async create(codes, changeId) {
         try {
             if (codes.length <= 0) return [];
             codes.forEach(c => c.id = undefined);
-            return await Code.bulkCreate(codes);
+            codes = await Code.bulkCreate(codes);
+            if (changeId) {
+                return codes.map(c => ({
+                    file_id: c.id,
+                    change_id: changeId,
+                    snippet: c.snippet,
+                    filename: c.filename,
+                    content: c.content,
+                    modify_date: Math.floor(Date.now() / 1000)
+                }));
+            }
+            return [];
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
         }
     }
 
-    async update(codes) {
+    async update(codes, changeId) {
         try {
             if (codes.length <= 0) return [];
             let ids = codes.map(c => c.id);
@@ -45,14 +57,23 @@ class Module extends App {
             });
            
             let keys = ['filename', 'content', 'order', 'input', 'command', 'execute'];
+            const historys = [];
             for (let i = 0; i < data.length; i++) {
                 let newData = codes.find(c => c.id == data[i].id);
                 if (!newData) continue;
                 if (App.isSame(data, newData, keys)) continue;
                 keys.forEach(k => data[i][k] = newData[k]);
                 await data[i].save();
+                historys.push({
+                    file_id: data[i].id,
+                    change_id: changeId,
+                    snippet: data[i].snippet,
+                    filename: data[i].filename,
+                    content: data[i].content,
+                    modify_date: Math.floor(Date.now() / 1000)
+                });
             }
-            return data;
+            return historys;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -66,6 +87,11 @@ class Module extends App {
                     snippet
                 }
             });
+            await History.destroy({
+                where: {
+                    snippet
+                }
+            });
             return code;
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -73,17 +99,24 @@ class Module extends App {
         }
     }
 
-    async remove(ids) {
+    async remove(codes, changeId) {
         try {
             if (ids.length <= 0) return [];
             let code = await Code.destroy({
                 where: {
                     id: {
-                        [Code.db.Op.in]: ids
+                        [Code.db.Op.in]: codes.map(c => c.id)
                     }
                 }
             });
-            return code;
+            return codes.map(c => ({
+                file_id: c.id,
+                change_id: changeId,
+                snippet: c.snippet,
+                filename: c.filename,
+                content: '',
+                modify_date: Math.floor(Date.now() / 1000)
+            }));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

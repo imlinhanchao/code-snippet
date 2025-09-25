@@ -7,6 +7,8 @@ const Comment = require('./comment');
 const Activity = require('./activity');
 const Glot = require('./glot');
 const Snippet = model.snippet;
+const History = model.history;
+const Change = model.change;
 
 let __error__ = Object.assign({
     notexisted: App.error.existed('Snippet', false)
@@ -69,6 +71,11 @@ class Module extends App {
                 return true;
             }), this.saftKey);
 
+            const change = await super.new({
+                snippet: data.id,
+                description: data.description || snippet.description
+            }, Change);
+
             data.codes.forEach(c => {
                 c.snippet = data.id;
                 c.filename = c.filename.trim();
@@ -80,13 +87,15 @@ class Module extends App {
             let createCodes = data.codes.filter(c => !c.id);
             data.codes = data.codes.filter(c => codes_id.indexOf(c.id) >= 0);
 
-            let removeCodes = data.codes.filter(c => c.remove).map(c => c.id);
+            let removeCodes = data.codes.filter(c => c.remove);
             data.codes = data.codes.filter(c => !c.remove);
             
+            const history = [];
+            history.push(...await this.code.remove(removeCodes, change.id));
+            history.push(...await this.code.create(createCodes, change.id));
+            history.push(...await this.code.update(data.codes, change.id));
+            await History.bulkCreate(history);
 
-            await this.code.remove(removeCodes);
-            await this.code.create(createCodes);
-            await this.code.update(data.codes);
             snippet.codes = (await this.code.get(data.id))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
             
@@ -105,8 +114,15 @@ class Module extends App {
                 }
                 return true;
             });
+            await this.activity.removeSnippet(data);
             await this.code.del(data.id);
-            this.activity.removeSnippet(data);
+            await this.fav.remove(data.id, true);
+            await this.comment.remove(data.id, true);
+            await Change.destroy({
+                where: {
+                    snippet: data.id
+                }
+            });
             return this.okdelete(info.id);
         } catch (err) {
             if (err.isdefine) throw (err);

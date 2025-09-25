@@ -56,6 +56,21 @@ class Module extends App {
         }
     }
 
+    async remove(snippet, onlyData) {
+        if (!onlyData) return;
+        try {
+            let fav = await Fav.destroy({
+                where: {
+                    snippet
+                }
+            });
+            return fav;
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
     async get(snippet, onlyData = false) {
         try {
             let favs = await Fav.findAll({

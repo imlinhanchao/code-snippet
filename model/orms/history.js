@@ -1,9 +1,18 @@
 const db = require('../db');
+const snippet = require('./snippet');
 const prefix = require('../config').prefix;
 let orm = {
     file_id: {
         type: db.ID,
         comment: '文件 ID'
+    },
+    change_id: {
+        type: db.ID,
+        comment: '变更 ID',
+    },
+    snippet: {
+        type: db.ID,
+        comment: '代码片段 ID',
     },
     filename: {
         type: db.STRING(50),

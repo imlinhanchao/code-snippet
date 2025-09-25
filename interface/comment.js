@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const model = require('../model');
 const App = require('./app');
 const Account = require('./account');
@@ -83,6 +82,21 @@ class Module extends App {
             });
             this.activity.removeComment(data, this.account.user.username);
             return this.okdelete(comment ? comment.id : null);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async remove(snippet, onlyData) {
+        if (!onlyData) return;
+        try {
+            let comments = await Comment.destroy({
+                where: {
+                    snippet
+                }
+            });
+            return comments;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
