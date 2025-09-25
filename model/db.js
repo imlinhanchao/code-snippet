@@ -46,8 +46,8 @@ function defineModel(name, attributes, defineAttr = {}) {
             beforeCreate: function (obj) {
                 let now = Date.now() / 1000;
                 if (obj.isNewRecord) {
-                    obj.create_time = now;
-                    obj.update_time = now;
+                    if (!obj.create_time) obj.create_time = now;
+                    if (!obj.update_time) obj.update_time = now;
                 } else {
                     obj.update_time = now;
                 }

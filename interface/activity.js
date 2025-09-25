@@ -2,6 +2,7 @@ const model = require('../model');
 const App = require('./app');
 const Activity = model.activity;
 const Code = model.code;
+const Snippet = model.snippet;
 const Account = model.account;
 
 let __error__ = Object.assign({
@@ -30,19 +31,25 @@ class Module extends App {
             snippet: data.id,
             source: JSON.stringify(data),
             description: data.codes[0].filename,
-            notice: ''
+            notice: '',
+            create_time: data.create_time
         })
     }
 
     async star(data, user) {
         if (!App.haskeys(data, ['id'])) throw this.error.param;
         let name = data.codes?.[0]?.filename
+        let notice = '';
         if (!name) {
             let code = await Code.findOne({
                 where: { snippet: data.id },
                 order: [['order', 'ASC']]
             });
             if (code) name = code.filename;
+            let snippet = await Snippet.findOne({
+                where: { id: data.id },
+            })
+            if (snippet) notice = snippet.username;
         }
         Activity.create({
             username: user,
@@ -52,7 +59,8 @@ class Module extends App {
             source: JSON.stringify(data),
             target: data.username,
             description: name,
-            notice: ''
+            notice: notice,
+            create_time: data.create_time
         })
     }
 
@@ -77,7 +85,8 @@ class Module extends App {
             source: JSON.stringify(data),
             target: data.username,
             description: data.codes[0].filename,
-            notice: ''
+            notice: '',
+            create_time: data.create_time
         })
     }
 
@@ -101,7 +110,8 @@ class Module extends App {
             source: JSON.stringify(data),
             target: data.reply,
             notice: notice || '',
-            description: data.reply ? 'reply_comment' : 'comment_snippet'
+            description: data.reply ? 'reply_comment' : 'comment_snippet',
+            create_time: data.create_time
         })
     }
 
@@ -128,6 +138,7 @@ class Module extends App {
             source: JSON.stringify(account),
             notice: data.target,
             description: data.target,
+            create_time: data.create_time
         })
     }
 
