@@ -4,10 +4,10 @@ const Activity = modules.activity;
 
 // 补充/重建信息流
 async function main() {
-  await SnippetActivity();
+  // await SnippetActivity();
   await StarActivity();
-  await CommentActivity();
-  await FollowActivity();
+  //await CommentActivity();
+  //await FollowActivity();
 }
 
 async function SnippetActivity() {
@@ -26,7 +26,8 @@ async function StarActivity() {
   const stars = await Fav.findAll();
   const activity = new Activity();
   for (let star of stars) {
-    await activity.star({ id: star.snippet, create_time: star.create_time }, star.username);
+    const snippet = await model.snippet.findOne({ where: { id: star.snippet } });
+    await activity.star(snippet, star.username);
   }
 }
 
