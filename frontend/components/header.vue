@@ -27,9 +27,34 @@
                 </ul>
             </span>
             <span class="menu">
-                <Tooltip :content="$t('developing')">
-                    <Button type="text" class="icon-btn"><Icon custom="fa fa-bell-o" /></Button>
-                </Tooltip>
+                <Poptip placement="bottom" width="200" transfer  v-model="noticeVisible" popper-class="notice-poptip">
+                    <span>
+                        <Button type="text" class="icon-btn">
+                            <Badge dot :count="unreaded.length">
+                                <Icon custom="fa fa-bell-o" />
+                            </Badge>
+                        </Button>
+                    </span>
+                    <section slot="content" class="notice">
+                        <p v-if="activities.length == 0">{{$t('no_notice')}}</p>
+                        <ul v-else>
+                            <li v-for="(item, index) in activities" :key="index" class="notice-item">
+                                <span class="notice-content">
+                                    <router-link :to="`/u/${item.username}`" :title="item.username">
+                                        {{item.username}}
+                                    </router-link>
+                                    {{ item.type == 3 ? $t('comment_your_snippet') : $t('reply_your_comment')}}
+                                </span>
+                                <Badge dot :count="item.readed ? 0 : 1" class="small">
+                                    <a href="javascript:void(0)" @click.prevent.stop="readNotice(item)">{{$t('check')}}</a>
+                                </Badge>
+                            </li>
+                        </ul>
+                        <section class="notice-read-all">
+                            <a href="javascript:void(0)" @click="readAll">{{$t('read_all')}}</a>
+                        </section>
+                    </section>
+                </Poptip>
                 <Tooltip :content="$t('new_snippet')">
                     <Button type="text" class="icon-btn" @click="$router.push('/editor')"><Icon custom="fa fa-plus" /></Button>
                 </Tooltip>
@@ -46,8 +71,88 @@
 
 <script>
 export default {
+    data() {
+        return {
+            activities: [],
+            loading: false,
+            total: 0,
+            noticeVisible: false,
+            type: [3, 4] // 3: comment, 4: reply
+        }
+    },
+    mounted() {
+        if (this.$root.isLogin) {
+            this.getNotice();
+        }
+    },
+    watch: {
+        isLogin(val) {
+            if (val) {
+                this.getNotice();
+            } else {
+                this.activities = [];
+            }
+        }
+    },
+    computed: {
+        isLogin() {
+            return this.$root.isLogin;
+        },
+        unreaded() {
+            return this.activities.filter(a => !a.readed);
+        }
+    },
     methods: {
-
+        async getNotice() {
+            this.loading = true;
+            const activities = await this.$store.dispatch('account/getActivities', {
+                lastTime: this.activities.length > 0 ? this.activities[this.activities.length - 1].create_time : undefined,
+                count: 10,
+                type: this.type.join(',')
+            }).then((rsp) => {
+                if (rsp.state != 0) {
+                    this.$Message.error(rsp.msg || 'Something Wrong...');
+                    return [];
+                }
+                return rsp.data;
+            }).finally(() => {
+                this.loading = false;
+            });
+            this.activities = this.activities.concat(activities);
+            this.total = activities.length;
+        },
+        readNotice(activity) {
+            if (activity.readed) {
+                return;
+            }
+            this.$store.dispatch('account/makeReaded', {
+                id: activity.id
+            }).then((rsp) => {
+                if (rsp.state != 0) {
+                    this.$Message.error(rsp.msg || 'Something Wrong...');
+                    return;
+                }
+                activity.readed = true;
+                this.noticeVisible = false;
+            });
+            this.$router.push(`/s/${activity.snippet}#comment${activity.source.id}`);
+        },
+        readAll() {
+            const unreaded = this.unreaded;
+            if (unreaded.length == 0) {
+                return;
+            }
+            this.$store.dispatch('account/makeReaded', {}).then((rsp) => {
+                if (rsp.state != 0) {
+                    this.$Message.error(rsp.msg || 'Something Wrong...');
+                    return;
+                }
+                this.activities.forEach(a => {
+                    this.$set(a, 'readed', true);
+                });
+                this.noticeVisible = false;
+            });
+        }
     }
 }
 </script>
@@ -125,13 +230,15 @@ export default {
         z-index: 30;
         translate: color .5s;
     }
-    .notice i{
-        color: #2196F3;
-        text-shadow: 0 0 2px #607D8B;
-        &:before {
-            content: "\f0f3";
+    .notice{
+        i{
+            color: #2196F3;
+            text-shadow: 0 0 2px #607D8B;
+            &:before {
+                content: "\f0f3";
+            }
         }
-    }
+    } 
     .icon-btn, .text-btn {
         color: inherit;
         padding: 0;
@@ -190,6 +297,39 @@ export default {
             border-bottom: 1px solid #CCC;
         }
     }
+}
+
+.notice {
+    padding-bottom: 2em;
+}
+
+.notice-item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .notice-content {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        padding-right: 3px;
+        flex: 1;
+        a {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+}
+
+.notice-read-all {
+    border-top: 1px dashed currentColor;
+    position: absolute;
+    padding: .5em 0 .8em;
+    text-align: center;
+    bottom: 0; left: 0; right: 0;
+    color: #555657;
 }
 
 @media (max-width: 480px) {

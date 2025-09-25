@@ -142,6 +142,21 @@ class Module extends App {
         });
     }
 
+    async readed(data, user) {
+        data = App.filter(data, ['id']);
+        await Activity.update({
+            readed: true
+        }, {
+            where: {
+                ...data,
+                notice: user,
+                readed: false,
+                type: { [Activity.db.Op.in]: [3, 4] }
+            }
+        });
+        return this.okget(true);
+    }
+
     async list(data, username) {
         const { lastTime = Date.now() / 1000, count = 20, follows, type } = data;
         let where = {};

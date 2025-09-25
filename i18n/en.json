@@ -150,6 +150,11 @@
     "s": "s",
     "email_subject": "[Code Snippet] Please verify your email address",
     "more": "More",
+    "no_notice": "No notice.",
+    "comment_your_snippet": "Comment your snippet",
+    "reply_your_comment": "Reply your comment",
+    "check": "Check",
+    "read_all": "Mark Read All",
     "errors": {
         "account": {
             "verify": "Username or password incorrect!",

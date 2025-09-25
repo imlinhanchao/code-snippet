@@ -60,6 +60,16 @@ const actions = {
             throw error;
         }
     },
+    async makeReaded({ commit }, data) {
+        try {
+            let rsp = await axios.post('/account/makereaded', data);
+            rsp = rsp.data;
+            return rsp;
+        } catch (error) {
+            console.error(error.message);
+            throw error;
+        }
+    },
     async getInfo({ commit }, username) {
         try {
             let rsp = await axios.post('/account/query', { username: [ username ] })

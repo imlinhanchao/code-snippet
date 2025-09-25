@@ -411,6 +411,10 @@ class Module extends App {
         return await this.activity.list({ ...data, follows }, this.user.username);
     }
 
+    async makereaded(data) {
+        return await this.activity.readed(data, this.user.username);
+    }
+
     async query(query, fields=null, onlyData=false) {
         let ops = {
             id: App.ops.in,

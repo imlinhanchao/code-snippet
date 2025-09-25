@@ -87,7 +87,7 @@
                                 :code="c" :snippet="snippet" v-bind:key="i" class="code">
                             </CodeRender>
                             <article id="comment">
-                                <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${i}`">
+                                <section class="comment" v-for="(c, i) in comments" v-bind:key="i" :id="`comment${c.id}`">
                                     <section v-if="!c.edit" class="comment-header">
                                         <div>
                                             <i class="fa fa-caret-left triangle"></i>
@@ -566,9 +566,20 @@ export default {
             }
             this.$util.title(title);
             this.comment.snippet = this.snippet.id;
-            this.getStars(this.snippet.id);
-            this.getForks(this.snippet.id);
-            this.getComments(this.snippet.id);
+            const PromiseAll = [];
+            PromiseAll.push(this.getStars(this.snippet.id));
+            PromiseAll.push(this.getForks(this.snippet.id));
+            PromiseAll.push(this.getComments(this.snippet.id));
+            await Promise.all(PromiseAll);
+            this.gotoHash();
+        },
+        gotoHash() {
+            if (location.hash) {
+                let el = document.getElementById(location.hash.replace('#', ''));
+                if (el) el.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         }
     },
     computed: {

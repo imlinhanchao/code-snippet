@@ -150,6 +150,11 @@
     "s": "",
     "more": "更多",
     "email_subject": "[Code Snippet] 请验证您的邮箱地址",
+    "no_notice": "暂无通知。",
+    "comment_your_snippet": "评论了你的代码片段",
+    "reply_your_comment": "回复了你的评论",
+    "check": "查看",
+    "read_all": "标记全部已读",
     "errors": {
         "account": {
             "verify": "用户名或密码错误！",
