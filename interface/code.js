@@ -21,7 +21,7 @@ class Module extends App {
         return __error__;
     }
     
-    async create(codes, changeId) {
+    async create(codes) {
         try {
             if (codes.length <= 0) return [];
             codes.forEach(c => c.id = undefined);
@@ -29,7 +29,6 @@ class Module extends App {
             if (changeId) {
                 return codes.map(c => ({
                     file_id: c.id,
-                    change_id: changeId,
                     snippet: c.snippet,
                     pre_filename: c.filename,
                     filename: c.filename,
@@ -45,7 +44,7 @@ class Module extends App {
         }
     }
 
-    async update(codes, changeId) {
+    async update(codes) {
         try {
             if (codes.length <= 0) return [];
             let ids = codes.map(c => c.id);
@@ -66,7 +65,6 @@ class Module extends App {
                 if (App.isSame(data[i].dataValues, newData, keys)) continue;
                 const history = {
                     file_id: data[i].id,
-                    change_id: changeId,
                     snippet: data[i].snippet,
                     pre_filename: data[i].filename,
                     filename: newData.filename,
@@ -104,7 +102,7 @@ class Module extends App {
         }
     }
 
-    async remove(codes, changeId) {
+    async remove(codes) {
         try {
             if (codes.length <= 0) return [];
             let code = await Code.destroy({
@@ -116,7 +114,6 @@ class Module extends App {
             });
             return codes.map(c => ({
                 file_id: c.id,
-                change_id: changeId,
                 snippet: c.snippet,
                 filename: c.filename,
                 pre_content: c.content,

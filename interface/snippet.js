@@ -6,7 +6,6 @@ const Fav = require('./fav');
 const Comment = require('./comment');
 const Activity = require('./activity');
 const Glot = require('./glot');
-const { v4: uuidv4 } = require('uuid');
 const Snippet = model.snippet;
 const History = model.history;
 const Change = model.change;
@@ -72,9 +71,6 @@ class Module extends App {
                 return true;
             }), this.saftKey);
 
-
-            const changeId = uuidv4();
-
             data.codes.forEach(c => {
                 c.snippet = data.id;
                 c.filename = c.filename.trim();
@@ -90,17 +86,17 @@ class Module extends App {
             data.codes = data.codes.filter(c => !c.remove);
             
             const history = [];
-            history.push(...await this.code.remove(removeCodes, changeId));
-            history.push(...await this.code.create(createCodes, changeId));
-            history.push(...await this.code.update(data.codes, changeId));
+            history.push(...await this.code.remove(removeCodes));
+            history.push(...await this.code.create(createCodes));
+            history.push(...await this.code.update(data.codes));
 
             if (history.length > 0) {
-                await super.new({
-                    id: changeId,
+                const change = await super.new({
                     snippet: data.id,
                     ...data,
                 }, Change);
 
+                history.forEach(h => h.change_id = change.id);
                 await History.bulkCreate(history);
             }
 
