@@ -14,6 +14,10 @@ let orm = {
         type: db.ID,
         comment: '代码片段 ID',
     },
+    pre_filename: {
+        type: db.STRING(50),
+        comment: '旧文件名'
+    },
     filename: {
         type: db.STRING(50),
         comment: '文件名'

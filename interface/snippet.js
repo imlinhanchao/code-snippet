@@ -6,7 +6,7 @@ const Fav = require('./fav');
 const Comment = require('./comment');
 const Activity = require('./activity');
 const Glot = require('./glot');
-const { off } = require('../app');
+const { v4: uuidv4 } = require('uuid');
 const Snippet = model.snippet;
 const History = model.history;
 const Change = model.change;
@@ -72,10 +72,8 @@ class Module extends App {
                 return true;
             }), this.saftKey);
 
-            const change = await super.new({
-                snippet: data.id,
-                ...data,
-            }, Change);
+
+            const changeId = uuidv4();
 
             data.codes.forEach(c => {
                 c.snippet = data.id;
@@ -92,10 +90,19 @@ class Module extends App {
             data.codes = data.codes.filter(c => !c.remove);
             
             const history = [];
-            history.push(...await this.code.remove(removeCodes, change.id));
-            history.push(...await this.code.create(createCodes, change.id));
-            history.push(...await this.code.update(data.codes, change.id));
-            await History.bulkCreate(history);
+            history.push(...await this.code.remove(removeCodes, changeId));
+            history.push(...await this.code.create(createCodes, changeId));
+            history.push(...await this.code.update(data.codes, changeId));
+
+            if (history.length > 0) {
+                await super.new({
+                    id: changeId,
+                    snippet: data.id,
+                    ...data,
+                }, Change);
+
+                await History.bulkCreate(history);
+            }
 
             snippet.codes = (await this.code.get(data.id))
                 .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
@@ -192,7 +199,7 @@ class Module extends App {
                 limit: Number(count) + 1
             });
 
-            changes = changes.map(d => App.filter(d, Change.keys().concat(['id'])));
+            changes = changes.map(d => App.filter(d, Change.keys().concat(['id', 'create_time'])));
             const historys = await History.findAll({
                 where: { change_id: changes.map(c => c.id) },
                 order: [['modify_date', 'DESC']]

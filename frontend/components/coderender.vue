@@ -92,7 +92,6 @@ export default {
                 suppressSubScriptHandling: false,
                 suppressAutoLink: false
             });
-            console.dir(orgHTMLDocument);
 
             let ele = document.createElement('div');
             ele.innerHTML = orgHTMLDocument.contentHTML;

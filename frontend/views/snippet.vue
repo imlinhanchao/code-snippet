@@ -154,6 +154,9 @@
                         </section>
                     </article>
                 </TabPane>
+                <TabPane :label="getLabel($t('revisions'), 0, { type: 'md-git-commit' })" name="commit">
+                    <Revisions :snippet="snippet" v-if="tab == 'commit'"></Revisions>
+                </TabPane>
                 <TabPane :label="getLabel($t('star'), stars.length, { type: 'md-star-outline' })" name="star">
                     <p v-if="stars.length == 0 && !loading" style="text-align:center;margin: 5em auto;">{{$t('no_star')}}</p>
                     <p v-show="loading" class="loading"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i></p>
@@ -224,6 +227,7 @@ export default {
         Preview: () => import('../components/preview'),
         Comment: () => import('../components/comment'),
         Share: () => import('../components/share'),
+        Revisions: () => import('../components/revisions'),
         CodeRender,
     },
     async mounted() {
@@ -436,6 +440,10 @@ export default {
                 }
 
                 let username = rsp.data.data.map(d => d.username);
+                if (username.length == 0) {
+                    this.loading = false;
+                    return true;
+                }
                 rsp = await this.$store.dispatch('account/query', {
                     username
                 });
@@ -476,6 +484,10 @@ export default {
                 }
 
                 let username = rsp.data.data.map(d => d.username);
+                if (username.length == 0) {
+                    this.loading = false;
+                    return true;
+                }
                 rsp = await this.$store.dispatch('account/query', {
                     username
                 });
@@ -526,6 +538,10 @@ export default {
                 }
 
                 let username = forks.map(d => d.username);
+                if (username.length == 0) {
+                    this.loading = false;
+                    return true;
+                }
                 rsp = await this.$store.dispatch('account/query', {
                     username
                 });

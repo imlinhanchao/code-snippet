@@ -80,6 +80,16 @@ const actions = {
             console.error(e.message);
             throw e;
         }
+    },
+    async changes({ commit }, { id, index = 0, count = 10 }) {
+        try {
+            let rsp = await axios.get(`/snippet/changes/?id=${id}&index=${index}&count=${count}`);
+            rsp = rsp.data;
+            return rsp;
+        } catch (e) {
+            console.error(e.message);
+            throw e;
+        }
     }
 };
 const getters = {

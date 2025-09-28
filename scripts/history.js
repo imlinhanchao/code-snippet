@@ -24,6 +24,7 @@ async function SnippetChange(snippet) {
     file_id: c.id,
     change_id: change.id,
     snippet: c.snippet,
+    pre_filename: c.filename,
     filename: c.filename,
     pre_content: '',
     content: c.content,

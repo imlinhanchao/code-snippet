@@ -156,6 +156,8 @@
     "check": "查看",
     "read_all": "標記全部已讀",
     "no_feeds": "沒有任何動態，你可以去關注一些人或上廣場看看。",
+    "revisions": "修訂",
+    "changed_file": "個已更改文件",
     "errors": {
         "account": {
             "verify": "用戶名或密碼錯誤！",

@@ -31,6 +31,7 @@ class Module extends App {
                     file_id: c.id,
                     change_id: changeId,
                     snippet: c.snippet,
+                    pre_filename: c.filename,
                     filename: c.filename,
                     pre_content: '',
                     content: c.content,
@@ -62,14 +63,15 @@ class Module extends App {
             for (let i = 0; i < data.length; i++) {
                 let newData = codes.find(c => c.id == data[i].id);
                 if (!newData) continue;
-                if (App.isSame(data, newData, keys)) continue;
+                if (App.isSame(data[i].dataValues, newData, keys)) continue;
                 const history = {
                     file_id: data[i].id,
                     change_id: changeId,
                     snippet: data[i].snippet,
-                    filename: data[i].filename,
+                    pre_filename: data[i].filename,
+                    filename: newData.filename,
                     pre_content: data[i].content,
-                    content: newData[i].content,
+                    content: newData.content,
                     modify_date: Math.floor(Date.now() / 1000)
                 };
                 keys.forEach(k => data[i][k] = newData[k]);
@@ -104,7 +106,7 @@ class Module extends App {
 
     async remove(codes, changeId) {
         try {
-            if (ids.length <= 0) return [];
+            if (codes.length <= 0) return [];
             let code = await Code.destroy({
                 where: {
                     id: {

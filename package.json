@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^2.3.0",
-    "@vue/composition-api": "^1.7.2",
     "babel-core": "^6.26.3",
     "cross-env": "^7.0.2",
     "file-icons-js": "github:websemantics/file-icons-js",
@@ -55,7 +54,7 @@
     "require-context": "^1.1.0",
     "rimraf": "^6.0.1",
     "v-code-diff": "^1.13.1",
-    "vue": "^2.6.11",
+    "vue": "^2.7.16",
     "vue-clipboard2": "^0.3.1",
     "vue-codemirror": "^4.0.6",
     "vue-cropperjs": "^4.1.0",
