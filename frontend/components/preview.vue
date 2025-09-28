@@ -71,7 +71,7 @@ export default {
             this.loading = true;
         }
         this.$uweb.trackPageview(
-            this.$config.bash.domain + `/preview/${this.snippet.id}`, 
+            this.$config.domain + `/preview/${this.snippet.id}`, 
             this.$config.domain + location.path);
 
     },
