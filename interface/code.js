@@ -26,18 +26,15 @@ class Module extends App {
             if (codes.length <= 0) return [];
             codes.forEach(c => c.id = undefined);
             codes = await Code.bulkCreate(codes);
-            if (changeId) {
-                return codes.map(c => ({
-                    file_id: c.id,
-                    snippet: c.snippet,
-                    pre_filename: c.filename,
-                    filename: c.filename,
-                    pre_content: '',
-                    content: c.content,
-                    modify_date: Math.floor(Date.now() / 1000)
-                }));
-            }
-            return [];
+            return codes.map(c => ({
+                file_id: c.id,
+                snippet: c.snippet,
+                pre_filename: c.filename,
+                filename: c.filename,
+                pre_content: '',
+                content: c.content,
+                modify_date: Math.floor(Date.now() / 1000)
+            }));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

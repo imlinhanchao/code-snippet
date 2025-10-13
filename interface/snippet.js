@@ -44,8 +44,19 @@ class Module extends App {
                 c.filename = c.filename.trim();
                 c.content = c.content.replace(/\t/g, '    ');
             });
-            snippet.codes = (await this.code.create(data.codes))
-                .map(d => App.filter(d, this.code.saftKey.filter(k => k != 'snippet')));
+            snippet.codes = (await this.code.create(data.codes));
+            
+            const change = await Change.create({
+                snippet: snippet.id,
+                ...snippet,
+                codes: undefined,
+                id: undefined
+            });
+            await History.bulkCreate(snippet.codes.map(c => {
+                c.change_id = change.id;
+                return c;
+            }));
+
             if (onlyData) return snippet;
             this.activity.create(snippet, this.account.user.username); 
             return this.okcreate(snippet);
