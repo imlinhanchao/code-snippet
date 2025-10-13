@@ -278,11 +278,11 @@ class Module extends App {
     }
 
     isFollow(usernames) {
-        if (!this.islogin) {
-            throw (this.error.nologin);
-        }
         if (!usernames || !usernames.length) {
             throw (this.error.param);
+        }
+        if (!this.islogin) {
+            return false;
         }
         return model.follow.findAll({
             where: {

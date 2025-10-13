@@ -24,7 +24,7 @@ export default {
         if (!this.$root.isLogin) {
             this.$router.replace('/explore');
         }
-        this.load();
+        else this.load();
     },
     data() {
         return {
