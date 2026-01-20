@@ -50,7 +50,7 @@
     "mime-types": "^2.1.27",
     "nodom": "^2.4.0",
     "org": "^0.2.0",
-    "parcel-bundler": "^1.10.3",
+    "parcel-bundler": "^1.12.5",
     "require-context": "^1.1.0",
     "rimraf": "^6.0.1",
     "v-code-diff": "^1.13.1",
