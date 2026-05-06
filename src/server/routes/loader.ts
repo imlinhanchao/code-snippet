@@ -4,6 +4,20 @@ import App from '../modules/App'
 type StaticModule = { cache?: Record<string, number>; prototype: any } & (new (session: any) => any)
 
 /**
+ * Create a sanitized copy of req.body, stripping prototype-polluting keys.
+ */
+function sanitizeBody(body: unknown): Record<string, unknown> {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return {}
+  const clean: Record<string, unknown> = {}
+  for (const [key, val] of Object.entries(body as Record<string, unknown>)) {
+    if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
+      clean[key] = val
+    }
+  }
+  return clean
+}
+
+/**
  * Safely invoke a method by name on an instance.
  * The method must be defined directly on the instance's prototype (not inherited from Object).
  * Returns a bound function to prevent prototype pollution via user-controlled method names.
@@ -46,7 +60,7 @@ function loader(Module: StaticModule): Router {
       const fn = String(req.params.fn)
       const method = resolveMethod(instance, Module, fn)
       if (!method) throw instance.error.param
-      const ret = await method(Object.assign({}, req.body))
+      const ret = await method(sanitizeBody(req.body))
       if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
     } catch (err) {
       return res.json(App.err(err))

@@ -437,8 +437,13 @@ class AccountModule extends App {
     }
     let tpl = __tpl[type].data
     Object.keys(data).forEach((k) => {
-      const value = data[k]
-      tpl = tpl.replace(new RegExp(`{{${k}}}`, 'g'), String(value))
+      const value = String(data[k])
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+      tpl = tpl.replace(new RegExp(`{{${k}}}`, 'g'), value)
     })
     return tpl
   }

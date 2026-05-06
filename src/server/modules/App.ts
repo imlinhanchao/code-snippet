@@ -56,6 +56,9 @@ export type QueryResult<T = Record<string, unknown>> = {
   total: number
 }
 
+// Regex for trimming Unicode whitespace variants
+const UNICODE_TRIM_RE = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
+
 export class App {
   name: string = ''
 
@@ -297,7 +300,7 @@ export class App {
       if (newData[key] === undefined) continue
       oldData[key] = newData[key]
       if (typeof oldData[key] === 'string') {
-        oldData[key] = (oldData[key] as string).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+        oldData[key] = (oldData[key] as string).replace(UNICODE_TRIM_RE, '')
       }
     }
     return oldData

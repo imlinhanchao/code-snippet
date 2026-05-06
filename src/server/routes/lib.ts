@@ -52,7 +52,13 @@ router.post('/upload', upload.array('file'), async (req: Request, res: Response)
  *               type: string
  */
 router.get('/captcha', (req: Request, res: Response) => {
-  const option = req.query as any
+  // Whitelist allowed captcha options to prevent library option injection
+  const q = req.query as Record<string, string>
+  const option: Record<string, unknown> = {}
+  if (q.size) option.size = Math.min(Math.max(parseInt(q.size) || 4, 1), 8)
+  if (q.noise) option.noise = Math.min(Math.max(parseInt(q.noise) || 2, 0), 5)
+  if (q.color) option.color = q.color === 'true'
+  if (q.background) option.background = q.background.replace(/[^a-zA-Z0-9#]/g, '')
   const code = svgCaptcha.create(option)
   ;(req.session as any)['captcha'] = code.text.toLowerCase()
   res.header('Content-Type', 'image/svg+xml')

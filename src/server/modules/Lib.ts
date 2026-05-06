@@ -26,6 +26,13 @@ interface SessionLike {
   account_login?: Record<string, unknown>
 }
 
+// Allowed file extensions for upload (whitelist)
+const ALLOWED_EXTENSIONS = new Set([
+  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg',
+  '.pdf', '.txt', '.md', '.json', '.xml', '.csv',
+  '.zip', '.tar', '.gz'
+])
+
 class LibModule extends App {
   session?: SessionLike
 
@@ -53,7 +60,11 @@ class LibModule extends App {
         }
         const data = file.buffer
         const hash = crypto.createHash('md5').update(data).digest('hex')
-        const filename = hash + path.extname(file.originalname)
+        const ext = path.extname(file.originalname).toLowerCase()
+        if (ext && !ALLOWED_EXTENSIONS.has(ext)) {
+          throw (this.error as any).toobig // reuse error or add a specific one
+        }
+        const filename = hash + ext
         const savepath = path.join(dirpath, filename)
         if (!fs.existsSync(savepath)) {
           fs.writeFileSync(savepath, data)
