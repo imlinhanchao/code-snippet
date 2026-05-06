@@ -417,14 +417,16 @@ export class App {
     }
   }
 
-  static err(err: unknown): object {
+  static err(err: unknown): { state: number; msg: string; data: unknown } {
     if ((err as AppError).isdefine) {
-      return err as AppError
+      // Return plain object (not the error itself) to prevent taint propagation
+      const e = err as AppError
+      return { state: e.state, msg: e.msg, data: e.data ?? '' }
     }
-    // Log full error internally but don't expose details to client
+    // Log internally; never expose raw error details to client
     console.warn((err as Error).message)
     if ((err as Error).stack) console.warn((err as Error).stack)
-    return App.error.server()
+    return { state: -1, msg: '服务器错误！', data: '' }
   }
 
   static get error() {

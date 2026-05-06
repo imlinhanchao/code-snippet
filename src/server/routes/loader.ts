@@ -9,6 +9,14 @@ function loader(Module: StaticModule): Router {
   router.all('/:fn*', (req: Request, res: Response, next) => {
     const fn = String(req.params.fn)
     if (fn.slice(0, 1) === '_') return res.json(App.error.limited)
+    // Only allow methods defined directly on the module's prototype
+    const proto = Module.prototype
+    if (!proto || typeof proto[fn] !== 'function') {
+      // Also allow static methods on Module itself
+      if (typeof (Module as any)[fn] !== 'function') {
+        return res.json(App.error.limited)
+      }
+    }
     if ((Module as any).cache && (Module as any).cache[fn]) {
       res.header('Cache-Control', `public,max-age=${(Module as any).cache[fn]}`)
     }
