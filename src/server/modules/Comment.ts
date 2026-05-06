@@ -16,7 +16,7 @@ interface SessionLike {
 
 class CommentModule extends App {
   session: SessionLike
-  saftKey: string[]
+  safeKey: string[]
   account: AccountModule
   activity: ActivityModule
 
@@ -26,7 +26,7 @@ class CommentModule extends App {
     this.name = '评论'
     this.account = new AccountModule(session)
     this.activity = new ActivityModule(session)
-    this.saftKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(CommentEntity))
+    this.safeKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(CommentEntity))
   }
 
   get error() {
@@ -37,7 +37,7 @@ class CommentModule extends App {
     try {
       data.username = this.account.user.username
 
-      const comment = App.filter(await super.createRecord(data, CommentEntity), this.saftKey)
+      const comment = App.filter(await super.createRecord(data, CommentEntity), this.safeKey)
       let targetUser = ''
       if (data.reply) {
         const repo = AppDataSource.getRepository(CommentEntity)
@@ -67,7 +67,7 @@ class CommentModule extends App {
           if ((d as any).username !== this.account.user.username) throw this.error.unauthorized
           return true
         }),
-        this.saftKey
+        this.safeKey
       )
       return this.okupdate(comment)
     } catch (err) {
@@ -107,7 +107,7 @@ class CommentModule extends App {
       const repo = AppDataSource.getRepository(CommentEntity)
       const comments = await repo.find({ where: { snippet } })
       if (!comments) throw this.error.notexisted as any
-      const mapped = comments.map((d) => App.filter(d as unknown as Record<string, unknown>, this.saftKey))
+      const mapped = comments.map((d) => App.filter(d as unknown as Record<string, unknown>, this.safeKey))
       if (onlyData) return mapped
       return this.okquery(mapped)
     } catch (err) {
@@ -129,7 +129,7 @@ class CommentModule extends App {
     try {
       const queryData = await super.findAll(data, CommentEntity, ops)
       if (onlyData) return queryData
-      queryData.data = queryData.data.map((q) => App.filter(q, this.saftKey))
+      queryData.data = queryData.data.map((q) => App.filter(q, this.safeKey))
       return this.okquery(queryData)
     } catch (err) {
       if ((err as any).isdefine) throw err

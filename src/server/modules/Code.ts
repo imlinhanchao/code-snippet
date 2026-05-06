@@ -38,13 +38,13 @@ interface HistoryLike {
 
 class CodeModule extends App {
   session: SessionLike
-  saftKey: string[]
+  safeKey: string[]
 
   constructor(session: SessionLike) {
     super([])
     this.session = session
     this.name = '代码'
-    this.saftKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(CodeEntity))
+    this.safeKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(CodeEntity))
   }
 
   get error() {
@@ -152,7 +152,7 @@ class CodeModule extends App {
         where: { snippet },
         order: { order: 'ASC' }
       })
-      return codes.map((d) => App.filter(d as unknown as Record<string, unknown>, this.saftKey))
+      return codes.map((d) => App.filter(d as unknown as Record<string, unknown>, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -163,7 +163,7 @@ class CodeModule extends App {
     try {
       const repo = AppDataSource.getRepository(CodeEntity)
       const codes = await repo.find({ where: { snippet: In(snippets) } })
-      return codes.map((d) => App.filter(d as unknown as Record<string, unknown>, this.saftKey))
+      return codes.map((d) => App.filter(d as unknown as Record<string, unknown>, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -184,7 +184,7 @@ class CodeModule extends App {
     try {
       const queryData = await super.findAll(data, CodeEntity, ops)
       if (onlyData) return queryData
-      queryData.data = queryData.data.map((q) => App.filter(q, this.saftKey))
+      queryData.data = queryData.data.map((q) => App.filter(q, this.safeKey))
       return this.okquery(queryData)
     } catch (err) {
       if ((err as any).isdefine) throw err

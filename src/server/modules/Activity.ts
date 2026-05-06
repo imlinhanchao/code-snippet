@@ -227,7 +227,7 @@ class ActivityModule extends App {
     qb.orderBy('a.create_time', 'DESC').limit(count)
 
     const results = await qb.getMany()
-    const saftKey = ['id', 'create_time', 'update_time'].concat(
+    const safeKey = ['id', 'create_time', 'update_time'].concat(
       App.getEntityKeys(ActivityEntity)
     )
     return this.okget(
@@ -240,7 +240,7 @@ class ActivityModule extends App {
             item.source = null
           }
         }
-        return App.filter(item, saftKey)
+        return App.filter(item, safeKey)
       })
     )
   }

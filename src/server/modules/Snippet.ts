@@ -22,7 +22,7 @@ interface SessionLike {
 
 class SnippetModule extends App {
   session: SessionLike
-  saftKey: string[]
+  safeKey: string[]
   account: AccountModule
   code: CodeModule
   fav: FavModule
@@ -38,7 +38,7 @@ class SnippetModule extends App {
     this.fav = new FavModule(session)
     this.comment = new CommentModule(session)
     this.activity = new ActivityModule(session)
-    this.saftKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(SnippetEntity))
+    this.safeKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(SnippetEntity))
   }
 
   // Dynamic methods
@@ -53,7 +53,7 @@ class SnippetModule extends App {
       data.username = this.account.user.username
       if (!App.haskeys(data, ['codes'])) throw this.error.param
 
-      let snippet = App.filter(await super.createRecord(data, SnippetEntity), this.saftKey)
+      let snippet = App.filter(await super.createRecord(data, SnippetEntity), this.safeKey)
       ;(data.codes as any[]).forEach((c: any) => {
         c.snippet = snippet.id
         c.filename = c.filename.trim()
@@ -103,7 +103,7 @@ class SnippetModule extends App {
           if (d.username !== this.account.user.username) throw this.error.unauthorized
           return true
         }),
-        this.saftKey
+        this.safeKey
       )
 
       ;(data.codes as any[]).forEach((c: any) => {
@@ -148,7 +148,7 @@ class SnippetModule extends App {
       }
 
       snippet.codes = (await this.code.get(data.id as string)).map((d: any) =>
-        App.filter(d, this.code.saftKey.filter((k) => k !== 'snippet'))
+        App.filter(d, this.code.safeKey.filter((k) => k !== 'snippet'))
       )
 
       return this.okupdate(snippet)
@@ -226,8 +226,8 @@ class SnippetModule extends App {
     }
 
     const extendKeys = ['codes', 'stared', 'fork']
-    if (onlyData) return App.filter(infoObj, this.saftKey.concat(extendKeys))
-    return this.okquery(App.filter(infoObj, this.saftKey.concat(extendKeys)))
+    if (onlyData) return App.filter(infoObj, this.safeKey.concat(extendKeys))
+    return this.okquery(App.filter(infoObj, this.safeKey.concat(extendKeys)))
   }
 
   async changes(
@@ -239,7 +239,7 @@ class SnippetModule extends App {
 
     try {
       const changeRepo = AppDataSource.getRepository(ChangeEntity)
-      const changeSaftKey = ['id', 'create_time'].concat(App.getEntityKeys(ChangeEntity))
+      const changeSafeKey = ['id', 'create_time'].concat(App.getEntityKeys(ChangeEntity))
 
       let changes = await changeRepo.find({
         where: { snippet: data.id as string },
@@ -249,11 +249,11 @@ class SnippetModule extends App {
       })
 
       const changesMapped = changes.map((d) =>
-        App.filter(d as unknown as Record<string, unknown>, changeSaftKey)
+        App.filter(d as unknown as Record<string, unknown>, changeSafeKey)
       )
 
       const historyRepo = AppDataSource.getRepository(HistoryEntity)
-      const historySaftKey = ['id'].concat(App.getEntityKeys(HistoryEntity))
+      const historySafeKey = ['id'].concat(App.getEntityKeys(HistoryEntity))
       const historys = await historyRepo.find({
         where: { change_id: In(changesMapped.map((c) => c.id as string)) },
         order: { modify_date: 'DESC' }
@@ -262,7 +262,7 @@ class SnippetModule extends App {
       changesMapped.forEach((c) => {
         c.historys = historys
           .filter((h) => h.change_id === c.id)
-          .map((h) => App.filter(h as unknown as Record<string, unknown>, historySaftKey))
+          .map((h) => App.filter(h as unknown as Record<string, unknown>, historySafeKey))
       })
 
       if (onlyData) return changesMapped
@@ -303,7 +303,7 @@ class SnippetModule extends App {
     try {
       let queryData = await super.findAll(data, SnippetEntity, ops)
 
-      data.fields = data.fields || ['codes', 'stars', 'fork', 'forks', 'comments'].concat(this.saftKey)
+      data.fields = data.fields || ['codes', 'stars', 'fork', 'forks', 'comments'].concat(this.safeKey)
       const ids = queryData.data.map((b) => b.id as string)
 
       if (data.fields.includes('codes')) {

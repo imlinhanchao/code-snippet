@@ -50,7 +50,7 @@ interface SessionLike {
 
 class AccountModule extends App {
   session: SessionLike
-  saftKey: string[]
+  safeKey: string[]
   activity: ActivityModule
 
   constructor(session: SessionLike) {
@@ -65,7 +65,7 @@ class AccountModule extends App {
     this.session = session
     this.activity = new ActivityModule(session)
     this.name = '用户'
-    this.saftKey = ['id'].concat(
+    this.safeKey = ['id'].concat(
       App.getEntityKeys(AccountEntity).filter((k) => k !== 'passwd')
     )
   }
@@ -120,7 +120,7 @@ class AccountModule extends App {
         account as Record<string, unknown>,
         ['id'].concat(App.getEntityKeys(AccountEntity))
       )
-      return this.oklogin(App.filter(this.session.account_login, this.saftKey))
+      return this.oklogin(App.filter(this.session.account_login, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.network(err)
@@ -162,7 +162,7 @@ class AccountModule extends App {
 
       const account = await super.createRecord(data, AccountEntity, 'username')
       if (onlyData) return account
-      return this.okcreate(App.filter(account, this.saftKey))
+      return this.okcreate(App.filter(account, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -198,7 +198,7 @@ class AccountModule extends App {
         tokenRepo.delete({ username: account.username as string }).catch(() => {})
       }
 
-      return this.okupdate(App.filter(await super.updateRecord(data, AccountEntity), this.saftKey))
+      return this.okupdate(App.filter(await super.updateRecord(data, AccountEntity), this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -210,7 +210,7 @@ class AccountModule extends App {
       const repo = AppDataSource.getRepository(AccountEntity)
       const data = await repo.findOne({ where: { username } })
       if (onlyData) return data
-      return this.okget(data ? App.filter(data as unknown as Record<string, unknown>, this.saftKey) : null)
+      return this.okget(data ? App.filter(data as unknown as Record<string, unknown>, this.safeKey) : null)
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -240,7 +240,7 @@ class AccountModule extends App {
     const repo = AppDataSource.getRepository(AccountEntity)
     const data = await repo.findOne({ where: { username: this.user.username as string } })
     if (!data) throw this.error.nologin
-    const keys = fields || this.saftKey
+    const keys = fields || this.safeKey
     if (onlyData) return App.filter(data as unknown as Record<string, unknown>, keys)
     return this.okget(App.filter(data as unknown as Record<string, unknown>, keys))
   }
@@ -297,7 +297,7 @@ class AccountModule extends App {
       const accounts = await accountRepo.find({
         where: { username: In(follows.map((f) => f.target)) }
       })
-      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.saftKey)))
+      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey)))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -318,7 +318,7 @@ class AccountModule extends App {
       const accounts = await accountRepo.find({
         where: { username: In(follows.map((f) => f.username)) }
       })
-      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.saftKey)))
+      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey)))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -352,7 +352,7 @@ class AccountModule extends App {
         index: 0,
         count: -1,
         query: filtered,
-        fields: fields || this.saftKey.filter((k) => !['email'].includes(k))
+        fields: fields || this.safeKey.filter((k) => !['email'].includes(k))
       }
       const queryData = await super.findAll(data, AccountEntity, ops)
       const isFollow = await this.isFollow(queryData.data.map((d) => d.username as string))

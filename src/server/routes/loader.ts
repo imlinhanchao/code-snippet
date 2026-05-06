@@ -1,7 +1,27 @@
 import { Router, Request, Response } from 'express'
 import App from '../modules/App'
 
-type StaticModule = { cache?: Record<string, number> } & (new (session: any) => any)
+type StaticModule = { cache?: Record<string, number>; prototype: any } & (new (session: any) => any)
+
+/**
+ * Safely invoke a method by name on an instance.
+ * The method must be defined directly on the instance's prototype (not inherited from Object).
+ * Returns a bound function to prevent prototype pollution via user-controlled method names.
+ */
+function resolveMethod(instance: any, Module: StaticModule, fn: string): ((...args: any[]) => any) | null {
+  const proto = Module.prototype
+  const descriptor = Object.getOwnPropertyDescriptor(proto, fn)
+  if (descriptor && typeof descriptor.value === 'function') {
+    const method: (...args: any[]) => any = descriptor.value
+    return (...args: any[]) => method.apply(instance, args)
+  }
+  const staticDescriptor = Object.getOwnPropertyDescriptor(Module, fn)
+  if (staticDescriptor && typeof staticDescriptor.value === 'function') {
+    const staticMethod: (...args: any[]) => any = staticDescriptor.value
+    return (...args: any[]) => staticMethod.apply(Module, args)
+  }
+  return null
+}
 
 function loader(Module: StaticModule): Router {
   const router = Router()
@@ -9,15 +29,12 @@ function loader(Module: StaticModule): Router {
   router.all('/:fn*', (req: Request, res: Response, next) => {
     const fn = String(req.params.fn)
     if (fn.slice(0, 1) === '_') return res.json(App.error.limited)
-    // Only allow methods defined directly on the module's prototype
+    // Verify the method exists on the module prototype before allowing dispatch
     const proto = Module.prototype
-    if (!proto || typeof proto[fn] !== 'function') {
-      // Also allow static methods on Module itself
-      if (typeof (Module as any)[fn] !== 'function') {
-        return res.json(App.error.limited)
-      }
-    }
-    if ((Module as any).cache && (Module as any).cache[fn]) {
+    const hasInstance = proto && Object.prototype.hasOwnProperty.call(proto, fn) && typeof proto[fn] === 'function'
+    const hasStatic = Object.prototype.hasOwnProperty.call(Module, fn) && typeof (Module as any)[fn] === 'function'
+    if (!hasInstance && !hasStatic) return res.json(App.error.limited)
+    if ((Module as any).cache?.[fn]) {
       res.header('Cache-Control', `public,max-age=${(Module as any).cache[fn]}`)
     }
     next()
@@ -25,22 +42,12 @@ function loader(Module: StaticModule): Router {
 
   router.post('/:fn', async (req: Request, res: Response) => {
     try {
-      const module = new Module(req.session)
+      const instance = new Module(req.session)
       const fn = String(req.params.fn)
-      let ret: unknown = null
-      if (typeof module[fn] === 'function') {
-        ret = await module[fn](Object.assign({}, req.body))
-      } else if (typeof (Module as any)[fn] === 'function') {
-        ret = await (Module as any)[fn](Object.assign({}, req.body))
-      } else {
-        throw module.error.param
-      }
-      if (ret instanceof Buffer) {
-        res.write(ret)
-        res.end()
-      } else {
-        res.json(ret)
-      }
+      const method = resolveMethod(instance, Module, fn)
+      if (!method) throw instance.error.param
+      const ret = await method(Object.assign({}, req.body))
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
     } catch (err) {
       return res.json(App.err(err))
     }
@@ -48,23 +55,12 @@ function loader(Module: StaticModule): Router {
 
   router.get('/:fn/:param', async (req: Request, res: Response) => {
     try {
-      const module = new Module(req.session)
+      const instance = new Module(req.session)
       const fn = String(req.params.fn)
-      const param = String(req.params.param)
-      let ret: unknown = null
-      if (typeof module[fn] === 'function') {
-        ret = await module[fn](param)
-      } else if (typeof (Module as any)[fn] === 'function') {
-        ret = await (Module as any)[fn](param)
-      } else {
-        throw module.error.param
-      }
-      if (ret instanceof Buffer) {
-        res.write(ret)
-        res.end()
-      } else {
-        res.json(ret)
-      }
+      const method = resolveMethod(instance, Module, fn)
+      if (!method) throw instance.error.param
+      const ret = await method(String(req.params.param))
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
     } catch (err) {
       return res.json(App.err(err))
     }
@@ -72,23 +68,12 @@ function loader(Module: StaticModule): Router {
 
   router.get('/:fn', async (req: Request, res: Response) => {
     try {
-      const module = new Module(req.session)
+      const instance = new Module(req.session)
       const fn = String(req.params.fn)
-      const param = req.query
-      let ret: unknown = null
-      if (typeof module[fn] === 'function') {
-        ret = await module[fn](param)
-      } else if (typeof (Module as any)[fn] === 'function') {
-        ret = await (Module as any)[fn](param)
-      } else {
-        throw module.error.param
-      }
-      if (ret instanceof Buffer) {
-        res.write(ret)
-        res.end()
-      } else {
-        res.json(ret)
-      }
+      const method = resolveMethod(instance, Module, fn)
+      if (!method) throw instance.error.param
+      const ret = await method(req.query)
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
     } catch (err) {
       return res.json(App.err(err))
     }
