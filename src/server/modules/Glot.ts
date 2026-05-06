@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 import axios from 'axios'
 import App from './App'
 import fs from 'fs'
@@ -47,7 +46,6 @@ class GlotApp extends App {
         headers: {
           Authorization: `Token ${token}`
         },
-        httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
         data: { files, stdin, command }
       })
       if (rsp.status > 400) {

@@ -254,7 +254,7 @@ export class App {
     if (!data) return {}
     const result: Record<string, unknown> = {}
     for (const key of keys) {
-      if (key in (data as object) || (data as Record<string, unknown>)[key] !== undefined) {
+      if (key in (data as object)) {
         result[key] = (data as Record<string, unknown>)[key]
       }
     }
@@ -421,7 +421,10 @@ export class App {
     if ((err as AppError).isdefine) {
       return err as AppError
     }
-    return App.error.server((err as Error).message, (err as Error).stack)
+    // Log full error internally but don't expose details to client
+    console.warn((err as Error).message)
+    if ((err as Error).stack) console.warn((err as Error).stack)
+    return App.error.server()
   }
 
   static get error() {

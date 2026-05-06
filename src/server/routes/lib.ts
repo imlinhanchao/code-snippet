@@ -28,15 +28,13 @@ const router = Router()
  *       200:
  *         description: Upload result
  */
-router.post('/upload', upload.array('file'), (req: Request, res: Response) => {
-  ;(async () => {
-    try {
-      const lib = new LibModule(req.session as any)
-      res.json(await lib.upload(req as any))
-    } catch (err) {
-      return res.json(App.err(err))
-    }
-  })()
+router.post('/upload', upload.array('file'), async (req: Request, res: Response) => {
+  try {
+    const lib = new LibModule(req.session as any)
+    res.json(await lib.upload(req as any))
+  } catch (err) {
+    return res.json(App.err(err))
+  }
 })
 
 /**
