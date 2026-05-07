@@ -1,8 +1,6 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive, Component } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
-import hljsVuePlugin from '@highlightjs/vue-plugin'
-import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
 import './index.css'
 import PageShell from './PageShell.vue'
@@ -13,7 +11,7 @@ import zhCht from '../i18n/zh-cht.json'
 
 export { createApp }
 
-function createApp(Page: Component, pageProps: Record<string, any> | undefined, pageContext: any) {
+async function createApp(Page: Component, pageProps: Record<string, any> | undefined, pageContext: any) {
   const pageContextReactive = reactive(pageContext)
 
   const i18n = createI18n({
@@ -40,7 +38,11 @@ function createApp(Page: Component, pageProps: Record<string, any> | undefined, 
   const pinia = createPinia()
   app.use(pinia)
   app.use(i18n)
-  app.use(hljsVuePlugin)
+
+  if (!import.meta.env.SSR) {
+    const { default: hljsVuePlugin } = await import('@highlightjs/vue-plugin')
+    app.use(hljsVuePlugin)
+  }
 
   setPageContext(app, pageContextReactive)
 

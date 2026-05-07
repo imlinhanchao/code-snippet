@@ -4,7 +4,7 @@ import { createApp } from './app'
 
 export default async function onRenderHtml(pageContext: any) {
   const { Page, pageProps, headTags, bodyTags } = pageContext
-  const app = createApp(Page, pageProps, pageContext)
+  const app = await createApp(Page, pageProps, pageContext)
   const appHtml = await renderToString(app)
 
   return escapeInject`<!DOCTYPE html>
