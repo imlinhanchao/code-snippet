@@ -1,2 +1,6 @@
-export { default as onRenderHtml } from './+onRenderHtml'
-export { default as onRenderClient } from './+onRenderClient'
+import type { Config } from 'vike/types'
+
+export default {
+  onRenderHtml: './+onRenderHtml',
+  onRenderClient: './+onRenderClient'
+} satisfies Config
