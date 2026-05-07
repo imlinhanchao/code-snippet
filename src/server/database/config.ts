@@ -13,9 +13,12 @@ interface DbConfig {
 
 let dbConfig: DbConfig = {}
 try {
-  const configPath = path.join(process.cwd(), 'model', 'config.json')
+  const rootConfigPath = path.join(process.cwd(), 'config.json')
+  const defaultConfigPath = path.join(process.cwd(), 'cfg.json')
+  const configPath = fs.existsSync(rootConfigPath) ? rootConfigPath : defaultConfigPath
   if (fs.existsSync(configPath)) {
-    dbConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8')) as { db?: DbConfig }
+    dbConfig = config.db || {}
   }
 } catch {
   // config not available yet
