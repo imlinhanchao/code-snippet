@@ -42,7 +42,12 @@ import hljs from 'highlight.js'
 
 // Escape raw HTML blocks to prevent XSS when rendering user-provided markdown
 function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
 }
 
 const safeRenderer = new Renderer()

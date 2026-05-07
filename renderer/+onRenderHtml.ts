@@ -43,10 +43,16 @@ export default async function onRenderHtml(pageContext: any) {
       <script>
         (function () {
           try {
+            var validThemes = ['bumblebee', 'halloween']
+            var validLangs = ['en', 'zh-chs', 'zh-cht']
             var theme = localStorage.getItem('app-theme')
             var lang = localStorage.getItem('app-lang')
-            if (theme) document.documentElement.setAttribute('data-theme', theme)
-            if (lang) document.documentElement.setAttribute('lang', lang)
+            if (theme && validThemes.indexOf(theme) !== -1) {
+              document.documentElement.setAttribute('data-theme', theme)
+            }
+            if (lang && validLangs.indexOf(lang) !== -1) {
+              document.documentElement.setAttribute('lang', lang)
+            }
           } catch (e) {}
         })()
       </script>
