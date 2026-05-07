@@ -78,6 +78,10 @@ const langs = [
 
 const currentLangLabel = computed(() => langs.find(l => l.value === locale.value)?.label ?? 'EN')
 
+function setPrefCookie(key: string, value: string) {
+  document.cookie = `${key}=${encodeURIComponent(value)}; Path=/; Max-Age=31536000; SameSite=Lax`
+}
+
 function applyTheme(theme: string) {
   document.documentElement.setAttribute('data-theme', theme)
   isDark.value = theme === 'halloween'
@@ -85,9 +89,11 @@ function applyTheme(theme: string) {
 
 function setLang(lang: string) {
   locale.value = lang
+  document.documentElement.lang = lang
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('app-lang', lang)
   }
+  setPrefCookie('app-lang', lang)
 }
 
 function toggleTheme() {
@@ -96,10 +102,11 @@ function toggleTheme() {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('app-theme', next)
   }
+  setPrefCookie('app-theme', next)
 }
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('app-theme') ?? 'bumblebee'
+  const savedTheme = localStorage.getItem('app-theme') ?? document.documentElement.getAttribute('data-theme') ?? 'bumblebee'
   applyTheme(savedTheme)
 })
 

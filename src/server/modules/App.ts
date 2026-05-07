@@ -152,10 +152,13 @@ export class App {
 
     const findOpts: FindManyOptions<T> = { where: where as any, order: order as any }
     const offset = parseInt(String(data.index)) || 0
-    findOpts.skip = offset
+    const take = parseInt(String(data.count)) || 0
 
-    if (Number(data.count) > 0) {
-      findOpts.take = parseInt(String(data.count))
+    if (take > 0) {
+      findOpts.take = take
+      if (offset > 0) {
+        findOpts.skip = offset
+      }
     }
 
     const datalist = await repo.find(findOpts)

@@ -12,8 +12,7 @@
     <div :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
       <!-- Source view -->
       <template v-if="!isRender || source || onlySource">
-        <highlightjs v-if="isClient" :code="code.content" :autodetect="true" class="!m-0 !rounded-none text-sm" />
-        <pre v-else class="p-4 text-sm overflow-auto m-0"><code>{{ code.content }}</code></pre>
+        <pre class="p-4 text-sm overflow-auto m-0"><code class="hljs" v-html="highlightedCode"></code></pre>
       </template>
 
       <!-- Rendered view -->
@@ -36,9 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { marked, Renderer } from 'marked'
+import hljs from 'highlight.js'
 
 // Escape raw HTML blocks to prevent XSS when rendering user-provided markdown
 function escapeHtml(str: string): string {
@@ -67,11 +67,6 @@ const props = withDefaults(defineProps<{
 })
 
 const source = ref(props.onlySource)
-const isClient = ref(false)
-
-onMounted(() => {
-  isClient.value = true
-})
 
 const ext = computed(() => {
   const parts = props.code.filename.split('.')
@@ -90,4 +85,6 @@ const renderedMarkdown = computed(() => {
   if (!isMarkdown.value) return ''
   return marked.parse(props.code.content, { renderer: safeRenderer }) as string
 })
+
+const highlightedCode = computed(() => hljs.highlightAuto(props.code.content || '').value)
 </script>
