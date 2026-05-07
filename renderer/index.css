@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html[data-theme='halloween'] {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  code.hljs {
+    display: block;
+    padding: 1rem;
+    border-radius: 0;
+    background: rgb(var(--b1));
+    color: rgb(var(--bc));
+  }
+
+  [data-theme='halloween'] code.hljs {
+    background: #1a1726;
+    color: #d9d6f0;
+  }
+
+  [data-theme='halloween'] .hljs-keyword,
+  [data-theme='halloween'] .hljs-selector-tag,
+  [data-theme='halloween'] .hljs-literal,
+  [data-theme='halloween'] .hljs-title,
+  [data-theme='halloween'] .hljs-section,
+  [data-theme='halloween'] .hljs-doctag,
+  [data-theme='halloween'] .hljs-name,
+  [data-theme='halloween'] .hljs-strong {
+    color: #ffb86c;
+  }
+
+  [data-theme='halloween'] .hljs-string,
+  [data-theme='halloween'] .hljs-attr,
+  [data-theme='halloween'] .hljs-symbol,
+  [data-theme='halloween'] .hljs-bullet,
+  [data-theme='halloween'] .hljs-addition {
+    color: #a6e3a1;
+  }
+
+  [data-theme='halloween'] .hljs-number,
+  [data-theme='halloween'] .hljs-quote,
+  [data-theme='halloween'] .hljs-selector-class {
+    color: #93c5fd;
+  }
+
+  [data-theme='halloween'] .hljs-comment,
+  [data-theme='halloween'] .hljs-meta,
+  [data-theme='halloween'] .hljs-deletion {
+    color: #9ca3af;
+  }
+}

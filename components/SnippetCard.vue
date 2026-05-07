@@ -24,17 +24,17 @@
         <CodeRender :code="snippet.codes[0]" :snippet="snippet" class="code" :max-height="200">
           <a :href="`/s/${snippet.id}`" v-if="snippet.codes.length > 1">
             <p :title="$t('more')" class="more">
-              <Icon type="ios-more"></Icon>
+              <Icon icon="solar:menu-dots-bold"></Icon>
             </p>
           </a>
         </CodeRender>
       </div>
       <div class="flex items-center gap-4 mt-2 text-xs text-base-content/50">
         <span>{{ formatTime(snippet.create_time) }}</span>
-        <span v-if="snippet.stars !== undefined">⭐ {{ snippet.stars }}</span>
-        <span v-if="snippet.forks !== undefined">🍴 {{ snippet.forks }}</span>
-        <span v-if="snippet.comments !== undefined">💬 {{ snippet.comments }}</span>
-        <span v-if="snippet.codes">📄 {{ snippet.codes.length }} {{ t('files') }}</span>
+        <span v-if="snippet.stars !== undefined" class="inline-flex items-center gap-1"><Icon icon="solar:star-outline" /> {{ snippet.stars }}</span>
+        <span v-if="snippet.forks !== undefined" class="inline-flex items-center gap-1"><Icon icon="solar:code-square-outline" /> {{ snippet.forks }}</span>
+        <span v-if="snippet.comments !== undefined" class="inline-flex items-center gap-1"><Icon icon="solar:chat-round-dots-outline" /> {{ snippet.comments }}</span>
+        <span v-if="snippet.codes" class="inline-flex items-center gap-1"><Icon icon="solar:document-text-outline" /> {{ snippet.codes.length }} {{ t('files') }}</span>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Icon } from '@iconify/vue'
 import type { Snippet } from '../store/useSnippetStore'
 import CodeRender from '@components/CodeRender.vue'
 

@@ -40,6 +40,16 @@ export default async function onRenderHtml(pageContext: any) {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script>
+        (function () {
+          try {
+            var theme = localStorage.getItem('app-theme')
+            var lang = localStorage.getItem('app-lang')
+            if (theme) document.documentElement.setAttribute('data-theme', theme)
+            if (lang) document.documentElement.setAttribute('lang', lang)
+          } catch (e) {}
+        })()
+      </script>
       <title>Code Snippet</title>
       ${dangerouslySkipEscape(headTags || '')}
     </head>
