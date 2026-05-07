@@ -5,6 +5,14 @@
     "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "lib": ["ES2022", "DOM"],
+    "typeRoots": [
+      "./node_modules/",
+      "./node_modules/@types/",
+      "./types"
+    ],
+    "types": [
+      "vite/client"
+    ],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
