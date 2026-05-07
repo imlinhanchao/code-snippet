@@ -12,7 +12,8 @@ function loadConfig(): Dict {
   const p = fs.existsSync(ROOT_CONFIG_PATH) ? ROOT_CONFIG_PATH : DEFAULT_CONFIG_PATH
   const config = JSON.parse(fs.readFileSync(p, 'utf8')) as Dict
 
-  // Backward compatibility for cfg.json where key may be `mail`
+  // Backward compatibility: legacy cfg.json may use `mail.auth.user/pass`,
+  // while current config uses `email.auth.account/pass`.
   if (!config.email && config.mail) {
     config.email = {
       ...config.mail,
