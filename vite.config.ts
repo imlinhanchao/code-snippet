@@ -22,7 +22,6 @@ function backendMiddlewarePlugin(): Plugin {
 
       await ensureAppDataSourceInitialized()
       console.info('[DB] Database connection established (vike dev).')
-
       server.middlewares.use((req, res, next) => {
         const url = req.url || ''
         if (
@@ -31,7 +30,7 @@ function backendMiddlewarePlugin(): Plugin {
           url.startsWith('/res') ||
           url.startsWith('/upload')
         ) {
-          backendApp(req, res, next)
+          backendApp(req as any, res as any, next)
           return
         }
         next()
@@ -59,5 +58,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist/client'
+  },
+  server: {
+    allowedHosts: true,
   }
 })

@@ -226,13 +226,19 @@ class AccountModule extends App {
     return this.okget(!!account)
   }
 
-  async avatar(username: string): Promise<object> {
+  async avatar(username: string): Promise<Buffer> {
     const repo = AppDataSource.getRepository(AccountEntity)
     const account = await repo.findOne({
       where: { username },
       select: ['avatar'] as any
     })
-    return this.okget(account ? account.avatar : '')
+    let avatar = path.join(process.cwd(), '/public/res/user.png');
+
+    if (account && account.avatar)
+        avatar = path.join(process.cwd(), configData.file.upload, account.avatar);
+
+    let buffer = fs.readFileSync(avatar);
+    return buffer;
   }
 
   async info(onlyData: boolean = false, fields?: string[]): Promise<unknown> {

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
-    "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "lib": ["ES2022", "DOM"],
     "typeRoots": [
@@ -23,7 +22,15 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    /* Path */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["components/*"],
+      "@store/*": ["store/*"],
+      "@pages/*": ["pages/*"]
+    }
   },
   "include": ["src/**/*", "scripts/**/*", "renderer/**/*", "pages/**/*", "components/**/*", "store/**/*"],
   "exclude": ["node_modules", "dist", "public/dist"]
