@@ -30,7 +30,7 @@ class SnippetModule extends App {
   activity: ActivityModule
 
   constructor(session: SessionLike) {
-    super([{ fun: App.ok, name: 'okrun', msg: '执行成功' }])
+    super([{ fun: App.success, name: 'okrun', msg: '执行成功' }])
     this.session = session
     this.name = 'Snippet'
     this.account = new AccountModule(session)

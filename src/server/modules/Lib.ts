@@ -37,7 +37,7 @@ class LibModule extends App {
   session?: SessionLike
 
   constructor(session?: SessionLike) {
-    super([{ fun: App.ok, name: 'okupload', msg: '上传成功' }])
+    super([{ fun: App.success, name: 'okupload', msg: '上传成功' }])
     this.session = session
   }
 

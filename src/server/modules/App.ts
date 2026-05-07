@@ -43,10 +43,20 @@ export class AppError extends Error {
   }
 }
 
-export type RspFn = (msg: string, data?: unknown, customizeTip?: boolean) => object
+export interface ApiResponse<T = unknown> {
+  state: number
+  msg: string
+  data?: T
+}
+
+export interface SuccessResponseOptions {
+  customizeTip?: boolean
+}
+
+export type RspFn = (msg: string, data?: unknown, options?: SuccessResponseOptions) => ApiResponse
 
 interface RspDef {
-  fun: typeof App.ok
+  fun: typeof App.success
   name: string
   msg: string
 }
@@ -64,15 +74,15 @@ export class App {
 
   constructor(rsps: RspDef[] = []) {
     const allRsps: RspDef[] = rsps.concat([
-      { fun: App.ok, name: 'okquery', msg: '查询成功' },
-      { fun: App.ok, name: 'okcreate', msg: '创建成功' },
-      { fun: App.ok, name: 'okupdate', msg: '更新成功' },
-      { fun: App.ok, name: 'okdelete', msg: '删除成功' }
+      { fun: App.success, name: 'okquery', msg: '查询成功' },
+      { fun: App.success, name: 'okcreate', msg: '创建成功' },
+      { fun: App.success, name: 'okupdate', msg: '更新成功' },
+      { fun: App.success, name: 'okdelete', msg: '删除成功' }
     ])
 
     for (const rsp of allRsps) {
       ;(this as Record<string, unknown>)[rsp.name] = function (data?: unknown) {
-        return rsp.fun(rsp.msg, data, true)
+        return rsp.fun(rsp.msg, data, { customizeTip: true })
       }
     }
   }
@@ -408,16 +418,25 @@ export class App {
     }
   }
 
-  static res(data: unknown, msg: string = ''): object {
+  static res(data: unknown, msg: string = ''): ApiResponse {
     return { state: 0, msg, data }
   }
 
-  static ok(action: string, data?: unknown, customizeTip: boolean = false): object {
+  static success(
+    action: string,
+    data?: unknown,
+    options: SuccessResponseOptions = {}
+  ): ApiResponse {
+    const { customizeTip = false } = options
     return {
       state: 0,
       msg: action + (customizeTip ? '' : '成功！'),
       data
     }
+  }
+
+  static ok(action: string, data?: unknown, customizeTip: boolean = false): ApiResponse {
+    return App.success(action, data, { customizeTip })
   }
 
   static err(err: unknown): { state: number; msg: string; data: unknown } {

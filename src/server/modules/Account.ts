@@ -55,12 +55,12 @@ class AccountModule extends App {
 
   constructor(session: SessionLike) {
     super([
-      { fun: App.ok, name: 'oklogin', msg: '登录成功' },
-      { fun: App.ok, name: 'oklogout', msg: '登出成功' },
-      { fun: App.ok, name: 'okget', msg: '获取成功' },
-      { fun: App.ok, name: 'oksend', msg: '发送成功' },
-      { fun: App.ok, name: 'okverify', msg: '验证成功' },
-      { fun: App.ok, name: 'okfollow', msg: '关注成功' }
+      { fun: App.success, name: 'oklogin', msg: '登录成功' },
+      { fun: App.success, name: 'oklogout', msg: '登出成功' },
+      { fun: App.success, name: 'okget', msg: '获取成功' },
+      { fun: App.success, name: 'oksend', msg: '发送成功' },
+      { fun: App.success, name: 'okverify', msg: '验证成功' },
+      { fun: App.success, name: 'okfollow', msg: '关注成功' }
     ])
     this.session = session
     this.activity = new ActivityModule(session)

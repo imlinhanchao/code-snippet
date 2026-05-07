@@ -15,7 +15,7 @@ class ActivityModule extends App {
   session: SessionLike
 
   constructor(session: SessionLike) {
-    super([{ fun: App.ok, name: 'okget', msg: '获取成功' }])
+    super([{ fun: App.success, name: 'okget', msg: '获取成功' }])
     this.session = session
     this.name = '活动'
   }
