@@ -42,7 +42,7 @@ async function onLogin() {
   errorMsg.value = ''
   loading.value = true
   try {
-    const rsp = await accountStore.login(username.value, passwd.value, '')
+    const rsp = await accountStore.login(username.value, passwd.value)
     if (rsp?.state === 0) {
       window.location.href = '/'
       return

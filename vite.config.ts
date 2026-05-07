@@ -7,11 +7,15 @@ import fs from 'fs'
 function getBackendTarget() {
   try {
     const configPath = path.resolve(__dirname, 'config.json')
-    if (!fs.existsSync(configPath)) return 'http://localhost:3000'
+    if (!fs.existsSync(configPath)) {
+      console.warn('[vite] config.json not found, fallback backend target http://localhost:3000')
+      return 'http://localhost:3000'
+    }
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
     const port = config?.base?.port || 3000
     return `http://localhost:${port}`
   } catch {
+    console.warn('[vite] failed to parse config.json, fallback backend target http://localhost:3000')
     return 'http://localhost:3000'
   }
 }

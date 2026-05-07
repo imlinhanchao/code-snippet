@@ -52,7 +52,7 @@ export const useAccountStore = defineStore('account', () => {
     }
   }
 
-  async function login(username: string, passwd: string, captcha: string) {
+  async function login(username: string, passwd: string, captcha = '') {
     loading.value = true
     error.value = null
     try {

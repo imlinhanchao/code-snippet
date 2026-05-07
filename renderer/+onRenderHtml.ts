@@ -3,7 +3,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { createApp } from './app'
 
 export default async function onRenderHtml(pageContext: any) {
-  const { Page, pageProps } = pageContext
+  const { Page, pageProps, headTags, bodyTags } = pageContext
   const app = createApp(Page, pageProps, pageContext)
   const appHtml = await renderToString(app)
 
@@ -13,10 +13,11 @@ export default async function onRenderHtml(pageContext: any) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Code Snippet</title>
-      <link rel="stylesheet" href="/assets/index.css" />
+      ${dangerouslySkipEscape(headTags || '')}
     </head>
     <body>
       <div id="app">${dangerouslySkipEscape(appHtml)}</div>
+      ${dangerouslySkipEscape(bodyTags || '')}
     </body>
     </html>`
 }
