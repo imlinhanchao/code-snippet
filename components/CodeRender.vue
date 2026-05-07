@@ -38,7 +38,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { marked } from 'marked'
+import { marked, Renderer } from 'marked'
+
+// Escape raw HTML blocks to prevent XSS when rendering user-provided markdown
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+const safeRenderer = new Renderer()
+safeRenderer.html = ({ text }: { text: string }) => escapeHtml(text)
 
 const { t } = useI18n()
 
@@ -80,6 +88,6 @@ const isRender = computed(() => isMarkdown.value || isSvg.value || isImage.value
 
 const renderedMarkdown = computed(() => {
   if (!isMarkdown.value) return ''
-  return marked.parse(props.code.content) as string
+  return marked.parse(props.code.content, { renderer: safeRenderer }) as string
 })
 </script>

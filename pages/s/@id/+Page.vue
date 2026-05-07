@@ -80,7 +80,8 @@ import CodeRender from '@components/CodeRender.vue'
 import { usePageContext } from '../../../renderer/usePageContext'
 import { useAccountStore } from '@store/useAccountStore'
 import { useSnippetStore, type Snippet } from '@store/useSnippetStore'
-import apiClient from '../../../src/api/client'
+import { useCommentStore } from '@store/useCommentStore'
+import { useFavStore } from '@store/useFavStore'
 
 const { t } = useI18n()
 const pageContext = usePageContext()
@@ -88,6 +89,8 @@ const id = pageContext.routeParams?.id as string
 
 const accountStore = useAccountStore()
 const snippetStore = useSnippetStore()
+const commentStore = useCommentStore()
+const favStore = useFavStore()
 
 const snippet = ref<Snippet | null>(null)
 const loading = ref(true)
@@ -104,11 +107,9 @@ onMounted(async () => {
     await accountStore.fetchInfo()
     const data = await snippetStore.getSnippet(id)
     snippet.value = data
-    // load comments
-    const rsp = await apiClient.get(`snippet/comments?id=${id}&index=0&count=50`)
-    if (rsp.data?.state === 0) {
-      comments.value = rsp.data?.data?.data ?? rsp.data?.data ?? []
-    }
+    // load comments using comment store
+    const commentData = await commentStore.getComments(id)
+    comments.value = commentData
   } catch (e: any) {
     errorMsg.value = e?.message || 'Failed to load snippet'
   } finally {
@@ -118,11 +119,18 @@ onMounted(async () => {
 
 async function onStar() {
   if (!snippet.value) return
-  const action = snippet.value.stared ? 'snippet/unstar' : 'snippet/star'
-  const rsp = await apiClient.post(action, { id: snippet.value.id })
-  if (rsp.data?.state === 0) {
-    snippet.value.stared = !snippet.value.stared
-    snippet.value.stars = (snippet.value.stars ?? 0) + (snippet.value.stared ? 1 : -1)
+  if (snippet.value.stared) {
+    const rsp = await favStore.removeFav(snippet.value.id)
+    if (rsp?.state === 0) {
+      snippet.value.stared = false
+      snippet.value.stars = Math.max(0, (snippet.value.stars ?? 1) - 1)
+    }
+  } else {
+    const rsp = await favStore.addFav(snippet.value.id)
+    if (rsp?.state === 0) {
+      snippet.value.stared = true
+      snippet.value.stars = (snippet.value.stars ?? 0) + 1
+    }
   }
 }
 
@@ -145,9 +153,9 @@ async function onComment() {
   if (!commentText.value.trim() || !snippet.value) return
   commentLoading.value = true
   try {
-    const rsp = await apiClient.post('snippet/comment', { id: snippet.value.id, content: commentText.value.trim() })
-    if (rsp.data?.state === 0) {
-      comments.value.push(rsp.data.data)
+    const rsp = await commentStore.createComment({ snippet: snippet.value.id, content: commentText.value.trim() })
+    if (rsp?.state === 0) {
+      comments.value.push(rsp.data)
       snippet.value.comments = (snippet.value.comments ?? 0) + 1
       commentText.value = ''
     }

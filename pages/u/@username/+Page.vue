@@ -62,6 +62,8 @@ import SnippetCard from '@components/SnippetCard.vue'
 import { usePageContext } from '../../../renderer/usePageContext'
 import { useAccountStore } from '@store/useAccountStore'
 import { useSnippetStore, type Snippet } from '@store/useSnippetStore'
+import { useFavStore } from '@store/useFavStore'
+import apiClient from '../../../src/api/client'
 
 const { t } = useI18n()
 const pageContext = usePageContext()
@@ -69,6 +71,7 @@ const username = pageContext.routeParams?.username as string
 
 const accountStore = useAccountStore()
 const snippetStore = useSnippetStore()
+const favStore = useFavStore()
 
 const user = ref<any>(null)
 const loading = ref(true)
@@ -114,19 +117,27 @@ onMounted(async () => {
 
 async function loadStars() {
   if (starredSnippets.value.length) return
-  const rsp = await snippetStore.querySnippets({
-    index: 0, count: 30,
-    query: { star: username },
-    fields: ['id', 'username', 'description', 'language', 'private', 'create_time', 'codes', 'stars', 'forks', 'comments']
-  })
-  if (rsp?.state === 0) starredSnippets.value = snippetStore.snippets
+  // Query favs for this user, then load the starred snippets
+  const rsp = await favStore.queryFavs({ index: 0, count: 30, query: { username } })
+  if (rsp?.state === 0 && Array.isArray(rsp.data?.data)) {
+    const snippetIds = rsp.data.data.map((f: any) => f.snippet).filter(Boolean)
+    if (snippetIds.length > 0) {
+      const snippetRsp = await apiClient.post('snippet/query', {
+        index: 0, count: 30,
+        query: { id: snippetIds },
+        fields: ['id', 'username', 'description', 'language', 'private', 'create_time', 'codes', 'stars', 'forks', 'comments']
+      })
+      if (snippetRsp.data?.state === 0) starredSnippets.value = snippetRsp.data?.data?.data ?? []
+    }
+  }
 }
 
 async function loadForks() {
   if (forkedSnippets.value.length) return
+  // Snippets forked by this user have username === this user and fork_from is non-empty
   const rsp = await snippetStore.querySnippets({
     index: 0, count: 30,
-    query: { fork: username },
+    query: { username, fork_from: '!empty' },
     fields: ['id', 'username', 'description', 'language', 'private', 'create_time', 'codes', 'stars', 'forks', 'comments']
   })
   if (rsp?.state === 0) forkedSnippets.value = snippetStore.snippets
