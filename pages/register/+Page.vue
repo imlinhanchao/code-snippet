@@ -1,7 +1,6 @@
 <template>
-  <main class="min-h-screen bg-base-200">
-    <NavBar />
-    <section class="max-w-md mx-auto px-4 py-10">
+  <AppLayout>
+    <section class="max-w-md mx-auto py-4">
       <div class="card bg-base-100 shadow-sm border border-base-200">
         <div class="card-body">
           <h1 class="card-title">{{ t('register') }}</h1>
@@ -32,13 +31,13 @@
         </div>
       </div>
     </section>
-  </main>
+  </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import NavBar from '@components/NavBar.vue'
+import AppLayout from '@components/AppLayout.vue'
 import { useAccountStore } from '@store/useAccountStore'
 
 const { t } = useI18n()

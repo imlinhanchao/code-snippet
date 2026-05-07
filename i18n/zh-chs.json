@@ -195,5 +195,18 @@
         "oksend": "发送成功",
         "okverify": "验证成功",
         "okrun": "运行成功"
-    }
+    },
+    "source": "源码",
+    "render": "渲染",
+    "unfollow": "取消关注",
+    "description": "描述",
+    "create_snippet": "创建代码片段",
+    "verifying": "验证中...",
+    "verify_success": "邮箱验证成功！",
+    "verify_fail": "验证失败。",
+    "go_home": "回到首页",
+    "embed_no_codes": "没有代码文件。",
+    "remove_file": "删除文件",
+    "language": "语言",
+    "theme": "主题"
 }

@@ -195,5 +195,18 @@
         "oksend": "發送成功",
         "okverify": "驗證成功",
         "okrun": "運行成功"
-    }
+    },
+    "source": "原始碼",
+    "render": "渲染",
+    "unfollow": "取消關注",
+    "description": "描述",
+    "create_snippet": "創建代碼片段",
+    "verifying": "驗證中...",
+    "verify_success": "郵箱驗證成功！",
+    "verify_fail": "驗證失敗。",
+    "go_home": "返回首頁",
+    "embed_no_codes": "沒有代碼文件。",
+    "remove_file": "刪除文件",
+    "language": "語言",
+    "theme": "主題"
 }

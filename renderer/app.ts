@@ -42,6 +42,14 @@ async function createApp(Page: Component, pageProps: Record<string, any> | undef
   if (!import.meta.env.SSR) {
     const { default: hljsVuePlugin } = await import('@highlightjs/vue-plugin')
     app.use(hljsVuePlugin)
+
+    const savedLang = localStorage.getItem('app-lang')
+    if (savedLang) {
+      i18n.global.locale.value = savedLang as any
+    }
+
+    const savedTheme = localStorage.getItem('app-theme') ?? 'bumblebee'
+    document.documentElement.setAttribute('data-theme', savedTheme)
   }
 
   setPageContext(app, pageContextReactive)

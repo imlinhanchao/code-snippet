@@ -195,5 +195,18 @@
         "oksend": "Send Success",
         "okverify": "Verify Success",
         "okrun": "Execute Success"
-    }
+    },
+    "source": "Source",
+    "render": "Render",
+    "unfollow": "Unfollow",
+    "description": "Description",
+    "create_snippet": "Create Snippet",
+    "verifying": "Verifying...",
+    "verify_success": "Email verified successfully!",
+    "verify_fail": "Verification failed.",
+    "go_home": "Go Home",
+    "embed_no_codes": "No code files.",
+    "remove_file": "Remove File",
+    "language": "Language",
+    "theme": "Theme"
 }

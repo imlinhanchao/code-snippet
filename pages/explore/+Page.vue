@@ -1,22 +1,19 @@
 <template>
-  <main class="min-h-screen bg-base-200">
-    <NavBar />
-    <section class="max-w-5xl mx-auto px-4 py-6">
-      <h1 class="text-xl font-bold mb-4">{{ t('explore') }}</h1>
-      <div v-if="loading" class="text-base-content/60">Loading...</div>
-      <div v-else-if="errorMsg" class="alert alert-error text-sm">{{ errorMsg }}</div>
-      <div v-else-if="snippets.length === 0" class="text-base-content/60">{{ t('code_wasteland') }}</div>
-      <div v-else class="grid gap-3">
-        <SnippetCard v-for="snippet in snippets" :key="snippet.id" :snippet="snippet" />
-      </div>
-    </section>
-  </main>
+  <AppLayout>
+    <h1 class="text-xl font-bold mb-4">{{ t('explore') }}</h1>
+    <div v-if="loading" class="text-base-content/60">Loading...</div>
+    <div v-else-if="errorMsg" class="alert alert-error text-sm">{{ errorMsg }}</div>
+    <div v-else-if="snippets.length === 0" class="text-base-content/60">{{ t('code_wasteland') }}</div>
+    <div v-else class="grid gap-3">
+      <SnippetCard v-for="snippet in snippets" :key="snippet.id" :snippet="snippet" />
+    </div>
+  </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import NavBar from '@components/NavBar.vue'
+import AppLayout from '@components/AppLayout.vue'
 import SnippetCard from '@components/SnippetCard.vue'
 import { useSnippetStore, type Snippet } from '@store/useSnippetStore'
 
