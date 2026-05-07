@@ -3,7 +3,7 @@
     <NavBar />
     <section class="max-w-5xl mx-auto px-4 py-6">
       <h1 class="text-xl font-bold mb-4">{{ t('home') }}</h1>
-      <div v-if="loading" class="text-base-content/60">{{ t('loading') || 'Loading...' }}</div>
+      <div v-if="loading" class="text-base-content/60">Loading...</div>
       <div v-else-if="errorMsg" class="alert alert-error text-sm">{{ errorMsg }}</div>
       <div v-else-if="feedItems.length === 0" class="text-base-content/60">{{ t('no_feeds') }}</div>
       <div v-else class="bg-base-100 rounded-lg px-4">
@@ -22,9 +22,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import NavBar from '@components/NavBar.vue'
 import FeedItem from '@components/FeedItem.vue'
 import SnippetCard from '@components/SnippetCard.vue'
+
 import { useAccountStore } from '@store/useAccountStore'
 import { useSnippetStore, type Snippet } from '@store/useSnippetStore'
 
