@@ -22,7 +22,8 @@
 
 ## ⚙️ 调试
 1. 执行`npm install`;
-2. 前端执行`npm run dev`，后端使用 Visual Studio Code 运行调试（直接按下`F5`即可）。
+2. 前端（Vike）执行`npm run dev`；
+3. 后端执行`npm run dev:server`（或使用 Visual Studio Code 直接按下`F5`调试）。
 
 ## 🛡 部署
 服务器需安装 `nodejs` 和 `npm` 。部署执行如下脚本：

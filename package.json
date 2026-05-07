@@ -7,8 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "vite dev",
+    "dev": "vike dev",
     "dev:server": "ts-node src/server.ts",
+    "dev:vite": "vite dev",
     "build": "vite build",
     "init": "ts-node scripts/init.ts",
     "initdb": "ts-node scripts/initdb.ts"
