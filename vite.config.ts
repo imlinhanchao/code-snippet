@@ -8,7 +8,7 @@ function backendMiddlewarePlugin(): Plugin {
     name: 'backend-middleware-plugin',
     apply: 'serve' as const,
     async configureServer(server: ViteDevServer) {
-      const runtimeFlag = '__CODE_SNIPPET_TS_NODE_REGISTERED__'
+      const runtimeFlag = 'TS_NODE_REGISTERED_FLAG'
       const runtimeGlobal = globalThis as Record<string, unknown>
       if (!runtimeGlobal[runtimeFlag]) {
         require('ts-node/register/transpile-only')
