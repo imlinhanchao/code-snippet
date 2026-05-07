@@ -22,7 +22,7 @@ class FavModule extends App {
   activity: ActivityModule
 
   constructor(session: SessionLike) {
-    super([])
+    super()
     this.session = session
     this.name = '收藏'
     this.account = new AccountModule(session)
@@ -34,7 +34,7 @@ class FavModule extends App {
     return __error__
   }
 
-  async new(data: Record<string, unknown>): Promise<object> {
+  async new(data: Record<string, unknown>) {
     try {
       data.username = this.account.user.username
 
@@ -45,26 +45,25 @@ class FavModule extends App {
 
       const fav = App.filter(await super.createRecord(data, FavEntity, ['username', 'snippet']), this.safeKey)
       this.activity.star(snippet as unknown as Record<string, unknown>, this.account.user.username as string)
-      return this.okcreate(fav)
+      return fav
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async del(data: Record<string, unknown>): Promise<object> {
+  async del(data: Record<string, unknown>) {
     try {
       data.username = this.account.user.username
       const repo = AppDataSource.getRepository(FavEntity)
       await repo.delete(data as any)
-      return this.okdelete(null)
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async remove(snippet: string, onlyData?: boolean): Promise<unknown> {
+  async remove(snippet: string, onlyData?: boolean) {
     if (!onlyData) return
     try {
       const repo = AppDataSource.getRepository(FavEntity)
@@ -76,13 +75,13 @@ class FavModule extends App {
     }
   }
 
-  async get(snippet: string, onlyData: boolean = false): Promise<unknown> {
+  async get(snippet: string, onlyData: boolean = false) {
     try {
       const repo = AppDataSource.getRepository(FavEntity)
       const favs = await repo.find({ where: { snippet } })
       const mapped = favs.map((d) => App.filter(d as unknown as Record<string, unknown>, this.safeKey))
       if (onlyData) return mapped
-      return this.okquery(mapped)
+      return mapped
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -103,7 +102,7 @@ class FavModule extends App {
   async query(
     data: { query?: Record<string, unknown>; index?: number; count?: number; order?: any[]; fields?: string[] },
     onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       username: App.ops.equal,
       snippet: App.ops.in,
@@ -114,7 +113,7 @@ class FavModule extends App {
       const queryData = await super.findAll(data, FavEntity, ops)
       if (onlyData) return queryData
       queryData.data = queryData.data.map((q) => App.filter(q, this.safeKey))
-      return this.okquery(queryData)
+      return queryData
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -124,7 +123,7 @@ class FavModule extends App {
   async count(
     data: Record<string, unknown>,
     onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       username: App.ops.equal,
       snippet: App.ops.in,
@@ -134,7 +133,7 @@ class FavModule extends App {
     try {
       const total = await super.countBy(data, FavEntity, ops, 'snippet')
       if (onlyData) return total
-      return this.okquery(total)
+      return total
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)

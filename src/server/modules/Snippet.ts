@@ -30,7 +30,7 @@ class SnippetModule extends App {
   activity: ActivityModule
 
   constructor(session: SessionLike) {
-    super([{ fun: App.success, name: 'okrun', msg: '执行成功' }])
+    super()
     this.session = session
     this.name = 'Snippet'
     this.account = new AccountModule(session)
@@ -48,7 +48,7 @@ class SnippetModule extends App {
     return __error__
   }
 
-  async new(data: Record<string, unknown>, onlyData: boolean = false): Promise<unknown> {
+  async new(data: Record<string, unknown>, onlyData: boolean = false) {
     try {
       data.username = this.account.user.username
       if (!App.haskeys(data, ['codes'])) throw this.error.param
@@ -83,14 +83,14 @@ class SnippetModule extends App {
 
       if (onlyData) return snippet
       this.activity.create(snippet, this.account.user.username as string)
-      return this.okcreate(snippet)
+      return snippet
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async set(data: Record<string, unknown>): Promise<unknown> {
+  async set(data: Record<string, unknown>) {
     try {
       data.username = undefined
       data.fork_from = undefined
@@ -151,14 +151,14 @@ class SnippetModule extends App {
         App.filter(d, this.code.safeKey.filter((k) => k !== 'snippet'))
       )
 
-      return this.okupdate(snippet)
+      return snippet
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async del(data: Record<string, unknown>): Promise<unknown> {
+  async del(data: Record<string, unknown>) {
     try {
       const info = await super.deleteRecord(data, SnippetEntity, (d: any) => {
         if (d.username !== this.account.user.username) throw this.error.unauthorized
@@ -170,14 +170,14 @@ class SnippetModule extends App {
       await this.comment.remove(data.id as string, true)
       const changeRepo = AppDataSource.getRepository(ChangeEntity)
       await changeRepo.delete({ snippet: data.id as string })
-      return this.okdelete((info as any).id)
+      return info.id
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async fork(data: Record<string, unknown>): Promise<unknown> {
+  async fork(data: Record<string, unknown>) {
     try {
       if (!App.haskeys(data, ['id'])) throw this.error.param
 
@@ -191,14 +191,14 @@ class SnippetModule extends App {
       delete snippet.id
       snippet = await this.new(snippet, true) as Record<string, unknown>
       this.activity.fork(snippet, this.account.user.username as string)
-      return this.okcreate(snippet)
+      return snippet
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async get(id: string, onlyData: boolean = false): Promise<unknown> {
+  async get(id: string, onlyData: boolean = false) {
     const snippetRepo = AppDataSource.getRepository(SnippetEntity)
     const info = await snippetRepo.findOne({ where: { id } })
 
@@ -227,13 +227,12 @@ class SnippetModule extends App {
 
     const extendKeys = ['codes', 'stared', 'fork']
     if (onlyData) return App.filter(infoObj, this.safeKey.concat(extendKeys))
-    return this.okquery(App.filter(infoObj, this.safeKey.concat(extendKeys)))
+    return App.filter(infoObj, this.safeKey.concat(extendKeys))
   }
 
   async changes(
     data: Record<string, unknown>,
-    onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     if (!App.haskeys(data, ['id'])) throw this.error.param
     const { index = 0, count = 20 } = data
 
@@ -265,8 +264,7 @@ class SnippetModule extends App {
           .map((h) => App.filter(h as unknown as Record<string, unknown>, historySafeKey))
       })
 
-      if (onlyData) return changesMapped
-      return this.okquery(changesMapped)
+      return changesMapped
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -281,8 +279,7 @@ class SnippetModule extends App {
       order?: any[]
       fields?: string[]
     },
-    onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       id: App.ops.in,
       fork_from: App.ops.in,
@@ -338,7 +335,6 @@ class SnippetModule extends App {
       if (data.fields.includes('fork_from') && fork_ids.length > 0) {
         const snippets = (await this.query(
           { query: { id: fork_ids }, index: 0, count: -1, fields: ['id', 'codes', 'username'] },
-          true
         )) as any
         queryData.data.forEach((d) => {
           if (!d.fork_from || d.fork_from === '') return
@@ -354,15 +350,14 @@ class SnippetModule extends App {
         })
       }
 
-      if (onlyData) return queryData
-      return this.okquery(queryData)
+      return queryData
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async execute(data: Record<string, unknown>): Promise<unknown> {
+  async execute(data: Record<string, unknown>) {
     const keys = ['language', 'codes', 'command']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -372,7 +367,7 @@ class SnippetModule extends App {
       (data.input as string) || '',
       data.command as string
     )
-    return this.okrun(result)
+    return result
   }
 }
 

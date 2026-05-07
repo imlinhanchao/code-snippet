@@ -21,7 +21,7 @@ class CommentModule extends App {
   activity: ActivityModule
 
   constructor(session: SessionLike) {
-    super([])
+    super()
     this.session = session
     this.name = '评论'
     this.account = new AccountModule(session)
@@ -33,7 +33,7 @@ class CommentModule extends App {
     return __error__
   }
 
-  async new(data: Record<string, unknown>): Promise<object> {
+  async new(data: Record<string, unknown>) {
     try {
       data.username = this.account.user.username
 
@@ -49,14 +49,14 @@ class CommentModule extends App {
         if (snippet) targetUser = snippet.username
       }
       this.activity.comment(comment, this.account.user.username as string, targetUser)
-      return this.okcreate(comment)
+      return comment
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async set(data: Record<string, unknown>): Promise<object> {
+  async set(data: Record<string, unknown>) {
     try {
       data.username = undefined
       data.snippet = undefined
@@ -69,28 +69,28 @@ class CommentModule extends App {
         }),
         this.safeKey
       )
-      return this.okupdate(comment)
+      return comment
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async del(data: Record<string, unknown>): Promise<object> {
+  async del(data: Record<string, unknown>) {
     try {
       data.username = this.account.user.username
       const repo = AppDataSource.getRepository(CommentEntity)
       const comment = await repo.findOne({ where: data as any })
       await repo.delete(data as any)
       this.activity.removeComment(data, this.account.user.username as string)
-      return this.okdelete(comment ? comment.id : null)
+      return comment ? comment.id : null
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async remove(snippet: string, onlyData?: boolean): Promise<unknown> {
+  async remove(snippet: string, onlyData?: boolean) {
     if (!onlyData) return
     try {
       const repo = AppDataSource.getRepository(CommentEntity)
@@ -102,14 +102,14 @@ class CommentModule extends App {
     }
   }
 
-  async get(snippet: string, onlyData: boolean = false): Promise<unknown> {
+  async get(snippet: string, onlyData: boolean = false) {
     try {
       const repo = AppDataSource.getRepository(CommentEntity)
       const comments = await repo.find({ where: { snippet } })
       if (!comments) throw this.error.notexisted as any
       const mapped = comments.map((d) => App.filter(d as unknown as Record<string, unknown>, this.safeKey))
       if (onlyData) return mapped
-      return this.okquery(mapped)
+      return mapped
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -119,7 +119,7 @@ class CommentModule extends App {
   async query(
     data: { query?: Record<string, unknown>; index?: number; count?: number; order?: any[]; fields?: string[] },
     onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       username: App.ops.equal,
       snippet: App.ops.in,
@@ -130,7 +130,7 @@ class CommentModule extends App {
       const queryData = await super.findAll(data, CommentEntity, ops)
       if (onlyData) return queryData
       queryData.data = queryData.data.map((q) => App.filter(q, this.safeKey))
-      return this.okquery(queryData)
+      return queryData
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
@@ -140,7 +140,7 @@ class CommentModule extends App {
   async count(
     data: Record<string, unknown>,
     onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       username: App.ops.equal,
       snippet: App.ops.in,
@@ -150,7 +150,7 @@ class CommentModule extends App {
     try {
       const total = await super.countBy(data, CommentEntity, ops, 'snippet')
       if (onlyData) return total
-      return this.okquery(total)
+      return total
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)

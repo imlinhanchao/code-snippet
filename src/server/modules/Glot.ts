@@ -37,7 +37,7 @@ class GlotApp extends App {
     stdin: string = '',
     command: string = '',
     version: string = 'latest'
-  ): Promise<unknown> {
+  ) {
     try {
       const url = `${domain}/${GlotApp.langs[language]}/${version}`
       const rsp = await axios({

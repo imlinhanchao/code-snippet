@@ -41,7 +41,7 @@ class CodeModule extends App {
   safeKey: string[]
 
   constructor(session: SessionLike) {
-    super([])
+    super()
     this.session = session
     this.name = '代码'
     this.safeKey = ['id', 'create_time', 'update_time'].concat(App.getEntityKeys(CodeEntity))
@@ -173,7 +173,7 @@ class CodeModule extends App {
   async query(
     data: { query?: Record<string, unknown>; index?: number; count?: number; order?: any[]; fields?: string[] },
     onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       filename: App.ops.like,
       content: App.ops.like,
@@ -185,7 +185,7 @@ class CodeModule extends App {
       const queryData = await super.findAll(data, CodeEntity, ops)
       if (onlyData) return queryData
       queryData.data = queryData.data.map((q) => App.filter(q, this.safeKey))
-      return this.okquery(queryData)
+      return queryData
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)

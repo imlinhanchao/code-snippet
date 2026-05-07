@@ -37,7 +37,7 @@ class LibModule extends App {
   session?: SessionLike
 
   constructor(session?: SessionLike) {
-    super([{ fun: App.success, name: 'okupload', msg: '上传成功' }])
+    super()
     this.session = session
   }
 
@@ -48,7 +48,7 @@ class LibModule extends App {
     return __error__
   }
 
-  async upload(req: Request & { files?: Express.Multer.File[] }): Promise<object> {
+  async upload(req: Request & { files?: Express.Multer.File[] }) {
     try {
       const dirpath = path.join(process.cwd(), filecfg.upload)
       mkdirSync(dirpath)
@@ -71,7 +71,7 @@ class LibModule extends App {
         }
         filenames.push(filename)
       }
-      return this.okupload(filenames)
+      return filenames
     } catch (error) {
       console.error(error)
       throw error

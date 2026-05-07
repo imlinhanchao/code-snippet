@@ -15,7 +15,7 @@ class ActivityModule extends App {
   session: SessionLike
 
   constructor(session: SessionLike) {
-    super([{ fun: App.success, name: 'okget', msg: '获取成功' }])
+    super()
     this.session = session
     this.name = '活动'
   }
@@ -164,7 +164,7 @@ class ActivityModule extends App {
     repo.delete({ username: user, type: 5, notice: data.target as string }).catch(() => {})
   }
 
-  async readed(data: Record<string, unknown>, user: string): Promise<object> {
+  async readed(data: Record<string, unknown>, user: string) {
     const filtered = App.filter(data, ['id'])
     const repo = AppDataSource.getRepository(ActivityEntity)
     const where: Record<string, unknown> = {
@@ -178,7 +178,7 @@ class ActivityModule extends App {
       .set({ readed: true } as any)
       .where({ ...where, type: In([3, 4]) })
       .execute()
-    return this.okget(true)
+    return true
   }
 
   async list(
@@ -189,7 +189,7 @@ class ActivityModule extends App {
       type?: string
     },
     username: string
-  ): Promise<object> {
+  ) {
     const { lastTime = Date.now() / 1000, count = 20, follows = [], type } = data
 
     const repo = AppDataSource.getRepository(ActivityEntity)
@@ -230,19 +230,18 @@ class ActivityModule extends App {
     const safeKey = ['id', 'create_time', 'update_time'].concat(
       App.getEntityKeys(ActivityEntity)
     )
-    return this.okget(
-      results.map((v) => {
-        const item = v as unknown as Record<string, unknown>
-        if (item.source) {
-          try {
-            item.source = JSON.parse(item.source as string)
+    return results.map((v) => {
+      const item = v as unknown as Record<string, unknown>
+      if (item.source) {
+        try {
+          item.source = JSON.parse(item.source as string)
           } catch {
             item.source = null
           }
         }
         return App.filter(item, safeKey)
       })
-    )
+    
   }
 }
 

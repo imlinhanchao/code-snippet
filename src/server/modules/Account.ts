@@ -54,14 +54,7 @@ class AccountModule extends App {
   activity: ActivityModule
 
   constructor(session: SessionLike) {
-    super([
-      { fun: App.success, name: 'oklogin', msg: '登录成功' },
-      { fun: App.success, name: 'oklogout', msg: '登出成功' },
-      { fun: App.success, name: 'okget', msg: '获取成功' },
-      { fun: App.success, name: 'oksend', msg: '发送成功' },
-      { fun: App.success, name: 'okverify', msg: '验证成功' },
-      { fun: App.success, name: 'okfollow', msg: '关注成功' }
-    ])
+    super()
     this.session = session
     this.activity = new ActivityModule(session)
     this.name = '用户'
@@ -95,7 +88,7 @@ class AccountModule extends App {
     return this.session.account_login!
   }
 
-  async login(data: Record<string, unknown>): Promise<object> {
+  async login(data: Record<string, unknown>) {
     const keys = ['username', 'passwd']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -120,19 +113,19 @@ class AccountModule extends App {
         account as Record<string, unknown>,
         ['id'].concat(App.getEntityKeys(AccountEntity))
       )
-      return this.oklogin(App.filter(this.session.account_login, this.safeKey))
+      return App.filter(this.session.account_login, this.safeKey)
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.network(err)
     }
   }
 
-  async logout(): Promise<object> {
+  async logout() {
     this.session.account_login = undefined
-    return this.oklogout(null)
+    return null
   }
 
-  async create(data: Record<string, unknown>, onlyData: boolean = false): Promise<unknown> {
+  async create(data: Record<string, unknown>, onlyData: boolean = false) {
     const keys = ['username', 'passwd']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -162,14 +155,14 @@ class AccountModule extends App {
 
       const account = await super.createRecord(data, AccountEntity, 'username')
       if (onlyData) return account
-      return this.okcreate(App.filter(account, this.safeKey))
+      return App.filter(account, this.safeKey)
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async update(data: Record<string, unknown>): Promise<object> {
+  async update(data: Record<string, unknown>) {
     const keys = ['username']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -198,14 +191,14 @@ class AccountModule extends App {
         tokenRepo.delete({ username: account.username as string }).catch(() => {})
       }
 
-      return this.okupdate(App.filter(await super.updateRecord(data, AccountEntity), this.safeKey))
+      return App.filter(await super.updateRecord(data, AccountEntity), this.safeKey)
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async exist(username: string, onlyData: boolean = false): Promise<unknown> {
+  async exist(username: string, onlyData: boolean = false) {
     try {
       const repo = AppDataSource.getRepository(AccountEntity)
       const data = await repo.findOne({ where: { username } })
@@ -217,7 +210,7 @@ class AccountModule extends App {
     }
   }
 
-  async exists(data: Record<string, unknown>): Promise<object> {
+  async exists(data: Record<string, unknown>) {
     const repo = AppDataSource.getRepository(AccountEntity)
     const account = await repo.findOne({
       where: data as any,
@@ -241,17 +234,17 @@ class AccountModule extends App {
     return buffer;
   }
 
-  async info(onlyData: boolean = false, fields?: string[]): Promise<unknown> {
+  async info(onlyData: boolean = false, fields?: string[]) {
     if (!this.islogin) throw this.error.nologin
     const repo = AppDataSource.getRepository(AccountEntity)
     const data = await repo.findOne({ where: { username: this.user.username as string } })
     if (!data) throw this.error.nologin
     const keys = fields || this.safeKey
     if (onlyData) return App.filter(data as unknown as Record<string, unknown>, keys)
-    return this.okget(App.filter(data as unknown as Record<string, unknown>, keys))
+    return App.filter(data as unknown as Record<string, unknown>, keys)
   }
 
-  async follow(data: Record<string, unknown>): Promise<object> {
+  async follow(data: Record<string, unknown>) {
     if (!this.islogin) throw this.error.nologin
     if (!App.haskeys(data, ['target'])) throw this.error.param
 
@@ -266,16 +259,16 @@ class AccountModule extends App {
       await followRepo.save(entity)
       this.activity.follow(data, this.user.username as string)
     }
-    return this.okfollow(null)
+    return null
   }
 
-  async unfollow(data: Record<string, unknown>): Promise<object> {
+  async unfollow(data: Record<string, unknown>) {
     if (!this.islogin) throw this.error.nologin
     if (!App.haskeys(data, ['target'])) throw this.error.param
     const followRepo = AppDataSource.getRepository(FollowEntity)
     await followRepo.delete({ username: this.user.username as string, target: data.target as string })
     this.activity.unfollow(data, this.user.username as string)
-    return this.okget(null)
+    return null
   }
 
   async isFollow(usernames: string[]): Promise<Record<string, boolean>> {
@@ -289,7 +282,7 @@ class AccountModule extends App {
     return result
   }
 
-  async following(data: { index?: number; count?: number } = {}): Promise<object> {
+  async following(data: { index?: number; count?: number } = {}) {
     const { index = 0, count = 20 } = data
     if (!this.islogin) throw this.error.nologin
     try {
@@ -303,14 +296,14 @@ class AccountModule extends App {
       const accounts = await accountRepo.find({
         where: { username: In(follows.map((f) => f.target)) }
       })
-      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey)))
+      return accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async follower(data: { index?: number; count?: number } = {}): Promise<object> {
+  async follower(data: { index?: number; count?: number } = {}) {
     const { index = 0, count = 20 } = data
     if (!this.islogin) throw this.error.nologin
     try {
@@ -324,14 +317,14 @@ class AccountModule extends App {
       const accounts = await accountRepo.find({
         where: { username: In(follows.map((f) => f.username)) }
       })
-      return this.okget(accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey)))
+      return accounts.map((a) => App.filter(a as unknown as Record<string, unknown>, this.safeKey))
     } catch (err) {
       if ((err as any).isdefine) throw err
       throw this.error.db(err)
     }
   }
 
-  async activities(data: Record<string, unknown> = {}): Promise<object> {
+  async activities(data: Record<string, unknown> = {}) {
     const followRepo = AppDataSource.getRepository(FollowEntity)
     const follows = await followRepo.find({
       where: { username: this.user.username as string }
@@ -339,15 +332,14 @@ class AccountModule extends App {
     return await this.activity.list({ ...data, follows } as any, this.user.username as string) as object
   }
 
-  async makereaded(data: Record<string, unknown>): Promise<object> {
-    return await this.activity.readed(data, this.user.username as string) as object
+  async makereaded(data: Record<string, unknown>) {
+    return await this.activity.readed(data, this.user.username as string)
   }
 
   async query(
     query: Record<string, unknown>,
     fields: string[] | null = null,
-    onlyData: boolean = false
-  ): Promise<unknown> {
+  ) {
     const ops = {
       id: App.ops.in,
       username: App.ops.in
@@ -365,14 +357,13 @@ class AccountModule extends App {
       queryData.data.forEach((d) => {
         ;(d as any).isfollow = !!isFollow[d.username as string]
       })
-      if (onlyData) return queryData
-      return this.okquery(queryData)
+      return queryData
     } catch (err) {
       throw err
     }
   }
 
-  async sendverify(data: Record<string, unknown>, _onlyData: boolean = false): Promise<object> {
+  async sendverify(data: Record<string, unknown>, _onlyData: boolean = false) {
     const keys = ['username', 'email']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -400,13 +391,13 @@ class AccountModule extends App {
         html: this.__makemail({ ...account, token, domain: configData.base?.domain }, 'verify')
       })
 
-      return this.oksend(info)
+      return info
     } catch (err) {
       throw err
     }
   }
 
-  async verify(data: Record<string, unknown>, _onlyData: boolean = false): Promise<object> {
+  async verify(data: Record<string, unknown>, _onlyData: boolean = false) {
     const keys = ['username', 'token']
     if (!App.haskeys(data, keys)) throw this.error.param
 
@@ -426,7 +417,7 @@ class AccountModule extends App {
       await accountRepo.save(account)
       await tokenRepo.delete({ username: data.username as string })
 
-      return this.okverify(data.username)
+      return data.username
     } catch (err) {
       throw err
     }

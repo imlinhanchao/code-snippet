@@ -61,7 +61,7 @@ function loader(Module: StaticModule): Router {
       const method = resolveMethod(instance, Module, fn)
       if (!method) throw instance.error.param
       const ret = await method(sanitizeBody(req.body))
-      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(App.success('', ret)) }
     } catch (err) {
       return res.json(App.err(err))
     }
@@ -74,7 +74,7 @@ function loader(Module: StaticModule): Router {
       const method = resolveMethod(instance, Module, fn)
       if (!method) throw instance.error.param
       const ret = await method(String(req.params.param))
-      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(App.success('', ret)) }
     } catch (err) {
       return res.json(App.err(err))
     }
@@ -87,7 +87,7 @@ function loader(Module: StaticModule): Router {
       const method = resolveMethod(instance, Module, fn)
       if (!method) throw instance.error.param
       const ret = await method(req.query)
-      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(ret) }
+      if (ret instanceof Buffer) { res.write(ret); res.end() } else { res.json(App.success('', ret)) }
     } catch (err) {
       return res.json(App.err(err))
     }
