@@ -22,11 +22,11 @@
       </p>
       <div v-if="snippet.codes && snippet.codes.length > 0">
         <CodeRender :code="snippet.codes[0]" :snippet="snippet" class="code" :max-height="200">
-          <router-link :to="`/s/${snippet.id}`" v-if="snippet.codes.length > 1">
+          <a :href="`/s/${snippet.id}`" v-if="snippet.codes.length > 1">
             <p :title="$t('more')" class="more">
               <Icon type="ios-more"></Icon>
             </p>
-          </router-link>
+          </a>
         </CodeRender>
       </div>
       <div class="flex items-center gap-4 mt-2 text-xs text-base-content/50">
