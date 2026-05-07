@@ -8,10 +8,17 @@ function backendMiddlewarePlugin(): Plugin {
     name: 'backend-middleware-plugin',
     apply: 'serve' as const,
     async configureServer(server: ViteDevServer) {
-      const [{ default: backendApp }, { ensureAppDataSourceInitialized }] = await Promise.all([
-        import('./src/server/app'),
-        import('./src/server/database/data-source')
-      ])
+      const runtimeFlag = '__CODE_SNIPPET_TS_NODE_REGISTERED__'
+      const runtimeGlobal = globalThis as Record<string, unknown>
+      if (!runtimeGlobal[runtimeFlag]) {
+        require('ts-node/register/transpile-only')
+        runtimeGlobal[runtimeFlag] = true
+      }
+
+      const appModulePath = path.resolve(__dirname, 'src/server/app.ts')
+      const dataSourceModulePath = path.resolve(__dirname, 'src/server/database/data-source.ts')
+      const backendApp = require(appModulePath).default
+      const { ensureAppDataSourceInitialized } = require(dataSourceModulePath)
 
       await ensureAppDataSourceInitialized()
       console.info('[DB] Database connection established (vike dev).')
