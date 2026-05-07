@@ -152,13 +152,19 @@ async function saveProfile() {
   profileLoading.value = true
   profileMsg.value = ''
   try {
-    // upload avatar first if changed
+    let avatarPath: string | undefined
+    // upload avatar via lib/upload if changed
     if (avatarFile.value) {
       const formData = new FormData()
       formData.append('file', avatarFile.value)
-      await apiClient.post('account/avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const uploadRsp = await apiClient.post('lib/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      if (uploadRsp.data?.state === 0 && uploadRsp.data?.data?.length) {
+        avatarPath = uploadRsp.data.data[0]
+      }
     }
-    const rsp = await accountStore.update(profile.value)
+    const payload: any = { ...profile.value }
+    if (avatarPath) payload.avatar = avatarPath
+    const rsp = await accountStore.update(payload)
     if (rsp?.state === 0) {
       profileMsg.value = t('save_success')
       profileSuccess.value = true
@@ -205,7 +211,7 @@ async function updatePasswd() {
   securityLoading.value = true
   securityMsg.value = ''
   try {
-    const rsp = await accountStore.update({ passwd: passwd.value.old, newPasswd: passwd.value.value })
+    const rsp = await accountStore.update({ oldpasswd: passwd.value.old, passwd: passwd.value.value })
     if (rsp?.state === 0) {
       securityMsg.value = t('passwd_update')
       securitySuccess.value = true
