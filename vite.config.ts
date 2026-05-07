@@ -1,31 +1,43 @@
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin, ViteDevServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vike from 'vike/plugin'
 import path from 'path'
-import fs from 'fs'
 
-function getBackendTarget() {
-  try {
-    const configPath = path.resolve(__dirname, 'config.json')
-    if (!fs.existsSync(configPath)) {
-      console.warn('[vite] config.json not found, fallback backend target http://localhost:3000')
-      return 'http://localhost:3000'
+function backendMiddlewarePlugin(): Plugin {
+  return {
+    name: 'backend-middleware-plugin',
+    apply: 'serve' as const,
+    async configureServer(server: ViteDevServer) {
+      const [{ default: backendApp }, { ensureAppDataSourceInitialized }] = await Promise.all([
+        import('./src/server/app'),
+        import('./src/server/database/data-source')
+      ])
+
+      await ensureAppDataSourceInitialized()
+      console.info('[DB] Database connection established (vike dev).')
+
+      server.middlewares.use((req, res, next) => {
+        const url = req.url || ''
+        if (
+          url.startsWith('/api') ||
+          url.startsWith('/view') ||
+          url.startsWith('/res') ||
+          url.startsWith('/upload')
+        ) {
+          backendApp(req, res, next)
+          return
+        }
+        next()
+      })
     }
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
-    const port = config?.base?.port || 3000
-    return `http://localhost:${port}`
-  } catch {
-    console.warn('[vite] failed to parse config.json, fallback backend target http://localhost:3000')
-    return 'http://localhost:3000'
   }
 }
-
-const backendTarget = getBackendTarget()
 
 export default defineConfig({
   plugins: [
     vue(),
-    vike({ prerender: false })
+    vike({ prerender: false }),
+    backendMiddlewarePlugin()
   ],
   resolve: {
     alias: {
@@ -37,14 +49,6 @@ export default defineConfig({
   },
   css: {
     postcss: './postcss.config.js'
-  },
-  server: {
-    proxy: {
-      '/api': backendTarget,
-      '/view': backendTarget,
-      '/res': backendTarget,
-      '/upload': backendTarget
-    }
   },
   build: {
     outDir: 'dist/client'

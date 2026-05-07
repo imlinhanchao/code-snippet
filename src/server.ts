@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import fs from 'fs'
 import path from 'path'
-import { AppDataSource } from './server/database/data-source'
+import { ensureAppDataSourceInitialized } from './server/database/data-source'
 import app from './server/app'
 
 let configData: Record<string, any> = {}
@@ -14,7 +14,7 @@ try {
 
 const PORT = configData?.base?.port || 3000
 
-AppDataSource.initialize()
+ensureAppDataSourceInitialized()
   .then(() => {
     console.info('[DB] Database connection established.')
     app.listen(PORT, () => {

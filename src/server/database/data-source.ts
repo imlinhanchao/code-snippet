@@ -35,3 +35,15 @@ export const AppDataSource = new DataSource({
   ],
   charset: 'utf8mb4'
 })
+
+let initPromise: Promise<DataSource> | null = null
+
+export async function ensureAppDataSourceInitialized(): Promise<DataSource> {
+  if (AppDataSource.isInitialized) return AppDataSource
+  if (!initPromise) {
+    initPromise = AppDataSource.initialize().finally(() => {
+      initPromise = null
+    })
+  }
+  return initPromise
+}
