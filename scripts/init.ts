@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
-import { v4 as uuidv4 } from 'uuid'
+import { randomBytes, randomUUID } from 'crypto'
 
 type Dict = Record<string, any>
 
@@ -32,13 +32,7 @@ function loadConfig(): Dict {
   return config
 }
 
-const randomUp = (s: string): string =>
-  s
-    .split('')
-    .map((x) => (Math.floor(Math.random() * 10) % 2 ? x : x.toUpperCase()))
-    .join('')
-
-const randomStr = (): string => randomUp(Math.random().toString(36).substring(2))
+const secureToken = (size = 24): string => randomBytes(size).toString('base64url')
 
 function ask(rl: readline.Interface, key: string, defaultVal: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -62,9 +56,9 @@ async function main(): Promise<void> {
     !config.base.identityKey ||
     (await ask(rl, 'Do you want to reset safe key config (identityKey etc.) ?', 'N')) === 'Y'
   ) {
-    config.base.identityKey = `_WEB_SESSION_ID_${randomStr()}`
-    config.base.secret = `${randomStr()}${randomStr()}`
-    config.base.salt = randomUp(uuidv4())
+    config.base.identityKey = `_WEB_SESSION_ID_${secureToken(12)}`
+    config.base.secret = `${secureToken(24)}${secureToken(24)}`
+    config.base.salt = randomUUID().toUpperCase()
   }
 
   config.base.port = parseInt(await ask(rl, 'Port', String(config.base.port || 3000)), 10)
