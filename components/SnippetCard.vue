@@ -20,8 +20,14 @@
       <p v-if="snippet.description" class="text-sm text-base-content/60 mt-1 line-clamp-2">
         {{ snippet.description }}
       </p>
-      <div v-if="snippet.codes && snippet.codes.length > 0" class="mt-2 bg-base-200 rounded text-xs p-2 font-mono overflow-hidden max-h-16">
-        <pre class="truncate">{{ snippet.codes[0]?.content?.slice(0, 200) }}</pre>
+      <div v-if="snippet.codes && snippet.codes.length > 0">
+        <CodeRender :code="snippet.codes[0]" :snippet="snippet" class="code" :max-height="200">
+          <router-link :to="`/s/${snippet.id}`" v-if="snippet.codes.length > 1">
+            <p :title="$t('more')" class="more">
+              <Icon type="ios-more"></Icon>
+            </p>
+          </router-link>
+        </CodeRender>
       </div>
       <div class="flex items-center gap-4 mt-2 text-xs text-base-content/50">
         <span>{{ formatTime(snippet.create_time) }}</span>
@@ -38,6 +44,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { Snippet } from '../store/useSnippetStore'
+import CodeRender from '@components/CodeRender.vue'
 
 const props = defineProps<{ snippet: Snippet }>()
 const { t } = useI18n()

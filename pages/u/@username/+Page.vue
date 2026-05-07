@@ -87,8 +87,8 @@ onMounted(async () => {
   try {
     await accountStore.fetchInfo()
     const rsp = await accountStore.queryUser({ username: [username] })
-    if (rsp?.state === 0 && rsp.data?.length) {
-      user.value = rsp.data[0]
+    if (rsp?.state === 0 && rsp.data?.data.length) {
+      user.value = rsp.data.data[0]
     } else {
       errorMsg.value = t('not_exist_user')
       return

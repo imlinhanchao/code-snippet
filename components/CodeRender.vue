@@ -12,7 +12,7 @@
     <div :style="maxHeight ? { maxHeight: `${maxHeight}px`, overflow: 'auto' } : {}">
       <!-- Source view -->
       <template v-if="!isRender || source || onlySource">
-        <pre class="p-4 text-sm overflow-auto m-0"><code class="hljs" v-html="highlightedCode"></code></pre>
+        <pre class="text-sm overflow-auto m-0"><code class="hljs" v-html="highlightedCode"></code></pre>
       </template>
 
       <!-- Rendered view -->
