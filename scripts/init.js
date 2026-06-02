@@ -2,10 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const { v4: uuidv4 } = require('uuid');
-let config = require(
-    fs.existsSync(path.join(__dirname, '..', 'config.json')) ?
-    '../config' : '../cfg'
-);
+const { toPersistedConfig } = require('../config');
+let config = require('../config');
 
 const randomStr = () => randomUp(Math.random().toString(36).substr(2));
 const randomUp = s => s.split('').map(s => parseInt(Math.random() * 10) % 2 ? s : s.toUpperCase()).join('');
@@ -54,34 +52,28 @@ async function main() {
     config.db['prefix'] = await rl.inputData('Table Prefix', config.db['prefix']);
     config.db['logging'] = await rl.inputData('Log SQL Execute', config.db['logging'] ? 'Y' : 'N') == 'Y';
 
-    let dbConfig = Object.assign({}, config.db);
-    dbConfig['host'] = await rl.inputData('Database Host', 'localhost');
-    dbConfig['user'] = await rl.inputData('Database User', 'root');
-    dbConfig['password'] = await rl.inputData('Database Password', '');
+    config.db['host'] = await rl.inputData('Database Host', config.db['host'] || 'localhost');
+    config.db['user'] = await rl.inputData('Database User', config.db['user'] || 'root');
+    config.db['password'] = await rl.inputData('Database Password', config.db['password'] || '');
 
     console.info('Config Email:');
     config.email['host'] = await rl.inputData('Email Server Host', config.email['host']);
     config.email['port'] = parseInt(await rl.inputData('Email Server Port', config.email['port']));
-    config.email.auth['account'] = await rl.inputData('Mail Account', config.email.auth['account']);
+    config.email.auth['user'] = await rl.inputData('Mail Account', config.email.auth['user']);
+    config.email.auth['account'] = config.email.auth['user'];
     config.email.auth['pass'] = await rl.inputData('Acount Password', config.email.auth['pass']);
 
     fs.writeFile(path.join(__dirname, '../config.json'),
-        JSON.stringify(config, null, 4),
+        JSON.stringify(toPersistedConfig(config), null, 4),
         (err) => {
             if (err) console.error(`[Error] Save website config failed: ${err.message}`);
             else {
-                // Save DB Config
-                fs.writeFile(path.join(__dirname, '../model/config.json'),
-                JSON.stringify(dbConfig, null, 4),
-                (err) => {
-                    if (err) console.error(`[Error] Save db config failed: ${err.message}`);
-                    else initDB();
-                });        
+                initDB();
             }
         });
     rl.close();
 
-    fs.mkdir(path.join(__dirname, '..', 'public', 'dist'))
+    fs.mkdir(path.join(__dirname, '..', 'public', 'dist'), { recursive: true }, () => undefined);
 }
 
 function initDB () {

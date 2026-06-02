@@ -8,7 +8,7 @@ const App = require('./app');
 const Activity = require('./activity');
 const Account = model.account;
 const Token = model.token;
-const config = require('../config.json');
+const config = require('../config');
 
 const __salt = config.salt;
 const __tpl = {

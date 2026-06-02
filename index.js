@@ -3,14 +3,7 @@ const Bundler = require('parcel-bundler');
 const express = require('express');
 const net = require('net');
 const path = require('path');
-const fs = require('fs');
-
-if (!fs.existsSync(path.join(__dirname, 'config.json'))) {
-    console.info('[Info] Please execute `npm run init` to initialization config.')
-    process.exit(0);
-}
-
-const config = require('./config.json');
+const config = require('./config');
 let port = Number(process.env.PORT || 8080);
 
 const bundler = new Bundler('frontend/index.html', {

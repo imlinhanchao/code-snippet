@@ -9,8 +9,12 @@
     "start": "node ./bin/www",
     "server": "cross-env NODE_ENV=development node ./bin/www",
     "dev": "node scripts/pre.js && cross-env NODE_ENV=development node index.js",
+    "dev:web": "npm --prefix ./web run dev",
+    "dev:server": "npm --prefix ./server run start:dev",
     "prebuild": "rimraf ./public/dist && node scripts/pre.js",
     "build": "parcel build frontend/index.html --out-dir ./public/dist --public-url /dist --no-source-maps",
+    "build:web": "npm --prefix ./web run build",
+    "build:server": "npm --prefix ./server run build",
     "postbuild": "cp ./public/dist/index.html ./public/index.html",
     "init": "node scripts/init.js",
     "initdb": "node scripts/initdb.js"

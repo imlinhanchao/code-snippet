@@ -64,6 +64,11 @@ pm2 start -n snippet npm -- start
 - routes - 服务路由  
 - script - 脚本 
 
+## 🚧 迁移工作区
+- `web` - 新的 Nuxt SSR 前端骨架，承接首页、探索页、Snippet、用户页、登录页与嵌入页的 SSR 迁移。
+- `server` - 新的 NestJS + TypeORM 服务端骨架，承接配置中心、鉴权与只读基础接口迁移。
+- 旧的 Vue 2 + Express + Sequelize 结构继续保留，供迁移阶段并行对照。
+
 ## 👀 界面
 
 ![](./frontend/assets/preview.jpg)

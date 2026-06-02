@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { toPersistedConfig } = require('../config');
 
 async function main() {
-    if (!fs.existsSync(path.join(__dirname, '../model/config.json'))) {
+    if (!fs.existsSync(path.join(__dirname, '../config.json'))) {
         let rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
@@ -31,8 +32,10 @@ async function main() {
         config.user = await rl.inputData('User', 'root');
         config.password = await rl.inputData('Password', '');
 
-        fs.writeFile(path.join(__dirname, '../model/config.json'),
-            JSON.stringify({ db: config }, null, 4), (err) => {
+        const current = require('../config');
+        current.db = config;
+        fs.writeFile(path.join(__dirname, '../config.json'),
+            JSON.stringify(toPersistedConfig(current), null, 4), (err) => {
                 if (err) console.error(`[Error] create db config failed: ${err.message}`);
                 else initDB();
             });
