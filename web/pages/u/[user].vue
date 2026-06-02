@@ -50,11 +50,11 @@ useSeoMeta({
       </div>
       <div class="card">
         <strong>{{ data?.stats.stars || 0 }}</strong>
-        <p class="muted">{{ $t('snippet_stars') }}</p>
+        <p class="muted">{{ t('snippet_stars') }}</p>
       </div>
       <div class="card">
         <strong>{{ data?.stats.comments || 0 }}</strong>
-        <p class="muted">{{ $t('snippet_comments') }}</p>
+        <p class="muted">{{ t('snippet_comments') }}</p>
       </div>
     </div>
   </section>

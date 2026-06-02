@@ -33,7 +33,7 @@ export class ConfigService {
           ...(payload.mail?.auth || {}),
         },
       },
-      db: { ...current.db, ...(payload.db || {}) },
+      db: { ...current.db, ...(payload.db || {}), dialect: 'mysql' as const },
       configured: true,
     };
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n();
 const theme = useCookie<'light' | 'dark'>('code-snippet-theme', {
   default: () => 'light',
 });
@@ -12,6 +13,6 @@ watchEffect(() => {
 
 <template>
   <button class="button" type="button" @click="theme = theme === 'dark' ? 'light' : 'dark'">
-    {{ theme === 'dark' ? $t('theme_light') : $t('theme_dark') }}
+    {{ theme === 'dark' ? t('theme_light') : t('theme_dark') }}
   </button>
 </template>

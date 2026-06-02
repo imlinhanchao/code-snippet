@@ -23,7 +23,7 @@ useSeoMeta({
     </div>
 
     <div class="page-header">
-      <h1>{{ $t('home_title') }}</h1>
+      <h1>{{ t('home_title') }}</h1>
       <p>{{ data?.snippets.length || 0 }} snippets</p>
     </div>
 

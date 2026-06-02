@@ -13,7 +13,7 @@ useSeoMeta({
 <template>
   <section class="grid">
     <div class="page-header">
-      <h1>{{ $t('explore_title') }}</h1>
+      <h1>{{ t('explore_title') }}</h1>
       <p>SSR explore feed</p>
     </div>
 

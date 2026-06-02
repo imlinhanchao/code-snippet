@@ -13,7 +13,7 @@ useSeoMeta({
 <template>
   <section class="card">
     <div class="page-header">
-      <h1>{{ $t('login_title') }}</h1>
+      <h1>{{ t('login_title') }}</h1>
       <p class="muted">
         {{ data?.user ? `@${data.user.username}` : 'Session-aware SSR login shell.' }}
       </p>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n();
 const { data } = await useBootstrap();
 </script>
 
@@ -6,11 +7,11 @@ const { data } = await useBootstrap();
   <div class="app-shell">
     <header class="topbar">
       <nav>
-        <NuxtLink to="/">{{ $t('nav_home') }}</NuxtLink>
-        <NuxtLink to="/explore">{{ $t('nav_explore') }}</NuxtLink>
-        <NuxtLink to="/login">{{ $t('nav_login') }}</NuxtLink>
+        <NuxtLink to="/">{{ t('nav_home') }}</NuxtLink>
+        <NuxtLink to="/explore">{{ t('nav_explore') }}</NuxtLink>
+        <NuxtLink to="/login">{{ t('nav_login') }}</NuxtLink>
         <NuxtLink v-if="data?.session.user" :to="`/u/${data.session.user.username}`">
-          {{ $t('nav_user') }}
+          {{ t('nav_user') }}
         </NuxtLink>
       </nav>
       <div class="toolbar">

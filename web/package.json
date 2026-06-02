@@ -9,7 +9,6 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
-    "@nuxtjs/i18n": "^8.5.6",
     "nuxt": "^3.16.2"
   }
 }

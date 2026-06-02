@@ -35,13 +35,13 @@ useSeoMeta({
         <div class="snippet-meta">
           <NuxtLink :to="`/u/${data?.snippet.username}`">@{{ data?.snippet.username }}</NuxtLink>
           <span>{{ data?.snippet.language }}</span>
-          <span>{{ $t('snippet_stars') }} {{ data?.stats.stars || 0 }}</span>
-          <span>{{ $t('snippet_comments') }} {{ data?.stats.comments || 0 }}</span>
+          <span>{{ t('snippet_stars') }} {{ data?.stats.stars || 0 }}</span>
+          <span>{{ t('snippet_comments') }} {{ data?.stats.comments || 0 }}</span>
         </div>
       </article>
 
       <article class="card">
-        <h2>{{ $t('snippet_files') }}</h2>
+        <h2>{{ t('snippet_files') }}</h2>
         <ul class="meta-list">
           <li v-for="file in data?.files || []" :key="file.id">{{ file.filename }}</li>
         </ul>

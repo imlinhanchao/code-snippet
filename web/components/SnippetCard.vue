@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n();
+
 defineProps<{
   snippet: {
     id: string;
@@ -26,9 +28,9 @@ defineProps<{
     <p class="muted">{{ snippet.description || '—' }}</p>
     <div class="snippet-meta">
       <NuxtLink :to="`/u/${snippet.username}`">@{{ snippet.username }}</NuxtLink>
-      <span>{{ $t('snippet_files') }} {{ snippet.files?.length || 0 }}</span>
-      <span>{{ $t('snippet_stars') }} {{ snippet.stats?.stars || 0 }}</span>
-      <span>{{ $t('snippet_comments') }} {{ snippet.stats?.comments || 0 }}</span>
+      <span>{{ t('snippet_files') }} {{ snippet.files?.length || 0 }}</span>
+      <span>{{ t('snippet_stars') }} {{ snippet.stats?.stars || 0 }}</span>
+      <span>{{ t('snippet_comments') }} {{ snippet.stats?.comments || 0 }}</span>
     </div>
   </article>
 </template>

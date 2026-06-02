@@ -16,7 +16,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const runtimeConfigService = new RuntimeConfigService();
   const config = runtimeConfigService.config;
-  const FileStore = require('session-file-store')(session);
+  const fileStoreFactory = require('session-file-store') as (
+    sessionLib: typeof session,
+  ) => new (...args: unknown[]) => session.Store;
+  const FileStore = fileStoreFactory(session);
 
   app.use(
     session({

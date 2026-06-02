@@ -51,5 +51,8 @@ config.json
 # debug cache
 .cache
 dist
+server/dist
+web/.nuxt
+web/.output
 
 .vscode/settings.json
