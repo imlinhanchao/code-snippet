@@ -9,6 +9,7 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "nuxt": "^4.4.6"
   }
 }

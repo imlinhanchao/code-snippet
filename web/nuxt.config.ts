@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', 'highlight.js/styles/github.css'],
   devtools: { enabled: false },
   runtimeConfig: {
     public: {

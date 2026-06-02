@@ -66,7 +66,7 @@ export class SnippetService {
     const [codes, stars, comments] = await Promise.all([
       codeRepo.find({
         where: { snippet: id },
-        select: ['id', 'filename', 'order', 'execute', 'command', 'create_time', 'update_time'],
+        select: ['id', 'filename', 'order', 'execute', 'command', 'content', 'create_time', 'update_time'],
         order: { order: 'ASC' },
       }),
       favRepo.count({ where: { snippet: id } }),

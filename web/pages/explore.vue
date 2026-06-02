@@ -6,23 +6,27 @@ const { data } = await useAsyncData('explore-page', () =>
 
 useSeoMeta({
   title: `${t('explore_title')} · Code Snippet`,
-  description: 'Nuxt SSR migration explore feed.',
+  description: 'Explore public code snippets shared by the community.',
 });
 </script>
 
 <template>
-  <section class="grid">
+  <div>
     <div class="page-header">
       <h1>{{ t('explore_title') }}</h1>
-      <p>SSR explore feed</p>
+      <p class="muted">{{ data?.snippets.length || 0 }} snippets</p>
     </div>
 
-    <div class="grid">
+    <div v-if="(data?.snippets.length ?? 0) > 0" class="grid">
       <SnippetCard
         v-for="snippet in data?.snippets || []"
         :key="String(snippet.id)"
         :snippet="snippet as never"
       />
     </div>
-  </section>
+    <div v-else class="empty-state">
+      <p>{{ t('snippet_empty') }}</p>
+    </div>
+  </div>
 </template>
+

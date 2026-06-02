@@ -9,30 +9,31 @@ const { data } = await useAsyncData('home-page', () =>
 
 useSeoMeta({
   title: `${t('home_title')} · ${data.value?.site.name || 'Code Snippet'}`,
-  description: 'Nuxt SSR migration home feed for Code Snippet.',
+  description: `Discover and share code snippets on ${data.value?.site.name || 'Code Snippet'}.`,
 });
 </script>
 
 <template>
-  <section class="grid">
-    <div class="hero card">
-      <h1>{{ data?.site.name }}</h1>
-      <p>
-        SSR 首屏先输出站点信息与 Snippet 摘要，编辑器、执行器与 Markdown 重交互模块后续继续按阶段迁移。
-      </p>
+  <div>
+    <div class="hero" style="margin-bottom: 24px;">
+      <h1>{{ data?.site.name || 'Code Snippet' }}</h1>
+      <p>Discover and share reusable code snippets. Find solutions, learn from others, and build faster.</p>
     </div>
 
     <div class="page-header">
       <h1>{{ t('home_title') }}</h1>
-      <p>{{ data?.snippets.length || 0 }} snippets</p>
     </div>
 
-    <div class="grid">
+    <div v-if="(data?.snippets.length ?? 0) > 0" class="grid">
       <SnippetCard
         v-for="snippet in data?.snippets || []"
         :key="String(snippet.id)"
         :snippet="snippet as never"
       />
     </div>
-  </section>
+    <div v-else class="empty-state">
+      <p>{{ t('snippet_empty') }}</p>
+    </div>
+  </div>
 </template>
+
